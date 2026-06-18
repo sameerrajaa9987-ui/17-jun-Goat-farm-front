@@ -11,6 +11,8 @@ import {
   ReceiptIndianRupee,
 } from "lucide-react-native";
 
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { useAuthStore } from "@shared/store/useAuthStore";
 import { palette } from "@shared/designSystem";
 
@@ -93,6 +95,10 @@ function MainTabs() {
   const isVet = role === "vet";
   const isClient = role === "client";
 
+  // Clear the Android/iOS system navigation bar so tab labels aren't
+  // overlapped by it (same approach as the Doctor app's tab bar).
+  const insets = useSafeAreaInsets();
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -102,8 +108,8 @@ function MainTabs() {
         tabBarStyle: {
           backgroundColor: palette.surface.primary,
           borderTopColor: palette.border.default,
-          height: 64,
-          paddingBottom: 8,
+          height: 64 + insets.bottom,
+          paddingBottom: Math.max(insets.bottom, 8),
           paddingTop: 8,
         },
         tabBarLabelStyle: { fontSize: 11, fontWeight: "600" },
