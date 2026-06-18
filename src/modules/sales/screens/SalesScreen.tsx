@@ -7,13 +7,20 @@ import {
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { ChevronLeft, Plus, Tag } from "lucide-react-native";
 import { format } from "date-fns";
 import { useSales, useSalesStats } from "@modules/sales/hooks/useSales";
 import { Sale } from "@modules/sales/types";
-import { palette, radius, shadows } from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip } from "@shared/ui";
+import {
+  palette,
+  radius,
+  shadows,
+  gradients,
+  elevation,
+} from "@shared/designSystem";
+import { Text, VStack, HStack, StatusChip, Card, StatTile } from "@shared/ui";
 
 export default function SalesScreen() {
   const navigation = useNavigation<any>();
@@ -24,26 +31,43 @@ export default function SalesScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-        <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+        <View style={styles.header}>
+          <Pressable
+            style={styles.backBtn}
+            onPress={() => navigation.goBack()}
+            hitSlop={8}
+          >
+            <ChevronLeft
+              size={22}
+              color={palette.text.primary}
+              strokeWidth={2}
+            />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            Sales
-          </Text>
-          <View style={{ width: 26 }} />
+          <VStack gap={3} flex={1}>
+            <Text variant="overline" tone="tertiary">
+              Trade
+            </Text>
+            <Text variant="h1" tone="primary">
+              Sales
+            </Text>
+            <Text variant="body-sm" tone="tertiary">
+              {stats ? `${stats.count} sales recorded` : "Goat sales ledger"}
+            </Text>
+          </VStack>
         </View>
 
         <View style={{ paddingHorizontal: 20 }}>
           <HStack gap={12}>
-            <Stat label="Sales" value={String(stats?.count ?? "—")} />
-            <Stat
+            <StatTile label="Sales" value={String(stats?.count ?? "—")} />
+            <StatTile
               label="Revenue"
               value={stats ? `₹${(stats.revenue / 1000).toFixed(1)}k` : "—"}
+              tone="forest"
             />
-            <Stat
+            <StatTile
               label="Profit"
               value={stats ? `₹${(stats.profit / 1000).toFixed(1)}k` : "—"}
+              tone="clay"
             />
           </HStack>
         </View>
@@ -60,8 +84,10 @@ export default function SalesScreen() {
             />
           }
           ListEmptyComponent={
-            <VStack align="center" gap={8} style={{ marginTop: 50 }}>
-              <Tag size={40} color={palette.text.disabled} strokeWidth={1.5} />
+            <VStack align="center" gap={10} style={{ marginTop: 60 }}>
+              <View style={styles.emptyIcon}>
+                <Tag size={34} color={palette.ink[300]} strokeWidth={1.5} />
+              </View>
               <Text variant="body" tone="tertiary">
                 {isLoading ? "Loading..." : "No sales yet."}
               </Text>
@@ -72,10 +98,17 @@ export default function SalesScreen() {
         />
 
         <Pressable
-          style={styles.fab}
+          style={styles.fabWrap}
           onPress={() => navigation.navigate("SellGoat")}
         >
-          <Plus size={24} color={palette.text.inverse} strokeWidth={2.2} />
+          <LinearGradient
+            colors={gradients.clay}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.fab}
+          >
+            <Plus size={24} color={palette.text.inverse} strokeWidth={2.4} />
+          </LinearGradient>
         </Pressable>
       </SafeAreaView>
     </View>
@@ -90,7 +123,7 @@ function SaleRow({ sale }: { sale: Sale }) {
     /* raw */
   }
   return (
-    <View style={styles.card}>
+    <Card elevation="raised" style={styles.card}>
       <HStack gap={12} align="center">
         <VStack gap={5} flex={1}>
           <HStack gap={8} align="center">
@@ -117,58 +150,51 @@ function SaleRow({ sale }: { sale: Sale }) {
           ₹{sale.salePrice.toLocaleString("en-IN")}
         </Text>
       </HStack>
-    </View>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <View style={styles.stat}>
-      <Text variant="h2" tone="primary">
-        {value}
-      </Text>
-      <Text variant="caption" tone="tertiary">
-        {label}
-      </Text>
-    </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  topbar: {
+  header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 12,
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingTop: 8,
+    paddingBottom: 12,
   },
-  stat: {
-    flex: 1,
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
     backgroundColor: palette.surface.primary,
-    borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.border.default,
-    padding: 14,
+    alignItems: "center",
+    justifyContent: "center",
     ...shadows.xs,
   },
-  card: {
-    backgroundColor: palette.surface.primary,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: palette.border.default,
-    padding: 16,
-    ...shadows.xs,
+  card: { padding: 16 },
+  emptyIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.full,
+    backgroundColor: palette.ink[50],
+    alignItems: "center",
+    justifyContent: "center",
   },
-  fab: {
+  fabWrap: {
     position: "absolute",
     right: 20,
     bottom: 28,
-    width: 56,
-    height: 56,
     borderRadius: radius.full,
-    backgroundColor: palette.ink[900],
+    ...elevation.floating,
+  },
+  fab: {
+    width: 58,
+    height: 58,
+    borderRadius: radius.full,
     alignItems: "center",
     justifyContent: "center",
-    ...shadows.lg,
   },
 });

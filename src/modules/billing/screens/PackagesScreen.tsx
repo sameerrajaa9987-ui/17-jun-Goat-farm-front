@@ -27,14 +27,27 @@ export default function PackagesScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+          <Pressable
+            onPress={() => navigation.goBack()}
+            hitSlop={10}
+            style={styles.backBtn}
+          >
+            <ChevronLeft size={24} color={palette.text.primary} />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            Packages
-          </Text>
-          <Pressable onPress={() => setAdding(true)} hitSlop={10}>
-            <Plus size={24} color={palette.ink[800]} />
+          <VStack gap={2} flex={1} style={{ marginLeft: 12 }}>
+            <Text variant="overline" tone="tertiary">
+              Ad Pali billing
+            </Text>
+            <Text variant="h1" tone="primary">
+              Packages
+            </Text>
+          </VStack>
+          <Pressable
+            onPress={() => setAdding(true)}
+            hitSlop={10}
+            style={styles.iconBtn}
+          >
+            <Plus size={22} color={palette.ink[800]} />
           </Pressable>
         </View>
 
@@ -45,7 +58,7 @@ export default function PackagesScreen() {
           </Text>
           <VStack gap={12}>
             {(packages ?? []).map((p) => (
-              <Card key={p.id}>
+              <Card key={p.id} elevation="raised">
                 <HStack justify="space-between" align="center">
                   <VStack gap={4} flex={1}>
                     <HStack gap={8} align="center">
@@ -163,9 +176,31 @@ const styles = StyleSheet.create({
   topbar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingTop: 8,
+    paddingBottom: 12,
+  },
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
+  },
+  iconBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
   },
   sheetBackdrop: {
     flex: 1,

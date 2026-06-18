@@ -2,40 +2,52 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Sprout } from "lucide-react-native";
-import { Text, VStack, Button } from "@shared/ui";
-import { palette, radius } from "@shared/designSystem";
+import { Text, VStack, Button, GradientHero } from "@shared/ui";
+import { palette, radius, glass } from "@shared/designSystem";
 
 type Props = { navigation: { navigate: (s: string) => void } };
 
 export default function OnboardingScreen({ navigation }: Props) {
   return (
-    <View style={{ flex: 1, backgroundColor: palette.surface.dark }}>
+    <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>
         <View style={styles.body}>
-          <View style={styles.logoWrap}>
-            <View style={styles.logoBadge}>
-              <Sprout color={palette.amber[400]} size={40} strokeWidth={1.8} />
-            </View>
-          </View>
-
-          <VStack gap={14} align="center" style={{ marginTop: 28 }}>
-            <Text
-              variant="display-sm"
-              tone="inverse"
-              align="center"
-              style={{ letterSpacing: -0.5 }}
-            >
-              Goat Farm Manager
-            </Text>
-            <Text
-              variant="body-lg"
-              align="center"
-              style={{ color: palette.ink[200], maxWidth: 300 }}
-            >
-              Rear, track, and care for every goat — and bill your Ad Pali
-              clients automatically.
-            </Text>
-          </VStack>
+          <GradientHero variant="hero" style={styles.hero}>
+            <VStack gap={20} align="center">
+              <View style={[styles.logoBadge, glass.light]}>
+                <Sprout
+                  color={palette.amber[300]}
+                  size={40}
+                  strokeWidth={1.8}
+                />
+              </View>
+              <VStack gap={12} align="center">
+                <Text
+                  variant="overline"
+                  align="center"
+                  style={{ color: "rgba(255,255,255,0.66)" }}
+                >
+                  Goat Farm Manager
+                </Text>
+                <Text
+                  variant="display-sm"
+                  tone="inverse"
+                  align="center"
+                  style={{ letterSpacing: -0.5 }}
+                >
+                  Manage your herd
+                </Text>
+                <Text
+                  variant="body-lg"
+                  align="center"
+                  style={{ color: "rgba(255,255,255,0.78)", maxWidth: 300 }}
+                >
+                  Rear, track, and care for every goat — and bill your Ad Pali
+                  clients automatically.
+                </Text>
+              </VStack>
+            </VStack>
+          </GradientHero>
         </View>
 
         <View style={styles.footer}>
@@ -61,20 +73,16 @@ export default function OnboardingScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 28,
+    paddingHorizontal: 20,
   },
-  logoWrap: { alignItems: "center" },
+  hero: { paddingVertical: 24 },
   logoBadge: {
     width: 96,
     height: 96,
     borderRadius: radius["2xl"],
-    backgroundColor: palette.surface.darkRaised,
-    borderWidth: 1,
-    borderColor: palette.border.dark,
     alignItems: "center",
     justifyContent: "center",
   },
-  footer: { paddingHorizontal: 24, paddingBottom: 16 },
+  footer: { paddingHorizontal: 20, paddingBottom: 16 },
 });

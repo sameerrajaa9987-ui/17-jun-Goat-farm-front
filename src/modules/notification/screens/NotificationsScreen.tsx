@@ -25,8 +25,8 @@ import {
   useMarkAllRead,
 } from "@modules/notification/hooks/useNotifications";
 import { AppNotification, NotificationType } from "@modules/notification/types";
-import { palette, radius } from "@shared/designSystem";
-import { Text, VStack, HStack } from "@shared/ui";
+import { palette, radius, shadows } from "@shared/designSystem";
+import { Text, VStack, HStack, Card } from "@shared/ui";
 
 const ICONS: Record<NotificationType, React.ComponentType<any>> = {
   payment_reminder: ReceiptIndianRupee,
@@ -49,14 +49,27 @@ export default function NotificationsScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+          <Pressable
+            onPress={() => navigation.goBack()}
+            hitSlop={10}
+            style={styles.backBtn}
+          >
+            <ChevronLeft size={24} color={palette.text.primary} />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            Notifications
-          </Text>
-          <Pressable onPress={() => markAll.mutate()} hitSlop={10}>
-            <CheckCheck size={22} color={palette.ink[800]} />
+          <VStack gap={3} flex={1} style={{ marginLeft: 12 }}>
+            <Text variant="overline" tone="tertiary">
+              Activity
+            </Text>
+            <Text variant="h3" tone="primary">
+              Notifications
+            </Text>
+          </VStack>
+          <Pressable
+            onPress={() => markAll.mutate()}
+            hitSlop={10}
+            style={styles.backBtn}
+          >
+            <CheckCheck size={20} color={palette.ink[800]} />
           </Pressable>
         </View>
 
@@ -72,8 +85,10 @@ export default function NotificationsScreen() {
             />
           }
           ListEmptyComponent={
-            <VStack align="center" gap={8} style={{ marginTop: 60 }}>
-              <Bell size={40} color={palette.text.disabled} strokeWidth={1.5} />
+            <VStack align="center" gap={10} style={{ marginTop: 60 }}>
+              <View style={styles.emptyIcon}>
+                <Bell size={34} color={palette.ink[300]} strokeWidth={1.5} />
+              </View>
               <Text variant="body" tone="tertiary">
                 {isLoading ? "Loading..." : "No notifications."}
               </Text>
@@ -101,8 +116,9 @@ function Row({ n, onPress }: { n: AppNotification; onPress: () => void }) {
     /* raw */
   }
   return (
-    <Pressable
+    <Card
       onPress={onPress}
+      elevation="raised"
       style={[styles.card, !n.isRead && styles.unread]}
     >
       <HStack gap={12} align="flex-start">
@@ -133,7 +149,7 @@ function Row({ n, onPress }: { n: AppNotification; onPress: () => void }) {
         </VStack>
         {!n.isRead && <View style={styles.dot} />}
       </HStack>
-    </Pressable>
+    </Card>
   );
 }
 
@@ -141,17 +157,29 @@ const styles = StyleSheet.create({
   topbar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
-  card: {
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.md,
     backgroundColor: palette.surface.primary,
-    borderRadius: radius.xl,
     borderWidth: 1,
     borderColor: palette.border.default,
-    padding: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
   },
+  emptyIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.full,
+    backgroundColor: palette.ink[50],
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  card: { padding: 14 },
   unread: { borderColor: palette.ink[300], backgroundColor: palette.ink[50] },
   icon: {
     width: 38,

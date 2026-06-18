@@ -7,6 +7,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import {
   ChevronLeft,
@@ -17,8 +18,14 @@ import {
 } from "lucide-react-native";
 import { useClients } from "@modules/client/hooks/useClients";
 import { ClientListItem } from "@modules/client/types";
-import { palette, radius, shadows } from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip } from "@shared/ui";
+import {
+  palette,
+  radius,
+  shadows,
+  gradients,
+  elevation,
+} from "@shared/designSystem";
+import { Text, VStack, HStack, StatusChip, Card } from "@shared/ui";
 
 export default function ClientListScreen() {
   const navigation = useNavigation<any>();
@@ -28,25 +35,50 @@ export default function ClientListScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-        <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+        <View style={styles.header}>
+          <Pressable
+            onPress={() => navigation.goBack()}
+            style={styles.backBtn}
+            hitSlop={8}
+          >
+            <ChevronLeft
+              size={22}
+              color={palette.text.primary}
+              strokeWidth={2}
+            />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            Ad Pali clients
-          </Text>
+          <VStack gap={3} flex={1}>
+            <Text variant="overline" tone="tertiary">
+              Billing
+            </Text>
+            <Text variant="h1" tone="primary">
+              Ad Pali clients
+            </Text>
+            <Text variant="body-sm" tone="tertiary">
+              {clients.length} onboarded
+            </Text>
+          </VStack>
           <Pressable
             onPress={() => navigation.navigate("Invoices")}
-            hitSlop={10}
+            style={styles.actionBtn}
+            hitSlop={8}
           >
-            <ReceiptIndianRupee size={22} color={palette.ink[800]} />
+            <ReceiptIndianRupee
+              size={20}
+              color={palette.ink[800]}
+              strokeWidth={1.8}
+            />
           </Pressable>
         </View>
 
         <FlatList
           data={clients}
           keyExtractor={(c) => c.id}
-          contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
+          contentContainerStyle={{
+            padding: 16,
+            paddingTop: 12,
+            paddingBottom: 110,
+          }}
           refreshControl={
             <RefreshControl
               refreshing={isRefetching}
@@ -55,12 +87,14 @@ export default function ClientListScreen() {
             />
           }
           ListEmptyComponent={
-            <VStack align="center" gap={8} style={{ marginTop: 50 }}>
-              <UsersRound
-                size={40}
-                color={palette.text.disabled}
-                strokeWidth={1.5}
-              />
+            <VStack align="center" gap={10} style={{ marginTop: 70 }}>
+              <View style={styles.emptyIcon}>
+                <UsersRound
+                  size={34}
+                  color={palette.ink[300]}
+                  strokeWidth={1.5}
+                />
+              </View>
               <Text variant="body" tone="tertiary">
                 {isLoading ? "Loading..." : "No clients yet."}
               </Text>
@@ -78,10 +112,17 @@ export default function ClientListScreen() {
         />
 
         <Pressable
-          style={styles.fab}
+          style={styles.fabWrap}
           onPress={() => navigation.navigate("AddClient")}
         >
-          <Plus size={24} color={palette.text.inverse} strokeWidth={2.2} />
+          <LinearGradient
+            colors={gradients.clay}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.fab}
+          >
+            <Plus size={24} color={palette.text.inverse} strokeWidth={2.4} />
+          </LinearGradient>
         </Pressable>
       </SafeAreaView>
     </View>
@@ -96,9 +137,11 @@ function ClientRow({
   onPress: () => void;
 }) {
   return (
-    <Pressable
+    <Card
       onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && { opacity: 0.92 }]}
+      elevation="raised"
+      padded={false}
+      style={styles.card}
     >
       <HStack gap={12} align="center">
         <View style={styles.avatar}>
@@ -123,28 +166,44 @@ function ClientRow({
             ) : null}
           </HStack>
         </VStack>
-        <ChevronRight size={18} color={palette.text.tertiary} />
+        <ChevronRight size={18} color={palette.text.tertiary} strokeWidth={2} />
       </HStack>
-    </Pressable>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  topbar: {
+  header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 12,
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingTop: 8,
+    paddingBottom: 12,
   },
-  card: {
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
     backgroundColor: palette.surface.primary,
-    borderRadius: radius.xl,
     borderWidth: 1,
     borderColor: palette.border.default,
-    padding: 14,
+    alignItems: "center",
+    justifyContent: "center",
     ...shadows.xs,
   },
+  actionBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
+  },
+  card: { padding: 14 },
   avatar: {
     width: 46,
     height: 46,
@@ -153,16 +212,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  fab: {
+  emptyIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.full,
+    backgroundColor: palette.ink[50],
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  fabWrap: {
     position: "absolute",
     right: 20,
     bottom: 28,
-    width: 56,
-    height: 56,
     borderRadius: radius.full,
-    backgroundColor: palette.ink[900],
+    ...elevation.floating,
+  },
+  fab: {
+    width: 58,
+    height: 58,
+    borderRadius: radius.full,
     alignItems: "center",
     justifyContent: "center",
-    ...shadows.lg,
   },
 });

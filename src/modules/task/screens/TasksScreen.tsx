@@ -5,8 +5,10 @@ import {
   StyleSheet,
   Pressable,
   RefreshControl,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { Plus, ClipboardList, ChevronRight } from "lucide-react-native";
 import { format } from "date-fns";
@@ -14,8 +16,8 @@ import { useTasks } from "@modules/task/hooks/useTasks";
 import { Task, TaskStatus, TASK_TYPE_LABEL } from "@modules/task/types";
 import { STATUS_LABEL, STATUS_TONE } from "@modules/task/taskMeta";
 import { useAuthStore } from "@shared/store/useAuthStore";
-import { palette, radius, shadows } from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip } from "@shared/ui";
+import { palette, radius, gradients, elevation } from "@shared/designSystem";
+import { Text, VStack, HStack, StatusChip, Card } from "@shared/ui";
 
 type FilterKey = "active" | TaskStatus;
 
@@ -33,6 +35,15 @@ const MANAGER_FILTERS: { key: FilterKey; label: string }[] = [
   { key: "rejected", label: "Rejected" },
 ];
 
+// Left-rail accent colour per status — lets the eye scan a long list fast.
+const RAIL: Record<string, string> = {
+  pending: palette.amber[400],
+  in_progress: palette.info.text,
+  submitted: palette.amber[500],
+  approved: palette.ink[500],
+  rejected: palette.danger.text,
+};
+
 export default function TasksScreen() {
   const navigation = useNavigation<any>();
   const role = useAuthStore((s) => s.user?.role);
@@ -42,10 +53,6 @@ export default function TasksScreen() {
     isManager ? "submitted" : "active",
   );
 
-  // "active" = pending + in_progress; the API filters one status, so for
-  // active we fetch pending and in_progress is included by not filtering when
-  // active means we request status=pending and also in_progress via 2 calls?
-  // Simpler: request without status for "active" then filter client-side.
   const apiParams = filter === "active" ? undefined : { status: filter };
   const { data, isLoading, refetch, isRefetching } = useTasks(apiParams);
 
@@ -60,7 +67,10 @@ export default function TasksScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.header}>
-          <VStack gap={2} flex={1}>
+          <VStack gap={3} flex={1}>
+            <Text variant="overline" tone="tertiary">
+              Operations
+            </Text>
             <Text variant="h1" tone="primary">
               Tasks
             </Text>
@@ -70,7 +80,11 @@ export default function TasksScreen() {
           </VStack>
         </View>
 
-        <View style={styles.filters}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filters}
+        >
           {filters.map((f) => {
             const active = filter === f.key;
             return (
@@ -92,15 +106,15 @@ export default function TasksScreen() {
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
 
         <FlatList
           data={tasks}
           keyExtractor={(t) => t.id}
           contentContainerStyle={{
-            padding: 20,
-            paddingTop: 8,
-            paddingBottom: 100,
+            padding: 16,
+            paddingTop: 12,
+            paddingBottom: 110,
           }}
           refreshControl={
             <RefreshControl
@@ -110,12 +124,14 @@ export default function TasksScreen() {
             />
           }
           ListEmptyComponent={
-            <VStack align="center" gap={8} style={{ marginTop: 60 }}>
-              <ClipboardList
-                size={40}
-                color={palette.text.disabled}
-                strokeWidth={1.5}
-              />
+            <VStack align="center" gap={10} style={{ marginTop: 70 }}>
+              <View style={styles.emptyIcon}>
+                <ClipboardList
+                  size={34}
+                  color={palette.ink[300]}
+                  strokeWidth={1.5}
+                />
+              </View>
               <Text variant="body" tone="tertiary">
                 {isLoading ? "Loading..." : "Nothing here."}
               </Text>
@@ -133,10 +149,17 @@ export default function TasksScreen() {
 
         {isManager && (
           <Pressable
-            style={styles.fab}
+            style={styles.fabWrap}
             onPress={() => navigation.navigate("AssignTask")}
           >
-            <Plus size={24} color={palette.text.inverse} strokeWidth={2.2} />
+            <LinearGradient
+              colors={gradients.clay}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.fab}
+            >
+              <Plus size={24} color={palette.text.inverse} strokeWidth={2.4} />
+            </LinearGradient>
           </Pressable>
         )}
       </SafeAreaView>
@@ -160,54 +183,66 @@ function TaskCard({
     // raw
   }
   return (
-    <Pressable
+    <Card
       onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && { opacity: 0.92 }]}
+      elevation="raised"
+      padded={false}
+      style={styles.card}
     >
-      <HStack gap={12} align="center">
-        <VStack gap={6} flex={1}>
-          <HStack gap={8} align="center">
-            <Text variant="label-lg" tone="primary" numberOfLines={1}>
-              {task.title}
-            </Text>
-            {task.priority === "high" ? (
-              <StatusChip label="High" tone="danger" />
-            ) : null}
-          </HStack>
-          <Text variant="body-sm" tone="tertiary">
-            {TASK_TYPE_LABEL[task.type]}
-            {task.goat ? `  ·  ${task.goat.name || task.goat.goatId}` : ""}
-            {`  ·  ${due}`}
-          </Text>
-          <HStack gap={6} align="center">
-            <StatusChip
-              label={STATUS_LABEL[task.status]}
-              tone={STATUS_TONE[task.status]}
-            />
-            {isManager && task.assignedTo ? (
-              <Text variant="caption" tone="tertiary">
-                {task.assignedTo.name}
+      <HStack gap={0} align="stretch">
+        <View
+          style={[
+            styles.rail,
+            { backgroundColor: RAIL[task.status] || palette.ink[300] },
+          ]}
+        />
+        <View style={styles.cardBody}>
+          <HStack gap={12} align="center">
+            <VStack gap={6} flex={1}>
+              <HStack gap={8} align="center">
+                <Text variant="label-lg" tone="primary" numberOfLines={1}>
+                  {task.title}
+                </Text>
+                {task.priority === "high" ? (
+                  <StatusChip label="High" tone="danger" />
+                ) : null}
+              </HStack>
+              <Text variant="body-sm" tone="tertiary">
+                {TASK_TYPE_LABEL[task.type]}
+                {task.goat ? `  ·  ${task.goat.name || task.goat.goatId}` : ""}
+                {`  ·  ${due}`}
               </Text>
-            ) : null}
+              <HStack gap={6} align="center">
+                <StatusChip
+                  label={STATUS_LABEL[task.status]}
+                  tone={STATUS_TONE[task.status]}
+                />
+                {isManager && task.assignedTo ? (
+                  <Text variant="caption" tone="tertiary">
+                    {task.assignedTo.name}
+                  </Text>
+                ) : null}
+              </HStack>
+            </VStack>
+            <ChevronRight size={18} color={palette.text.tertiary} />
           </HStack>
-        </VStack>
-        <ChevronRight size={18} color={palette.text.tertiary} />
+        </View>
       </HStack>
-    </Pressable>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
   filters: {
-    flexDirection: "row",
-    flexWrap: "wrap",
     gap: 8,
     paddingHorizontal: 20,
+    paddingTop: 2,
+    paddingBottom: 2,
   },
   chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: radius.full,
     borderWidth: 1,
     borderColor: palette.border.default,
@@ -217,24 +252,29 @@ const styles = StyleSheet.create({
     backgroundColor: palette.ink[900],
     borderColor: palette.ink[900],
   },
-  card: {
-    backgroundColor: palette.surface.primary,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: palette.border.default,
-    padding: 16,
-    ...shadows.xs,
+  card: { overflow: "hidden" },
+  rail: { width: 4 },
+  cardBody: { flex: 1, padding: 16 },
+  emptyIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.full,
+    backgroundColor: palette.ink[50],
+    alignItems: "center",
+    justifyContent: "center",
   },
-  fab: {
+  fabWrap: {
     position: "absolute",
     right: 20,
     bottom: 28,
-    width: 56,
-    height: 56,
     borderRadius: radius.full,
-    backgroundColor: palette.ink[900],
+    ...elevation.floating,
+  },
+  fab: {
+    width: 58,
+    height: 58,
+    borderRadius: radius.full,
     alignItems: "center",
     justifyContent: "center",
-    ...shadows.lg,
   },
 });

@@ -6,15 +6,17 @@ import {
   Pressable,
   RefreshControl,
   TextInput,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import {
   ChevronLeft,
   Plus,
   Search,
   Boxes,
-  TriangleAlert,
+  ChevronRight,
 } from "lucide-react-native";
 import {
   useInventoryItems,
@@ -25,8 +27,14 @@ import {
   CATEGORY_LABEL,
   InventoryCategory,
 } from "@modules/inventory/types";
-import { palette, radius, shadows } from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip } from "@shared/ui";
+import {
+  palette,
+  radius,
+  shadows,
+  gradients,
+  elevation,
+} from "@shared/designSystem";
+import { Text, VStack, HStack, StatusChip, Card, StatTile } from "@shared/ui";
 
 const FILTERS: { key: "all" | InventoryCategory | "low"; label: string }[] = [
   { key: "all", label: "All" },
@@ -54,27 +62,43 @@ export default function InventoryListScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-        <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+        <View style={styles.header}>
+          <Pressable
+            style={styles.backBtn}
+            onPress={() => navigation.goBack()}
+            hitSlop={8}
+          >
+            <ChevronLeft
+              size={22}
+              color={palette.text.primary}
+              strokeWidth={2}
+            />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            Inventory
-          </Text>
-          <View style={{ width: 26 }} />
+          <VStack gap={3} flex={1}>
+            <Text variant="overline" tone="tertiary">
+              Stores
+            </Text>
+            <Text variant="h1" tone="primary">
+              Inventory
+            </Text>
+            <Text variant="body-sm" tone="tertiary">
+              {stats ? `${stats.items} items tracked` : "Stock on hand"}
+            </Text>
+          </VStack>
         </View>
 
         <View style={{ paddingHorizontal: 20 }}>
           <HStack gap={12}>
-            <Stat label="Items" value={String(stats?.items ?? "—")} />
-            <Stat
+            <StatTile label="Items" value={String(stats?.items ?? "—")} />
+            <StatTile
               label="Low stock"
               value={String(stats?.lowStock ?? "—")}
-              warn={!!stats?.lowStock}
+              tone={stats?.lowStock ? "clay" : "light"}
             />
-            <Stat
+            <StatTile
               label="Value"
               value={stats ? `₹${(stats.stockValue / 1000).toFixed(1)}k` : "—"}
+              tone="forest"
             />
           </HStack>
         </View>
@@ -91,7 +115,11 @@ export default function InventoryListScreen() {
           />
         </View>
 
-        <View style={styles.filters}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filters}
+        >
           {FILTERS.map((f) => {
             const active = filter === f.key;
             return (
@@ -113,7 +141,7 @@ export default function InventoryListScreen() {
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
 
         <FlatList
           data={items}
@@ -131,12 +159,10 @@ export default function InventoryListScreen() {
             />
           }
           ListEmptyComponent={
-            <VStack align="center" gap={8} style={{ marginTop: 50 }}>
-              <Boxes
-                size={40}
-                color={palette.text.disabled}
-                strokeWidth={1.5}
-              />
+            <VStack align="center" gap={10} style={{ marginTop: 60 }}>
+              <View style={styles.emptyIcon}>
+                <Boxes size={34} color={palette.ink[300]} strokeWidth={1.5} />
+              </View>
               <Text variant="body" tone="tertiary">
                 {isLoading ? "Loading..." : "No items."}
               </Text>
@@ -154,10 +180,17 @@ export default function InventoryListScreen() {
         />
 
         <Pressable
-          style={styles.fab}
+          style={styles.fabWrap}
           onPress={() => navigation.navigate("AddInventoryItem")}
         >
-          <Plus size={24} color={palette.text.inverse} strokeWidth={2.2} />
+          <LinearGradient
+            colors={gradients.clay}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.fab}
+          >
+            <Plus size={24} color={palette.text.inverse} strokeWidth={2.4} />
+          </LinearGradient>
         </Pressable>
       </SafeAreaView>
     </View>
@@ -172,10 +205,7 @@ function ItemRow({
   onPress: () => void;
 }) {
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && { opacity: 0.92 }]}
-    >
+    <Card onPress={onPress} elevation="raised" style={styles.card}>
       <HStack gap={12} align="center">
         <VStack gap={5} flex={1}>
           <HStack gap={8} align="center">
@@ -197,50 +227,30 @@ function ItemRow({
             {item.unit}
           </Text>
         </VStack>
+        <ChevronRight size={18} color={palette.text.tertiary} strokeWidth={2} />
       </HStack>
-    </Pressable>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  warn,
-}: {
-  label: string;
-  value: string;
-  warn?: boolean;
-}) {
-  return (
-    <View style={styles.stat}>
-      <HStack gap={4} align="center">
-        {warn ? <TriangleAlert size={14} color={palette.danger.text} /> : null}
-        <Text variant="h2" tone="primary">
-          {value}
-        </Text>
-      </HStack>
-      <Text variant="caption" tone="tertiary">
-        {label}
-      </Text>
-    </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  topbar: {
+  header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 12,
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingTop: 8,
+    paddingBottom: 12,
   },
-  stat: {
-    flex: 1,
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
     backgroundColor: palette.surface.primary,
-    borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.border.default,
-    padding: 14,
+    alignItems: "center",
+    justifyContent: "center",
     ...shadows.xs,
   },
   searchWrap: {
@@ -250,11 +260,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 16,
     paddingHorizontal: 14,
-    height: 46,
+    height: 48,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.border.default,
     backgroundColor: palette.surface.primary,
+    ...shadows.xs,
   },
   searchInput: {
     flex: 1,
@@ -263,15 +274,14 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   filters: {
-    flexDirection: "row",
-    flexWrap: "wrap",
     gap: 8,
     paddingHorizontal: 20,
-    paddingTop: 12,
+    paddingTop: 14,
+    paddingBottom: 2,
   },
   chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: radius.full,
     borderWidth: 1,
     borderColor: palette.border.default,
@@ -281,24 +291,27 @@ const styles = StyleSheet.create({
     backgroundColor: palette.ink[900],
     borderColor: palette.ink[900],
   },
-  card: {
-    backgroundColor: palette.surface.primary,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: palette.border.default,
-    padding: 16,
-    ...shadows.xs,
+  card: { padding: 16 },
+  emptyIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.full,
+    backgroundColor: palette.ink[50],
+    alignItems: "center",
+    justifyContent: "center",
   },
-  fab: {
+  fabWrap: {
     position: "absolute",
     right: 20,
     bottom: 28,
-    width: 56,
-    height: 56,
     borderRadius: radius.full,
-    backgroundColor: palette.ink[900],
+    ...elevation.floating,
+  },
+  fab: {
+    width: 58,
+    height: 58,
+    borderRadius: radius.full,
     alignItems: "center",
     justifyContent: "center",
-    ...shadows.lg,
   },
 });

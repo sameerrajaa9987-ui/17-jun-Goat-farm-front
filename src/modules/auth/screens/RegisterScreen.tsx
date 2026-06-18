@@ -18,6 +18,7 @@ import {
   HStack,
   Button,
   TextField,
+  Card,
   useBottomPadding,
 } from "@shared/ui";
 
@@ -52,7 +53,7 @@ export default function RegisterScreen({ navigation }: Props) {
     "Could not create account. Please try again.";
 
   return (
-    <View style={{ flex: 1, backgroundColor: palette.surface.primary }}>
+    <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -61,18 +62,21 @@ export default function RegisterScreen({ navigation }: Props) {
           <ScrollView
             contentContainerStyle={{
               flexGrow: 1,
-              paddingHorizontal: 24,
-              paddingTop: 40,
+              paddingHorizontal: 20,
+              paddingTop: 32,
               paddingBottom: bottomPadding,
             }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            <VStack gap={10}>
-              <Text variant="display-sm" tone="primary">
+            <VStack gap={4} style={{ paddingHorizontal: 4 }}>
+              <Text variant="overline" tone="tertiary">
+                {t("common.appName")}
+              </Text>
+              <Text variant="h1" tone="primary">
                 {t("auth.register")}
               </Text>
-              <Text variant="body-lg" tone="secondary">
+              <Text variant="body-sm" tone="tertiary">
                 {t("auth.registerSubtitle")}
               </Text>
             </VStack>
@@ -85,72 +89,74 @@ export default function RegisterScreen({ navigation }: Props) {
               </View>
             )}
 
-            <VStack gap={16} style={{ marginTop: 28 }}>
-              <TextField
-                label={t("auth.firstName")}
-                leading={
-                  <UserRound
-                    size={18}
-                    color={palette.text.tertiary}
-                    strokeWidth={1.6}
-                  />
-                }
-                placeholder="Ramesh"
-                value={firstName}
-                onChangeText={setFirstName}
-              />
-              <TextField
-                label={t("auth.lastName")}
-                placeholder="Kumar"
-                value={lastName}
-                onChangeText={setLastName}
-              />
-              <TextField
-                label={t("auth.email")}
-                leading={
-                  <Mail
-                    size={18}
-                    color={palette.text.tertiary}
-                    strokeWidth={1.6}
-                  />
-                }
-                placeholder="you@example.com"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={setEmail}
-              />
-              <TextField
-                label={t("auth.phone")}
-                leading={
-                  <Phone
-                    size={18}
-                    color={palette.text.tertiary}
-                    strokeWidth={1.6}
-                  />
-                }
-                placeholder="+91..."
-                keyboardType="phone-pad"
-                value={phone}
-                onChangeText={setPhone}
-              />
-              <TextField
-                label={t("auth.password")}
-                leading={
-                  <Lock
-                    size={18}
-                    color={palette.text.tertiary}
-                    strokeWidth={1.6}
-                  />
-                }
-                placeholder="At least 6 characters"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-              />
-            </VStack>
+            <Card elevation="raised" style={{ marginTop: 24 }}>
+              <VStack gap={16}>
+                <TextField
+                  label={t("auth.firstName")}
+                  leading={
+                    <UserRound
+                      size={18}
+                      color={palette.text.tertiary}
+                      strokeWidth={1.6}
+                    />
+                  }
+                  placeholder="Ramesh"
+                  value={firstName}
+                  onChangeText={setFirstName}
+                />
+                <TextField
+                  label={t("auth.lastName")}
+                  placeholder="Kumar"
+                  value={lastName}
+                  onChangeText={setLastName}
+                />
+                <TextField
+                  label={t("auth.email")}
+                  leading={
+                    <Mail
+                      size={18}
+                      color={palette.text.tertiary}
+                      strokeWidth={1.6}
+                    />
+                  }
+                  placeholder="you@example.com"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  value={email}
+                  onChangeText={setEmail}
+                />
+                <TextField
+                  label={t("auth.phone")}
+                  leading={
+                    <Phone
+                      size={18}
+                      color={palette.text.tertiary}
+                      strokeWidth={1.6}
+                    />
+                  }
+                  placeholder="+91..."
+                  keyboardType="phone-pad"
+                  value={phone}
+                  onChangeText={setPhone}
+                />
+                <TextField
+                  label={t("auth.password")}
+                  leading={
+                    <Lock
+                      size={18}
+                      color={palette.text.tertiary}
+                      strokeWidth={1.6}
+                    />
+                  }
+                  placeholder="At least 6 characters"
+                  secureTextEntry
+                  value={password}
+                  onChangeText={setPassword}
+                />
+              </VStack>
+            </Card>
 
-            <View style={{ marginTop: 28 }}>
+            <View style={{ marginTop: 24 }}>
               <Button
                 label={t("auth.createAccount")}
                 onPress={submit}

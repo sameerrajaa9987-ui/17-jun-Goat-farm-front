@@ -25,8 +25,8 @@ import {
 import { HealthRecordRow } from "@modules/health/components/HealthRecordRow";
 import { mediaUrl } from "@modules/goat/screens/GoatListScreen";
 import { useAuthStore } from "@shared/store/useAuthStore";
-import { palette, radius, shadows } from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip } from "@shared/ui";
+import { palette, radius, elevation } from "@shared/designSystem";
+import { Text, VStack, HStack, StatusChip, Card } from "@shared/ui";
 
 const TABS = [
   { key: "alerts", label: "Alerts" },
@@ -146,12 +146,14 @@ export default function HealthScreen() {
                     Sick goats
                   </Text>
                   {alerts.data!.sick.map((g) => (
-                    <Pressable
+                    <Card
                       key={g.id}
-                      style={styles.sickRow}
                       onPress={() =>
                         navigation.navigate("GoatHealth", { id: g.id })
                       }
+                      elevation="raised"
+                      padded={false}
+                      style={styles.sickRow}
                     >
                       {g.photo ? (
                         <Image
@@ -177,7 +179,7 @@ export default function HealthScreen() {
                           }
                         />
                       </VStack>
-                    </Pressable>
+                    </Card>
                   ))}
                 </VStack>
               )}
@@ -341,20 +343,16 @@ const styles = StyleSheet.create({
   alertStat: {
     flex: 1,
     alignItems: "center",
-    paddingVertical: 16,
-    borderRadius: radius.lg,
+    paddingVertical: 18,
+    borderRadius: radius.xl,
     borderWidth: 1,
-    ...shadows.xs,
+    ...elevation.raised,
   },
   sickRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
     padding: 12,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: palette.border.default,
-    backgroundColor: palette.surface.primary,
   },
   sickPhoto: { width: 48, height: 48, borderRadius: radius.md },
   completeBtn: {

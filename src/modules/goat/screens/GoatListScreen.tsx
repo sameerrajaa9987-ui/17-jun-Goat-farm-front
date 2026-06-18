@@ -7,16 +7,30 @@ import {
   RefreshControl,
   Image,
   TextInput,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
-import { Plus, Search, QrCode, PawPrint } from "lucide-react-native";
+import {
+  Plus,
+  Search,
+  QrCode,
+  PawPrint,
+  ChevronRight,
+} from "lucide-react-native";
 import { useGoats } from "@modules/goat/hooks/useGoats";
 import { GoatListItem } from "@modules/goat/types";
 import { useAuthStore } from "@shared/store/useAuthStore";
 import { environment } from "@config/env";
-import { palette, radius, shadows } from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip } from "@shared/ui";
+import {
+  palette,
+  radius,
+  shadows,
+  gradients,
+  elevation,
+} from "@shared/designSystem";
+import { Text, VStack, HStack, StatusChip, Card } from "@shared/ui";
 
 const FILTERS = [
   { key: "all", label: "All" },
@@ -58,7 +72,10 @@ export default function GoatListScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.header}>
-          <VStack gap={2} flex={1}>
+          <VStack gap={3} flex={1}>
+            <Text variant="overline" tone="tertiary">
+              Herd
+            </Text>
             <Text variant="h1" tone="primary">
               Goats
             </Text>
@@ -69,6 +86,7 @@ export default function GoatListScreen() {
           <Pressable
             style={styles.scanBtn}
             onPress={() => navigation.navigate("ScanGoat")}
+            hitSlop={8}
           >
             <QrCode size={20} color={palette.ink[800]} strokeWidth={1.8} />
           </Pressable>
@@ -88,7 +106,11 @@ export default function GoatListScreen() {
         </View>
 
         {/* Filters */}
-        <View style={styles.filters}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filters}
+        >
           {FILTERS.map((f) => {
             const active = filter === f.key;
             return (
@@ -110,15 +132,15 @@ export default function GoatListScreen() {
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
 
         <FlatList
           data={goats}
           keyExtractor={(g) => g.id}
           contentContainerStyle={{
-            padding: 20,
-            paddingTop: 8,
-            paddingBottom: 100,
+            padding: 16,
+            paddingTop: 12,
+            paddingBottom: 110,
           }}
           refreshControl={
             <RefreshControl
@@ -128,12 +150,14 @@ export default function GoatListScreen() {
             />
           }
           ListEmptyComponent={
-            <VStack align="center" gap={8} style={{ marginTop: 60 }}>
-              <PawPrint
-                size={40}
-                color={palette.text.disabled}
-                strokeWidth={1.5}
-              />
+            <VStack align="center" gap={10} style={{ marginTop: 70 }}>
+              <View style={styles.emptyIcon}>
+                <PawPrint
+                  size={34}
+                  color={palette.ink[300]}
+                  strokeWidth={1.5}
+                />
+              </View>
               <Text variant="body" tone="tertiary">
                 {isLoading ? "Loading..." : "No goats yet."}
               </Text>
@@ -152,10 +176,17 @@ export default function GoatListScreen() {
 
         {canManage && (
           <Pressable
-            style={styles.fab}
+            style={styles.fabWrap}
             onPress={() => navigation.navigate("RegisterGoat")}
           >
-            <Plus size={24} color={palette.text.inverse} strokeWidth={2.2} />
+            <LinearGradient
+              colors={gradients.clay}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.fab}
+            >
+              <Plus size={24} color={palette.text.inverse} strokeWidth={2.4} />
+            </LinearGradient>
           </Pressable>
         )}
       </SafeAreaView>
@@ -171,9 +202,11 @@ function GoatCard({
   onPress: () => void;
 }) {
   return (
-    <Pressable
+    <Card
       onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && { opacity: 0.92 }]}
+      elevation="raised"
+      padded={false}
+      style={styles.card}
     >
       <HStack gap={12} align="center">
         {goat.photo ? (
@@ -215,8 +248,9 @@ function GoatCard({
             ) : null}
           </HStack>
         </VStack>
+        <ChevronRight size={18} color={palette.text.tertiary} strokeWidth={2} />
       </HStack>
-    </Pressable>
+    </Card>
   );
 }
 
@@ -229,14 +263,15 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   scanBtn: {
-    width: 44,
-    height: 44,
+    width: 46,
+    height: 46,
     borderRadius: radius.full,
     backgroundColor: palette.surface.primary,
     borderWidth: 1,
     borderColor: palette.border.default,
     alignItems: "center",
     justifyContent: "center",
+    ...shadows.xs,
   },
   searchWrap: {
     flexDirection: "row",
@@ -244,11 +279,12 @@ const styles = StyleSheet.create({
     gap: 8,
     marginHorizontal: 20,
     paddingHorizontal: 14,
-    height: 46,
+    height: 48,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.border.default,
     backgroundColor: palette.surface.primary,
+    ...shadows.xs,
   },
   searchInput: {
     flex: 1,
@@ -257,15 +293,14 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   filters: {
-    flexDirection: "row",
-    flexWrap: "wrap",
     gap: 8,
     paddingHorizontal: 20,
-    paddingTop: 12,
+    paddingTop: 14,
+    paddingBottom: 2,
   },
   chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: radius.full,
     borderWidth: 1,
     borderColor: palette.border.default,
@@ -275,31 +310,34 @@ const styles = StyleSheet.create({
     backgroundColor: palette.ink[900],
     borderColor: palette.ink[900],
   },
-  card: {
-    backgroundColor: palette.surface.primary,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: palette.border.default,
-    padding: 14,
-    ...shadows.xs,
-  },
+  card: { padding: 14 },
   photo: {
-    width: 56,
-    height: 56,
+    width: 58,
+    height: 58,
     borderRadius: radius.lg,
     backgroundColor: palette.ink[50],
   },
   photoPlaceholder: { alignItems: "center", justifyContent: "center" },
-  fab: {
+  emptyIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.full,
+    backgroundColor: palette.ink[50],
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  fabWrap: {
     position: "absolute",
     right: 20,
     bottom: 28,
-    width: 56,
-    height: 56,
     borderRadius: radius.full,
-    backgroundColor: palette.ink[900],
+    ...elevation.floating,
+  },
+  fab: {
+    width: 58,
+    height: 58,
+    borderRadius: radius.full,
     alignItems: "center",
     justifyContent: "center",
-    ...shadows.lg,
   },
 });

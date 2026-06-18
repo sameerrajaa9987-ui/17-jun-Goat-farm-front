@@ -17,13 +17,14 @@ import { useRegisterGoat } from "@modules/goat/hooks/useGoats";
 import { uploadImage } from "@modules/goat/api/goatApi";
 import { mediaUrl } from "@modules/goat/screens/GoatListScreen";
 import { useUsers } from "@modules/team/hooks/useTeam";
-import { palette, radius } from "@shared/designSystem";
+import { palette, radius, shadows } from "@shared/designSystem";
 import {
   Text,
   VStack,
   HStack,
   Button,
   TextField,
+  Card,
   useBottomPadding,
 } from "@shared/ui";
 
@@ -97,16 +98,24 @@ export default function RegisterGoatScreen() {
   const canSubmit = ownership === "farm" || !!clientUserId;
 
   return (
-    <View style={{ flex: 1, backgroundColor: palette.surface.primary }}>
+    <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+          <Pressable
+            onPress={() => navigation.goBack()}
+            hitSlop={10}
+            style={styles.backBtn}
+          >
+            <ChevronLeft size={24} color={palette.text.primary} />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            Register goat
-          </Text>
-          <View style={{ width: 26 }} />
+          <VStack gap={3} flex={1} style={{ marginLeft: 12 }}>
+            <Text variant="overline" tone="tertiary">
+              Herd
+            </Text>
+            <Text variant="h3" tone="primary">
+              Register goat
+            </Text>
+          </VStack>
         </View>
 
         <KeyboardAvoidingView
@@ -149,139 +158,147 @@ export default function RegisterGoatScreen() {
               )}
             </Pressable>
 
-            {/* Gender */}
-            <Text variant="label" tone="secondary" style={{ marginBottom: 8 }}>
-              Gender
-            </Text>
-            <HStack gap={10}>
-              {(["female", "male"] as const).map((g) => (
-                <Toggle
-                  key={g}
-                  active={gender === g}
-                  label={g === "male" ? "Male ♂" : "Female ♀"}
-                  onPress={() => setGender(g)}
-                />
-              ))}
-            </HStack>
+            {/* Basics */}
+            <Card elevation="raised">
+              <Text variant="h4" tone="primary" style={{ marginBottom: 12 }}>
+                Basics
+              </Text>
+              <Text
+                variant="label"
+                tone="secondary"
+                style={{ marginBottom: 8 }}
+              >
+                Gender
+              </Text>
+              <HStack gap={10}>
+                {(["female", "male"] as const).map((g) => (
+                  <Toggle
+                    key={g}
+                    active={gender === g}
+                    label={g === "male" ? "Male ♂" : "Female ♀"}
+                    onPress={() => setGender(g)}
+                  />
+                ))}
+              </HStack>
 
-            <VStack gap={16} style={{ marginTop: 20 }}>
-              <TextField
-                label="Name"
-                placeholder="e.g. Bijli"
-                value={name}
-                onChangeText={setName}
-              />
-              <HStack gap={12}>
-                <View style={{ flex: 1 }}>
-                  <TextField
-                    label="Ear tag no."
-                    placeholder="ET-101"
-                    value={earTagNo}
-                    onChangeText={setEarTag}
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <TextField
-                    label="Breed"
-                    placeholder="Sirohi"
-                    value={breed}
-                    onChangeText={setBreed}
-                  />
-                </View>
-              </HStack>
-              <HStack gap={12}>
-                <View style={{ flex: 1 }}>
-                  <TextField
-                    label="Colour"
-                    placeholder="Brown"
-                    value={color}
-                    onChangeText={setColor}
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <TextField
-                    label="Weight (kg)"
-                    placeholder="22"
-                    keyboardType="decimal-pad"
-                    value={weightKg}
-                    onChangeText={setWeight}
-                  />
-                </View>
-              </HStack>
-              <TextField
-                label="Purchase price (₹)"
-                placeholder="8000"
-                keyboardType="number-pad"
-                value={purchasePrice}
-                onChangeText={setPurchasePrice}
-              />
-            </VStack>
+              <VStack gap={16} style={{ marginTop: 20 }}>
+                <TextField
+                  label="Name"
+                  placeholder="e.g. Bijli"
+                  value={name}
+                  onChangeText={setName}
+                />
+                <HStack gap={12}>
+                  <View style={{ flex: 1 }}>
+                    <TextField
+                      label="Ear tag no."
+                      placeholder="ET-101"
+                      value={earTagNo}
+                      onChangeText={setEarTag}
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <TextField
+                      label="Breed"
+                      placeholder="Sirohi"
+                      value={breed}
+                      onChangeText={setBreed}
+                    />
+                  </View>
+                </HStack>
+                <HStack gap={12}>
+                  <View style={{ flex: 1 }}>
+                    <TextField
+                      label="Colour"
+                      placeholder="Brown"
+                      value={color}
+                      onChangeText={setColor}
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <TextField
+                      label="Weight (kg)"
+                      placeholder="22"
+                      keyboardType="decimal-pad"
+                      value={weightKg}
+                      onChangeText={setWeight}
+                    />
+                  </View>
+                </HStack>
+                <TextField
+                  label="Purchase price (₹)"
+                  placeholder="8000"
+                  keyboardType="number-pad"
+                  value={purchasePrice}
+                  onChangeText={setPurchasePrice}
+                />
+              </VStack>
+            </Card>
 
             {/* Ownership */}
-            <Text
-              variant="label"
-              tone="secondary"
-              style={{ marginTop: 20, marginBottom: 8 }}
-            >
-              Ownership
-            </Text>
-            <HStack gap={10}>
-              <Toggle
-                active={ownership === "farm"}
-                label="Farm-owned"
-                onPress={() => setOwnership("farm")}
-              />
-              <Toggle
-                active={ownership === "client"}
-                label="Ad Pali client"
-                onPress={() => setOwnership("client")}
-              />
-            </HStack>
+            <Card elevation="raised" style={{ marginTop: 16 }}>
+              <Text variant="h4" tone="primary" style={{ marginBottom: 12 }}>
+                Ownership
+              </Text>
+              <HStack gap={10}>
+                <Toggle
+                  active={ownership === "farm"}
+                  label="Farm-owned"
+                  onPress={() => setOwnership("farm")}
+                />
+                <Toggle
+                  active={ownership === "client"}
+                  label="Ad Pali client"
+                  onPress={() => setOwnership("client")}
+                />
+              </HStack>
 
-            {ownership === "client" && (
-              <VStack gap={8} style={{ marginTop: 14 }}>
-                <Text variant="label" tone="secondary">
-                  Select client
-                </Text>
-                {clients.length === 0 ? (
-                  <Text variant="body-sm" tone="tertiary">
-                    No Ad Pali clients yet. Add one from Team first.
+              {ownership === "client" && (
+                <VStack gap={8} style={{ marginTop: 14 }}>
+                  <Text variant="label" tone="secondary">
+                    Select client
                   </Text>
-                ) : (
-                  clients.map((c) => {
-                    const active = clientUserId === c.id;
-                    return (
-                      <Pressable
-                        key={c.id}
-                        onPress={() => setClientUserId(c.id)}
-                        style={[
-                          styles.clientRow,
-                          active && styles.clientRowActive,
-                        ]}
-                      >
-                        <VStack gap={2} flex={1}>
-                          <Text variant="label-lg" tone="primary">
-                            {c.fullName || c.firstName}
-                          </Text>
-                          <Text variant="caption" tone="tertiary">
-                            {c.email}
-                          </Text>
-                        </VStack>
-                        {active && (
-                          <Check
-                            size={20}
-                            color={palette.ink[800]}
-                            strokeWidth={2.2}
-                          />
-                        )}
-                      </Pressable>
-                    );
-                  })
-                )}
-              </VStack>
-            )}
+                  {clients.length === 0 ? (
+                    <Text variant="body-sm" tone="tertiary">
+                      No Ad Pali clients yet. Add one from Team first.
+                    </Text>
+                  ) : (
+                    clients.map((c) => {
+                      const active = clientUserId === c.id;
+                      return (
+                        <Pressable
+                          key={c.id}
+                          onPress={() => setClientUserId(c.id)}
+                          style={[
+                            styles.clientRow,
+                            active && styles.clientRowActive,
+                          ]}
+                        >
+                          <VStack gap={2} flex={1}>
+                            <Text variant="label-lg" tone="primary">
+                              {c.fullName || c.firstName}
+                            </Text>
+                            <Text variant="caption" tone="tertiary">
+                              {c.email}
+                            </Text>
+                          </VStack>
+                          {active && (
+                            <Check
+                              size={20}
+                              color={palette.ink[800]}
+                              strokeWidth={2.2}
+                            />
+                          )}
+                        </Pressable>
+                      );
+                    })
+                  )}
+                </VStack>
+              )}
+            </Card>
 
-            <View style={{ marginTop: 20 }}>
+            {/* Notes */}
+            <Card elevation="raised" style={{ marginTop: 16 }}>
               <TextField
                 label="Notes"
                 placeholder="Optional"
@@ -289,7 +306,7 @@ export default function RegisterGoatScreen() {
                 onChangeText={setNotes}
                 multiline
               />
-            </View>
+            </Card>
 
             <Button
               label="Register goat"
@@ -336,9 +353,19 @@ const styles = StyleSheet.create({
   topbar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 12,
+  },
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.md,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
   },
   error: {
     marginBottom: 16,
@@ -356,7 +383,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: palette.border.strong,
     borderStyle: "dashed",
-    backgroundColor: palette.surface.secondary,
+    backgroundColor: palette.surface.primary,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 24,

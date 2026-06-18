@@ -13,8 +13,15 @@ import { ChevronLeft } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { useCreateUser } from "@modules/team/hooks/useTeam";
 import { useAuthStore, Role } from "@shared/store/useAuthStore";
-import { palette, radius } from "@shared/designSystem";
-import { Text, VStack, Button, TextField, useBottomPadding } from "@shared/ui";
+import { palette, radius, shadows } from "@shared/designSystem";
+import {
+  Text,
+  VStack,
+  Button,
+  TextField,
+  Card,
+  useBottomPadding,
+} from "@shared/ui";
 
 type ApiErr = { response?: { data?: { error?: { message?: string } } } };
 
@@ -58,16 +65,31 @@ export default function AddUserScreen() {
     "Could not create user.";
 
   return (
-    <View style={{ flex: 1, backgroundColor: palette.surface.primary }}>
+    <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-        <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+        <View style={styles.header}>
+          <Pressable
+            onPress={() => navigation.goBack()}
+            hitSlop={8}
+            style={styles.backBtn}
+          >
+            <ChevronLeft
+              size={22}
+              color={palette.text.primary}
+              strokeWidth={2}
+            />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            Add team member
-          </Text>
-          <View style={{ width: 26 }} />
+          <VStack gap={3} flex={1}>
+            <Text variant="overline" tone="tertiary">
+              People
+            </Text>
+            <Text variant="h1" tone="primary">
+              Add team member
+            </Text>
+            <Text variant="body-sm" tone="tertiary">
+              Invite someone to the farm
+            </Text>
+          </VStack>
         </View>
 
         <KeyboardAvoidingView
@@ -76,8 +98,8 @@ export default function AddUserScreen() {
         >
           <ScrollView
             contentContainerStyle={{
-              paddingHorizontal: 24,
-              paddingTop: 12,
+              paddingHorizontal: 20,
+              paddingTop: 8,
               paddingBottom: bottomPadding,
             }}
             keyboardShouldPersistTaps="handled"
@@ -90,69 +112,77 @@ export default function AddUserScreen() {
               </View>
             )}
 
-            <Text variant="label" tone="secondary" style={{ marginBottom: 8 }}>
-              Role
-            </Text>
-            <View style={styles.roleRow}>
-              {ROLE_OPTIONS.map((r) => {
-                const active = role === r;
-                return (
-                  <Pressable
-                    key={r}
-                    onPress={() => setRole(r)}
-                    style={[styles.roleChip, active && styles.roleChipActive]}
-                  >
-                    <Text
-                      variant="label"
-                      style={{
-                        color: active
-                          ? palette.text.inverse
-                          : palette.text.secondary,
-                      }}
+            <Card elevation="raised">
+              <Text
+                variant="label"
+                tone="secondary"
+                style={{ marginBottom: 8 }}
+              >
+                Role
+              </Text>
+              <View style={styles.roleRow}>
+                {ROLE_OPTIONS.map((r) => {
+                  const active = role === r;
+                  return (
+                    <Pressable
+                      key={r}
+                      onPress={() => setRole(r)}
+                      style={[styles.roleChip, active && styles.roleChipActive]}
                     >
-                      {t(`roles.${r}`)}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
+                      <Text
+                        variant="label"
+                        style={{
+                          color: active
+                            ? palette.text.inverse
+                            : palette.text.secondary,
+                        }}
+                      >
+                        {t(`roles.${r}`)}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </Card>
 
-            <VStack gap={16} style={{ marginTop: 20 }}>
-              <TextField
-                label={t("auth.firstName")}
-                placeholder="Ramesh"
-                value={firstName}
-                onChangeText={setFirstName}
-              />
-              <TextField
-                label={t("auth.lastName")}
-                placeholder="Kumar"
-                value={lastName}
-                onChangeText={setLastName}
-              />
-              <TextField
-                label={t("auth.email")}
-                placeholder="member@goatfarm.app"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={setEmail}
-              />
-              <TextField
-                label={t("auth.phone")}
-                placeholder="+91..."
-                keyboardType="phone-pad"
-                value={phone}
-                onChangeText={setPhone}
-              />
-              <TextField
-                label="Temporary password"
-                placeholder="At least 6 characters"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-              />
-            </VStack>
+            <Card elevation="raised" style={{ marginTop: 16 }}>
+              <VStack gap={16}>
+                <TextField
+                  label={t("auth.firstName")}
+                  placeholder="Ramesh"
+                  value={firstName}
+                  onChangeText={setFirstName}
+                />
+                <TextField
+                  label={t("auth.lastName")}
+                  placeholder="Kumar"
+                  value={lastName}
+                  onChangeText={setLastName}
+                />
+                <TextField
+                  label={t("auth.email")}
+                  placeholder="member@goatfarm.app"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  value={email}
+                  onChangeText={setEmail}
+                />
+                <TextField
+                  label={t("auth.phone")}
+                  placeholder="+91..."
+                  keyboardType="phone-pad"
+                  value={phone}
+                  onChangeText={setPhone}
+                />
+                <TextField
+                  label="Temporary password"
+                  placeholder="At least 6 characters"
+                  secureTextEntry
+                  value={password}
+                  onChangeText={setPassword}
+                />
+              </VStack>
+            </Card>
 
             <Button
               label="Create account"
@@ -169,12 +199,24 @@ export default function AddUserScreen() {
 }
 
 const styles = StyleSheet.create({
-  topbar: {
+  header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 12,
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingTop: 8,
+    paddingBottom: 16,
+  },
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
   },
   error: {
     marginBottom: 16,

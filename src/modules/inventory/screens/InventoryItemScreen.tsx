@@ -27,7 +27,7 @@ import {
   CATEGORY_LABEL,
   StockMovement,
 } from "@modules/inventory/types";
-import { palette, radius } from "@shared/designSystem";
+import { palette, radius, shadows } from "@shared/designSystem";
 import {
   Text,
   VStack,
@@ -57,21 +57,33 @@ export default function InventoryItemScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-        <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+        <View style={styles.header}>
+          <Pressable
+            style={styles.backBtn}
+            onPress={() => navigation.goBack()}
+            hitSlop={8}
+          >
+            <ChevronLeft
+              size={22}
+              color={palette.text.primary}
+              strokeWidth={2}
+            />
           </Pressable>
-          <Text variant="h3" tone="primary" numberOfLines={1}>
-            {item.name}
-          </Text>
-          <View style={{ width: 26 }} />
+          <VStack gap={3} flex={1}>
+            <Text variant="overline" tone="tertiary">
+              {CATEGORY_LABEL[item.category]}
+            </Text>
+            <Text variant="h1" tone="primary" numberOfLines={1}>
+              {item.name}
+            </Text>
+          </VStack>
         </View>
 
         <ScrollView
           contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
           showsVerticalScrollIndicator={false}
         >
-          <Card>
+          <Card elevation="raised">
             <HStack justify="space-between" align="center">
               <VStack gap={4}>
                 <Text variant="overline" tone="tertiary">
@@ -273,7 +285,7 @@ function MovementRow({ m, unit }: { m: StockMovement; unit: string }) {
     /* raw */
   }
   return (
-    <View style={styles.moveRow}>
+    <Card elevation="base" style={styles.moveRow}>
       <VStack gap={3} flex={1}>
         <Text variant="label" tone="primary">
           {m.type === "adjust"
@@ -294,7 +306,7 @@ function MovementRow({ m, unit }: { m: StockMovement; unit: string }) {
         {positive ? "+" : ""}
         {m.quantity}
       </Text>
-    </View>
+    </Card>
   );
 }
 
@@ -318,12 +330,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: palette.surface.secondary,
   },
-  topbar: {
+  header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 12,
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingTop: 8,
+    paddingBottom: 12,
+  },
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
   },
   divider: {
     height: 1,
@@ -333,10 +357,6 @@ const styles = StyleSheet.create({
   moveRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: palette.surface.primary,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: palette.border.default,
     padding: 14,
   },
   sheetBackdrop: {

@@ -14,6 +14,9 @@ import {
   RefreshCcw,
   ChevronRight,
   Package as PackageIcon,
+  Wallet,
+  TrendingUp,
+  AlarmClock,
 } from "lucide-react-native";
 import { format } from "date-fns";
 import {
@@ -23,7 +26,7 @@ import {
 } from "@modules/billing/hooks/useBilling";
 import { Invoice, InvoiceStatus, INVOICE_TONE } from "@modules/billing/types";
 import { palette, radius, shadows } from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip } from "@shared/ui";
+import { Text, VStack, HStack, StatusChip, Card, StatTile } from "@shared/ui";
 
 const FILTERS: { key: "all" | InvoiceStatus; label: string }[] = [
   { key: "all", label: "All" },
@@ -55,39 +58,52 @@ export default function InvoicesScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+          <Pressable
+            onPress={() => navigation.goBack()}
+            hitSlop={10}
+            style={styles.backBtn}
+          >
+            <ChevronLeft size={24} color={palette.text.primary} />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            Invoices
-          </Text>
+          <VStack gap={2} flex={1} style={{ marginLeft: 12 }}>
+            <Text variant="overline" tone="tertiary">
+              Ad Pali billing
+            </Text>
+            <Text variant="h1" tone="primary">
+              Invoices
+            </Text>
+          </VStack>
           <Pressable
             onPress={() => navigation.navigate("Packages")}
             hitSlop={10}
+            style={styles.iconBtn}
           >
-            <PackageIcon size={22} color={palette.ink[800]} />
+            <PackageIcon size={20} color={palette.ink[800]} />
           </Pressable>
         </View>
 
         <View style={{ paddingHorizontal: 20 }}>
           <HStack gap={12}>
-            <Stat
+            <StatTile
               label="Outstanding"
               value={stats ? `₹${(stats.outstanding / 1000).toFixed(1)}k` : "—"}
-              warn={!!stats?.outstanding}
+              icon={Wallet}
+              tone={stats?.outstanding ? "clay" : "light"}
             />
-            <Stat
+            <StatTile
               label="Collected (mo)"
               value={
                 stats
                   ? `₹${(stats.collectedThisMonth / 1000).toFixed(1)}k`
                   : "—"
               }
+              icon={TrendingUp}
             />
-            <Stat
+            <StatTile
               label="Overdue"
               value={String(stats?.overdueCount ?? "—")}
-              warn={!!stats?.overdueCount}
+              icon={AlarmClock}
+              tone={stats?.overdueCount ? "forest" : "light"}
             />
           </HStack>
         </View>
@@ -173,10 +189,7 @@ export default function InvoicesScreen() {
 
 function Row({ invoice, onPress }: { invoice: Invoice; onPress: () => void }) {
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && { opacity: 0.92 }]}
-    >
+    <Card onPress={onPress} elevation="raised">
       <HStack gap={12} align="center">
         <VStack gap={5} flex={1}>
           <HStack gap={8} align="center">
@@ -197,7 +210,7 @@ function Row({ invoice, onPress }: { invoice: Invoice; onPress: () => void }) {
         </Text>
         <ChevronRight size={18} color={palette.text.tertiary} />
       </HStack>
-    </Pressable>
+    </Card>
   );
 }
 
@@ -209,42 +222,34 @@ function fmt(d: string) {
   }
 }
 
-function Stat({
-  label,
-  value,
-  warn,
-}: {
-  label: string;
-  value: string;
-  warn?: boolean;
-}) {
-  return (
-    <View style={[styles.stat, warn && { borderColor: palette.danger.border }]}>
-      <Text variant="h2" tone="primary">
-        {value}
-      </Text>
-      <Text variant="caption" tone="tertiary">
-        {label}
-      </Text>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   topbar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingTop: 8,
+    paddingBottom: 12,
   },
-  stat: {
-    flex: 1,
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
     backgroundColor: palette.surface.primary,
-    borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.border.default,
-    padding: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
+  },
+  iconBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
     ...shadows.xs,
   },
   generateBtn: {
@@ -276,13 +281,5 @@ const styles = StyleSheet.create({
   chipActive: {
     backgroundColor: palette.ink[900],
     borderColor: palette.ink[900],
-  },
-  card: {
-    backgroundColor: palette.surface.primary,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: palette.border.default,
-    padding: 16,
-    ...shadows.xs,
   },
 });

@@ -35,6 +35,7 @@ import {
   StatusChip,
   Button,
   TextField,
+  GradientHero,
 } from "@shared/ui";
 
 const HEALTH_TONE: Record<string, "success" | "warning" | "danger" | "info"> = {
@@ -86,14 +87,27 @@ export default function GoatProfileScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+          <Pressable
+            onPress={() => navigation.goBack()}
+            hitSlop={10}
+            style={styles.backBtn}
+          >
+            <ChevronLeft size={24} color={palette.text.primary} />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            Digital Passport
-          </Text>
-          <Pressable onPress={() => setShowQr(true)} hitSlop={10}>
-            <QrCode size={24} color={palette.ink[800]} />
+          <VStack gap={3} flex={1} style={{ marginLeft: 12 }}>
+            <Text variant="overline" tone="tertiary">
+              Herd
+            </Text>
+            <Text variant="h3" tone="primary">
+              Digital Passport
+            </Text>
+          </VStack>
+          <Pressable
+            onPress={() => setShowQr(true)}
+            hitSlop={10}
+            style={styles.backBtn}
+          >
+            <QrCode size={22} color={palette.ink[800]} />
           </Pressable>
         </View>
 
@@ -102,7 +116,7 @@ export default function GoatProfileScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* Hero */}
-          <Card>
+          <GradientHero variant="forest">
             <HStack gap={16} align="center">
               {goat.photo ? (
                 <Image
@@ -113,16 +127,19 @@ export default function GoatProfileScreen() {
                 <View style={[styles.hero, styles.heroPlaceholder]}>
                   <PawPrint
                     size={34}
-                    color={palette.ink[400]}
+                    color={palette.ink[200]}
                     strokeWidth={1.6}
                   />
                 </View>
               )}
               <VStack gap={6} flex={1}>
-                <Text variant="h2" tone="primary">
+                <Text variant="h2" tone="inverse">
                   {goat.name || goat.goatId}
                 </Text>
-                <Text variant="body-sm" tone="tertiary">
+                <Text
+                  variant="body-sm"
+                  style={{ color: "rgba(255,255,255,0.74)" }}
+                >
                   {goat.goatId}
                   {goat.earTagNo ? `  ·  Tag ${goat.earTagNo}` : ""}
                 </Text>
@@ -142,7 +159,7 @@ export default function GoatProfileScreen() {
                 </HStack>
               </VStack>
             </HStack>
-          </Card>
+          </GradientHero>
 
           {/* Weight */}
           <Card style={{ marginTop: 16 }}>
@@ -185,6 +202,7 @@ export default function GoatProfileScreen() {
           {/* Health & vaccinations */}
           <Card
             style={{ marginTop: 16 }}
+            elevation="raised"
             onPress={() => navigation.navigate("GoatHealth", { id })}
           >
             <HStack gap={12} align="center">
@@ -210,6 +228,7 @@ export default function GoatProfileScreen() {
           {/* Documents */}
           <Card
             style={{ marginTop: 16 }}
+            elevation="raised"
             onPress={() =>
               navigation.navigate("Documents", {
                 goatId: id,
@@ -546,15 +565,25 @@ const styles = StyleSheet.create({
   topbar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 12,
+  },
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.md,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
   },
   hero: {
     width: 84,
     height: 84,
     borderRadius: radius.lg,
-    backgroundColor: palette.ink[50],
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
   heroPlaceholder: { alignItems: "center", justifyContent: "center" },
   healthIcon: {

@@ -12,13 +12,14 @@ import { useNavigation } from "@react-navigation/native";
 import { ChevronLeft } from "lucide-react-native";
 import { useCreateItem } from "@modules/inventory/hooks/useInventory";
 import { InventoryCategory, CATEGORY_LABEL } from "@modules/inventory/types";
-import { palette, radius } from "@shared/designSystem";
+import { palette, radius, shadows } from "@shared/designSystem";
 import {
   Text,
   VStack,
   HStack,
   Button,
   TextField,
+  Card,
   useBottomPadding,
 } from "@shared/ui";
 
@@ -65,16 +66,28 @@ export default function AddInventoryItemScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: palette.surface.primary }}>
+    <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-        <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+        <View style={styles.header}>
+          <Pressable
+            style={styles.backBtn}
+            onPress={() => navigation.goBack()}
+            hitSlop={8}
+          >
+            <ChevronLeft
+              size={22}
+              color={palette.text.primary}
+              strokeWidth={2}
+            />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            New item
-          </Text>
-          <View style={{ width: 26 }} />
+          <VStack gap={3} flex={1}>
+            <Text variant="overline" tone="tertiary">
+              Inventory
+            </Text>
+            <Text variant="h1" tone="primary">
+              New item
+            </Text>
+          </VStack>
         </View>
 
         <KeyboardAvoidingView
@@ -89,78 +102,82 @@ export default function AddInventoryItemScreen() {
             }}
             keyboardShouldPersistTaps="handled"
           >
-            <TextField
-              label="Name"
-              placeholder="e.g. Maize feed"
-              value={name}
-              onChangeText={setName}
-            />
+            <Card elevation="raised">
+              <TextField
+                label="Name"
+                placeholder="e.g. Maize feed"
+                value={name}
+                onChangeText={setName}
+              />
 
-            <Label text="Category" />
-            <View style={styles.wrapRow}>
-              {CATEGORIES.map((c) => (
-                <Chip
-                  key={c}
-                  active={category === c}
-                  label={CATEGORY_LABEL[c]}
-                  onPress={() => setCategory(c)}
-                />
-              ))}
-            </View>
+              <Label text="Category" />
+              <View style={styles.wrapRow}>
+                {CATEGORIES.map((c) => (
+                  <Chip
+                    key={c}
+                    active={category === c}
+                    label={CATEGORY_LABEL[c]}
+                    onPress={() => setCategory(c)}
+                  />
+                ))}
+              </View>
 
-            <Label text="Unit" />
-            <View style={styles.wrapRow}>
-              {UNITS.map((u) => (
-                <Chip
-                  key={u}
-                  active={unit === u}
-                  label={u}
-                  onPress={() => setUnit(u)}
-                />
-              ))}
-            </View>
+              <Label text="Unit" />
+              <View style={styles.wrapRow}>
+                {UNITS.map((u) => (
+                  <Chip
+                    key={u}
+                    active={unit === u}
+                    label={u}
+                    onPress={() => setUnit(u)}
+                  />
+                ))}
+              </View>
+            </Card>
 
-            <VStack gap={16} style={{ marginTop: 20 }}>
-              <HStack gap={12}>
-                <View style={{ flex: 1 }}>
-                  <TextField
-                    label={`Opening stock (${unit})`}
-                    placeholder="0"
-                    keyboardType="decimal-pad"
-                    value={openingStock}
-                    onChangeText={setOpening}
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <TextField
-                    label={`Min level (${unit})`}
-                    placeholder="0"
-                    keyboardType="decimal-pad"
-                    value={minStock}
-                    onChangeText={setMin}
-                  />
-                </View>
-              </HStack>
-              <HStack gap={12}>
-                <View style={{ flex: 1 }}>
-                  <TextField
-                    label="Cost ₹/unit"
-                    placeholder="0"
-                    keyboardType="number-pad"
-                    value={costPerUnit}
-                    onChangeText={setCost}
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <TextField
-                    label="Supplier"
-                    placeholder="Optional"
-                    value={supplier}
-                    onChangeText={setSupplier}
-                  />
-                </View>
-              </HStack>
-            </VStack>
+            <Card elevation="raised" style={{ marginTop: 16 }}>
+              <VStack gap={16}>
+                <HStack gap={12}>
+                  <View style={{ flex: 1 }}>
+                    <TextField
+                      label={`Opening stock (${unit})`}
+                      placeholder="0"
+                      keyboardType="decimal-pad"
+                      value={openingStock}
+                      onChangeText={setOpening}
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <TextField
+                      label={`Min level (${unit})`}
+                      placeholder="0"
+                      keyboardType="decimal-pad"
+                      value={minStock}
+                      onChangeText={setMin}
+                    />
+                  </View>
+                </HStack>
+                <HStack gap={12}>
+                  <View style={{ flex: 1 }}>
+                    <TextField
+                      label="Cost ₹/unit"
+                      placeholder="0"
+                      keyboardType="number-pad"
+                      value={costPerUnit}
+                      onChangeText={setCost}
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <TextField
+                      label="Supplier"
+                      placeholder="Optional"
+                      value={supplier}
+                      onChangeText={setSupplier}
+                    />
+                  </View>
+                </HStack>
+              </VStack>
+            </Card>
 
             <Button
               label="Add item"
@@ -215,12 +232,24 @@ function Chip({
 }
 
 const styles = StyleSheet.create({
-  topbar: {
+  header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 12,
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingTop: 8,
+    paddingBottom: 12,
+  },
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
   },
   wrapRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   chip: {

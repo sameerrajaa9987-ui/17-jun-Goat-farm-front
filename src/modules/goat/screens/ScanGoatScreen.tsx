@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { ChevronLeft, QrCode, ScanLine } from "lucide-react-native";
 import { useScanGoat } from "@modules/goat/hooks/useGoats";
-import { palette, radius } from "@shared/designSystem";
+import { palette, radius, glass } from "@shared/designSystem";
 import { Text, VStack, Button, TextField } from "@shared/ui";
 
 /** Extracts the qrToken from a scanned payload (goatfarm://goat/<token>) or raw token. */
@@ -44,13 +44,24 @@ export default function ScanGoatScreen() {
         edges={["top", "left", "right", "bottom"]}
       >
         <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.inverse} />
+          <Pressable
+            onPress={() => navigation.goBack()}
+            hitSlop={10}
+            style={[styles.backBtn, glass.light]}
+          >
+            <ChevronLeft size={24} color={palette.text.inverse} />
           </Pressable>
-          <Text variant="h3" tone="inverse">
-            Scan goat tag
-          </Text>
-          <View style={{ width: 26 }} />
+          <VStack gap={3} flex={1} style={{ marginLeft: 12 }}>
+            <Text
+              variant="overline"
+              style={{ color: "rgba(255,255,255,0.66)" }}
+            >
+              Herd
+            </Text>
+            <Text variant="h3" tone="inverse">
+              Scan goat tag
+            </Text>
+          </VStack>
         </View>
 
         {!webOrNoCamera && permission?.granted ? (
@@ -134,9 +145,15 @@ const styles = StyleSheet.create({
   topbar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 12,
+  },
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.md,
+    alignItems: "center",
+    justifyContent: "center",
   },
   cameraWrap: { flex: 1, overflow: "hidden" },
   reticleWrap: {

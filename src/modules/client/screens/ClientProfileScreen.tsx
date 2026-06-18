@@ -28,8 +28,16 @@ import {
 import { useGoats } from "@modules/goat/hooks/useGoats";
 import { usePackages } from "@modules/billing/hooks/useBilling";
 import { INVOICE_TONE } from "@modules/billing/types";
-import { palette, radius } from "@shared/designSystem";
-import { Text, VStack, HStack, Card, StatusChip, Button } from "@shared/ui";
+import { palette, radius, shadows, glass } from "@shared/designSystem";
+import {
+  Text,
+  VStack,
+  HStack,
+  Card,
+  StatusChip,
+  Button,
+  GradientHero,
+} from "@shared/ui";
 
 export default function ClientProfileScreen() {
   const navigation = useNavigation<any>();
@@ -52,37 +60,53 @@ export default function ClientProfileScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+          <Pressable
+            onPress={() => navigation.goBack()}
+            style={styles.backBtn}
+            hitSlop={8}
+          >
+            <ChevronLeft
+              size={22}
+              color={palette.text.primary}
+              strokeWidth={2}
+            />
           </Pressable>
-          <Text variant="h3" tone="primary">
+          <Text variant="overline" tone="tertiary">
             Client
           </Text>
-          <View style={{ width: 26 }} />
+          <View style={{ width: 44 }} />
         </View>
 
         <ScrollView
-          contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+          contentContainerStyle={{
+            padding: 20,
+            paddingTop: 4,
+            paddingBottom: 40,
+          }}
           showsVerticalScrollIndicator={false}
         >
-          <Card>
+          <GradientHero variant="forest">
             <HStack gap={14} align="center">
-              <View style={styles.avatar}>
+              <View style={[styles.avatar, glass.light]}>
                 <Text variant="display-sm" tone="inverse">
                   {(client.user?.name || "C").charAt(0).toUpperCase()}
                 </Text>
               </View>
-              <VStack gap={5} flex={1}>
-                <Text variant="h2" tone="primary">
+              <VStack gap={6} flex={1}>
+                <Text variant="h2" tone="inverse">
                   {client.user?.name}
                 </Text>
-                <StatusChip
-                  label={client.status}
-                  tone={client.status === "active" ? "success" : "neutral"}
-                />
+                <View style={{ alignSelf: "flex-start" }}>
+                  <StatusChip
+                    label={client.status}
+                    tone={client.status === "active" ? "success" : "neutral"}
+                  />
+                </View>
               </VStack>
             </HStack>
-            <View style={styles.divider} />
+          </GradientHero>
+
+          <Card style={{ marginTop: 16 }} elevation="raised">
             <VStack gap={10}>
               {client.user?.email ? (
                 <Row
@@ -106,7 +130,7 @@ export default function ClientProfileScreen() {
           </Card>
 
           {/* Assigned goats + packages */}
-          <Card style={{ marginTop: 16 }}>
+          <Card style={{ marginTop: 16 }} elevation="raised">
             <HStack
               justify="space-between"
               align="center"
@@ -182,6 +206,7 @@ export default function ClientProfileScreen() {
           {/* Documents */}
           <Card
             style={{ marginTop: 16 }}
+            elevation="raised"
             onPress={() =>
               navigation.navigate("Documents", {
                 clientUserId: userId,
@@ -211,7 +236,7 @@ export default function ClientProfileScreen() {
 
           {/* Recent invoices */}
           {invoices.length > 0 && (
-            <Card style={{ marginTop: 16 }}>
+            <Card style={{ marginTop: 16 }} elevation="raised">
               <Text variant="h4" tone="primary" style={{ marginBottom: 12 }}>
                 Recent invoices
               </Text>
@@ -409,11 +434,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
+  },
   avatar: {
     width: 64,
     height: 64,
     borderRadius: radius.full,
-    backgroundColor: palette.amber[600],
     alignItems: "center",
     justifyContent: "center",
   },

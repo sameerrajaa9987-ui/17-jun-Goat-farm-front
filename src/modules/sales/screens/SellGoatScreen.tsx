@@ -13,7 +13,7 @@ import { ChevronLeft } from "lucide-react-native";
 import { useSellGoat } from "@modules/sales/hooks/useSales";
 import { useGoats } from "@modules/goat/hooks/useGoats";
 import { useGoatProfitability } from "@modules/finance/hooks/useFinance";
-import { palette, radius } from "@shared/designSystem";
+import { palette, radius, shadows } from "@shared/designSystem";
 import {
   Text,
   VStack,
@@ -71,16 +71,28 @@ export default function SellGoatScreen() {
     "Could not record sale.";
 
   return (
-    <View style={{ flex: 1, backgroundColor: palette.surface.primary }}>
+    <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-        <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+        <View style={styles.header}>
+          <Pressable
+            style={styles.backBtn}
+            onPress={() => navigation.goBack()}
+            hitSlop={8}
+          >
+            <ChevronLeft
+              size={22}
+              color={palette.text.primary}
+              strokeWidth={2}
+            />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            Sell goat
-          </Text>
-          <View style={{ width: 26 }} />
+          <VStack gap={3} flex={1}>
+            <Text variant="overline" tone="tertiary">
+              Trade
+            </Text>
+            <Text variant="h1" tone="primary">
+              Sell goat
+            </Text>
+          </VStack>
         </View>
 
         <KeyboardAvoidingView
@@ -119,59 +131,61 @@ export default function SellGoatScreen() {
               </>
             )}
 
-            <VStack gap={16} style={{ marginTop: 20 }}>
-              <TextField
-                label="Sale price (₹)"
-                placeholder="12000"
-                keyboardType="number-pad"
-                value={salePrice}
-                onChangeText={setSalePrice}
-              />
-              <HStack gap={12}>
-                <View style={{ flex: 1 }}>
-                  <TextField
-                    label="Buyer name"
-                    placeholder="e.g. Imran Traders"
-                    value={buyerName}
-                    onChangeText={setBuyerName}
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <TextField
-                    label="Buyer phone"
-                    placeholder="+91..."
-                    keyboardType="phone-pad"
-                    value={buyerPhone}
-                    onChangeText={setBuyerPhone}
-                  />
-                </View>
-              </HStack>
-            </VStack>
-
-            <Label text="Payment" />
-            <HStack gap={8}>
-              {METHODS.map((m) => (
-                <Chip
-                  key={m}
-                  active={method === m}
-                  label={m.toUpperCase()}
-                  onPress={() => setMethod(m)}
+            <Card elevation="raised" style={{ marginTop: 20 }}>
+              <VStack gap={16}>
+                <TextField
+                  label="Sale price (₹)"
+                  placeholder="12000"
+                  keyboardType="number-pad"
+                  value={salePrice}
+                  onChangeText={setSalePrice}
                 />
-              ))}
-            </HStack>
+                <HStack gap={12}>
+                  <View style={{ flex: 1 }}>
+                    <TextField
+                      label="Buyer name"
+                      placeholder="e.g. Imran Traders"
+                      value={buyerName}
+                      onChangeText={setBuyerName}
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <TextField
+                      label="Buyer phone"
+                      placeholder="+91..."
+                      keyboardType="phone-pad"
+                      value={buyerPhone}
+                      onChangeText={setBuyerPhone}
+                    />
+                  </View>
+                </HStack>
 
-            <View style={{ marginTop: 16 }}>
-              <TextField
-                label="Notes"
-                placeholder="Optional"
-                value={notes}
-                onChangeText={setNotes}
-              />
-            </View>
+                <View>
+                  <Label text="Payment" />
+                  <HStack gap={8}>
+                    {METHODS.map((m) => (
+                      <Chip
+                        key={m}
+                        active={method === m}
+                        label={m.toUpperCase()}
+                        onPress={() => setMethod(m)}
+                      />
+                    ))}
+                  </HStack>
+                </View>
+
+                <TextField
+                  label="Notes"
+                  placeholder="Optional"
+                  value={notes}
+                  onChangeText={setNotes}
+                />
+              </VStack>
+            </Card>
 
             {/* Profit preview */}
             {goatId && profit && (
-              <Card style={{ marginTop: 20 }}>
+              <Card elevation="raised" style={{ marginTop: 20 }}>
                 {isClientGoat ? (
                   <VStack gap={6}>
                     <StatusChip label="Ad Pali client goat" tone="info" />
@@ -282,12 +296,24 @@ function Chip({
 }
 
 const styles = StyleSheet.create({
-  topbar: {
+  header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 12,
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingTop: 8,
+    paddingBottom: 12,
+  },
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
   },
   error: {
     marginBottom: 16,

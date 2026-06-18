@@ -10,12 +10,27 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import Svg, { Rect, Line } from "react-native-svg";
-import { ChevronLeft, Download, FileSpreadsheet } from "lucide-react-native";
+import {
+  ChevronLeft,
+  Download,
+  FileSpreadsheet,
+  Coins,
+  TrendingUp,
+  Wallet,
+} from "lucide-react-native";
 import { useOverview } from "@modules/reports/hooks/useReports";
 import { reportsApi } from "@modules/reports/api/reportsApi";
 import { MonthlyPoint } from "@modules/reports/types";
 import { palette, radius, shadows } from "@shared/designSystem";
-import { Text, VStack, HStack, Card, StatusChip } from "@shared/ui";
+import {
+  Text,
+  VStack,
+  HStack,
+  Card,
+  StatusChip,
+  StatTile,
+  GradientHero,
+} from "@shared/ui";
 
 export default function ReportsScreen() {
   const navigation = useNavigation<any>();
@@ -45,66 +60,78 @@ export default function ReportsScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+          <Pressable
+            onPress={() => navigation.goBack()}
+            hitSlop={10}
+            style={styles.backBtn}
+          >
+            <ChevronLeft size={24} color={palette.text.primary} />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            Reports
-          </Text>
-          <View style={{ width: 26 }} />
+          <VStack gap={2} flex={1} style={{ marginLeft: 12 }}>
+            <Text variant="overline" tone="tertiary">
+              Insights
+            </Text>
+            <Text variant="h1" tone="primary">
+              Reports
+            </Text>
+          </VStack>
+          <View style={{ width: 44 }} />
         </View>
 
         <ScrollView
           contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
           showsVerticalScrollIndicator={false}
         >
-          {/* Financial headline */}
-          <Card>
-            <Text variant="overline" tone="tertiary">
+          {/* Financial headline — premium money surface */}
+          <GradientHero variant={financial.net >= 0 ? "hero" : "clay"}>
+            <Text
+              variant="overline"
+              style={{ color: "rgba(255,255,255,0.66)" }}
+            >
               Net (all time)
             </Text>
-            <Text
-              variant="display-sm"
-              style={{
-                color:
-                  financial.net >= 0
-                    ? palette.success.text
-                    : palette.danger.text,
-                marginTop: 4,
-              }}
-            >
+            <Text variant="display-md" tone="inverse" style={{ marginTop: 4 }}>
               ₹{financial.net.toLocaleString("en-IN")}
             </Text>
             <HStack gap={16} style={{ marginTop: 6 }}>
-              <Text variant="body-sm" tone="secondary">
+              <Text
+                variant="body-sm"
+                style={{ color: "rgba(255,255,255,0.74)" }}
+              >
                 ₹{financial.income.toLocaleString("en-IN")} income
               </Text>
-              <Text variant="body-sm" tone="secondary">
+              <Text
+                variant="body-sm"
+                style={{ color: "rgba(255,255,255,0.74)" }}
+              >
                 ₹{financial.expense.toLocaleString("en-IN")} expense
               </Text>
             </HStack>
             <MonthlyChart data={financial.monthly} />
-          </Card>
+          </GradientHero>
 
           {/* Revenue mix */}
           <HStack gap={12} style={{ marginTop: 16 }}>
-            <MiniStat
+            <StatTile
               label="Ad Pali fees"
               value={`₹${(financial.adPaliIncome / 1000).toFixed(1)}k`}
+              icon={Coins}
             />
-            <MiniStat
+            <StatTile
               label="Sales revenue"
               value={`₹${(financial.salesRevenue / 1000).toFixed(1)}k`}
+              icon={TrendingUp}
             />
-            <MiniStat
+            <StatTile
               label="Outstanding"
               value={`₹${(financial.outstanding / 1000).toFixed(1)}k`}
-              warn={!!financial.outstanding}
+              icon={Wallet}
+              tone={financial.outstanding ? "clay" : "light"}
             />
           </HStack>
 
           {/* Farm */}
-          <Card style={{ marginTop: 16 }}>
+          <Card elevation="raised" style={{ marginTop: 16 }}>
             <Text variant="h4" tone="primary" style={{ marginBottom: 12 }}>
               Herd
             </Text>
@@ -136,7 +163,7 @@ export default function ReportsScreen() {
           </Card>
 
           {/* Operational */}
-          <Card style={{ marginTop: 16 }}>
+          <Card elevation="raised" style={{ marginTop: 16 }}>
             <Text variant="h4" tone="primary" style={{ marginBottom: 12 }}>
               Operations
             </Text>
@@ -158,7 +185,7 @@ export default function ReportsScreen() {
           </Card>
 
           {/* Export */}
-          <Card style={{ marginTop: 16 }}>
+          <Card elevation="raised" style={{ marginTop: 16 }}>
             <Text variant="h4" tone="primary" style={{ marginBottom: 12 }}>
               Export (Excel / CSV)
             </Text>
@@ -206,7 +233,7 @@ function MonthlyChart({ data }: { data: MonthlyPoint[] }) {
           y1={height - pad}
           x2={width}
           y2={height - pad}
-          stroke={palette.border.subtle}
+          stroke="rgba(255,255,255,0.18)"
           strokeWidth={1}
         />
         {data.map((d, i) => {
@@ -221,7 +248,7 @@ function MonthlyChart({ data }: { data: MonthlyPoint[] }) {
                 width={barW}
                 height={incH}
                 rx={3}
-                fill={palette.ink[500]}
+                fill={palette.ink[200]}
               />
               <Rect
                 x={x + 2}
@@ -229,15 +256,15 @@ function MonthlyChart({ data }: { data: MonthlyPoint[] }) {
                 width={barW}
                 height={expH}
                 rx={3}
-                fill={palette.amber[400]}
+                fill={palette.amber[300]}
               />
             </React.Fragment>
           );
         })}
       </Svg>
       <HStack gap={14} justify="center" style={{ marginTop: 6 }}>
-        <Legend color={palette.ink[500]} label="Income" />
-        <Legend color={palette.amber[400]} label="Expense" />
+        <Legend color={palette.ink[200]} label="Income" />
+        <Legend color={palette.amber[300]} label="Expense" />
       </HStack>
     </View>
   );
@@ -254,33 +281,10 @@ function Legend({ color, label }: { color: string; label: string }) {
           backgroundColor: color,
         }}
       />
-      <Text variant="caption" tone="tertiary">
+      <Text variant="caption" style={{ color: "rgba(255,255,255,0.74)" }}>
         {label}
       </Text>
     </HStack>
-  );
-}
-
-function MiniStat({
-  label,
-  value,
-  warn,
-}: {
-  label: string;
-  value: string;
-  warn?: boolean;
-}) {
-  return (
-    <View
-      style={[styles.miniStat, warn && { borderColor: palette.danger.border }]}
-    >
-      <Text variant="h3" tone="primary">
-        {value}
-      </Text>
-      <Text variant="caption" tone="tertiary">
-        {label}
-      </Text>
-    </View>
   );
 }
 
@@ -323,17 +327,19 @@ const styles = StyleSheet.create({
   topbar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingTop: 8,
+    paddingBottom: 12,
   },
-  miniStat: {
-    flex: 1,
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
     backgroundColor: palette.surface.primary,
-    borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.border.default,
-    padding: 14,
+    alignItems: "center",
+    justifyContent: "center",
     ...shadows.xs,
   },
   grid: { flexDirection: "row", flexWrap: "wrap" },

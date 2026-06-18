@@ -21,8 +21,15 @@ import {
   useRecordSalary,
 } from "@modules/staff/hooks/useStaff";
 import { AttendanceStatus, ATTENDANCE_LABEL } from "@modules/staff/types";
-import { palette, radius } from "@shared/designSystem";
-import { Text, VStack, HStack, Card, StatusChip } from "@shared/ui";
+import { palette, radius, shadows } from "@shared/designSystem";
+import {
+  Text,
+  VStack,
+  HStack,
+  Card,
+  StatusChip,
+  GradientHero,
+} from "@shared/ui";
 
 const ATT_STATUSES: AttendanceStatus[] = [
   "present",
@@ -73,13 +80,21 @@ export default function StaffProfileScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+          <Pressable
+            onPress={() => navigation.goBack()}
+            hitSlop={8}
+            style={styles.backBtn}
+          >
+            <ChevronLeft
+              size={22}
+              color={palette.text.primary}
+              strokeWidth={2}
+            />
           </Pressable>
           <Text variant="h3" tone="primary">
             Staff
           </Text>
-          <View style={{ width: 26 }} />
+          <View style={{ width: 44 }} />
         </View>
 
         <ScrollView
@@ -87,22 +102,25 @@ export default function StaffProfileScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* Identity */}
-          <Card>
-            <HStack gap={14} align="center">
+          <GradientHero variant="forest">
+            <HStack gap={16} align="center">
               <View style={styles.avatar}>
                 <Text variant="display-sm" tone="inverse">
                   {staff.name.charAt(0).toUpperCase()}
                 </Text>
               </View>
-              <VStack gap={5} flex={1}>
-                <Text variant="h2" tone="primary">
+              <VStack gap={8} flex={1}>
+                <Text variant="h1" tone="inverse">
                   {staff.name}
                 </Text>
                 <StatusChip label={staff.designation} tone="info" />
               </VStack>
             </HStack>
-            <View style={styles.divider} />
-            <VStack gap={10}>
+          </GradientHero>
+
+          {/* Contact details */}
+          <Card style={{ marginTop: 16 }}>
+            <VStack gap={12}>
               {staff.phone ? (
                 <Row
                   icon={<Phone size={16} color={palette.text.tertiary} />}
@@ -123,7 +141,7 @@ export default function StaffProfileScreen() {
           </Card>
 
           {/* Today attendance */}
-          <Card style={{ marginTop: 16 }}>
+          <Card style={{ marginTop: 16 }} elevation="raised">
             <HStack
               justify="space-between"
               align="center"
@@ -171,7 +189,7 @@ export default function StaffProfileScreen() {
 
           {/* Recent attendance */}
           {attendance.length > 0 && (
-            <Card style={{ marginTop: 16 }}>
+            <Card style={{ marginTop: 16 }} elevation="raised">
               <Text variant="h4" tone="primary" style={{ marginBottom: 12 }}>
                 Recent attendance
               </Text>
@@ -192,7 +210,7 @@ export default function StaffProfileScreen() {
           )}
 
           {/* Salary */}
-          <Card style={{ marginTop: 16 }}>
+          <Card style={{ marginTop: 16 }} elevation="raised">
             <HStack
               justify="space-between"
               align="center"
@@ -276,18 +294,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
-  avatar: {
-    width: 64,
-    height: 64,
+  backBtn: {
+    width: 44,
+    height: 44,
     borderRadius: radius.full,
-    backgroundColor: palette.ink[900],
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
     alignItems: "center",
     justifyContent: "center",
+    ...shadows.xs,
   },
-  divider: {
-    height: 1,
-    backgroundColor: palette.border.subtle,
-    marginVertical: 16,
+  avatar: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.full,
+    backgroundColor: "rgba(255,255,255,0.16)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.22)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   attRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   attChip: {

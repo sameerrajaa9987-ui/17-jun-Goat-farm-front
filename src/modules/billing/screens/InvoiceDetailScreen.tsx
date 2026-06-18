@@ -18,8 +18,16 @@ import {
 } from "@modules/billing/hooks/useBilling";
 import { INVOICE_TONE } from "@modules/billing/types";
 import { useAuthStore } from "@shared/store/useAuthStore";
-import { palette } from "@shared/designSystem";
-import { Text, VStack, HStack, Card, StatusChip, Button } from "@shared/ui";
+import { palette, radius, shadows } from "@shared/designSystem";
+import {
+  Text,
+  VStack,
+  HStack,
+  Card,
+  StatusChip,
+  Button,
+  GradientHero,
+} from "@shared/ui";
 
 function fmtDate(d?: string | null) {
   if (!d) return "—";
@@ -75,27 +83,35 @@ export default function InvoiceDetailScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+          <Pressable
+            onPress={() => navigation.goBack()}
+            hitSlop={10}
+            style={styles.backBtn}
+          >
+            <ChevronLeft size={24} color={palette.text.primary} />
           </Pressable>
           <Text variant="h3" tone="primary">
             {invoice.invoiceNo}
           </Text>
-          <View style={{ width: 26 }} />
+          <View style={{ width: 44 }} />
         </View>
 
         <ScrollView
           contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
           showsVerticalScrollIndicator={false}
         >
-          <Card>
-            <HStack justify="space-between" align="center">
-              <VStack gap={4}>
-                <Text variant="overline" tone="tertiary">
+          {/* Headline amount — premium money surface */}
+          <GradientHero variant={unpaid ? "clay" : "hero"}>
+            <HStack justify="space-between" align="flex-start">
+              <VStack gap={4} flex={1}>
+                <Text
+                  variant="overline"
+                  style={{ color: "rgba(255,255,255,0.66)" }}
+                >
                   {invoice.period} ·{" "}
                   {isClient ? "Your bill" : invoice.client?.name}
                 </Text>
-                <Text variant="display-sm" tone="primary">
+                <Text variant="display-md" tone="inverse">
                   ₹{invoice.total.toLocaleString("en-IN")}
                 </Text>
               </VStack>
@@ -104,16 +120,16 @@ export default function InvoiceDetailScreen() {
                 tone={INVOICE_TONE[invoice.status]}
               />
             </HStack>
-            <View style={styles.divider} />
+            <View style={styles.heroDivider} />
             <HStack justify="space-between">
-              <Meta label="Issued" value={fmtDate(invoice.issuedAt)} />
-              <Meta label="Due" value={fmtDate(invoice.dueDate)} />
-              <Meta label="Paid" value={fmtDate(invoice.paidAt)} />
+              <HeroMeta label="Issued" value={fmtDate(invoice.issuedAt)} />
+              <HeroMeta label="Due" value={fmtDate(invoice.dueDate)} />
+              <HeroMeta label="Paid" value={fmtDate(invoice.paidAt)} />
             </HStack>
-          </Card>
+          </GradientHero>
 
           {/* Line items */}
-          <Card style={{ marginTop: 16 }}>
+          <Card elevation="raised" style={{ marginTop: 16 }}>
             <Text variant="h4" tone="primary" style={{ marginBottom: 12 }}>
               Items
             </Text>
@@ -147,7 +163,7 @@ export default function InvoiceDetailScreen() {
 
           {/* Payments */}
           {payments.length > 0 && (
-            <Card style={{ marginTop: 16 }}>
+            <Card elevation="raised" style={{ marginTop: 16 }}>
               <Text variant="h4" tone="primary" style={{ marginBottom: 12 }}>
                 Payments
               </Text>
@@ -196,13 +212,13 @@ export default function InvoiceDetailScreen() {
   );
 }
 
-function Meta({ label, value }: { label: string; value: string }) {
+function HeroMeta({ label, value }: { label: string; value: string }) {
   return (
     <VStack gap={2}>
-      <Text variant="caption" tone="tertiary">
+      <Text variant="caption" style={{ color: "rgba(255,255,255,0.6)" }}>
         {label}
       </Text>
-      <Text variant="label" tone="primary">
+      <Text variant="label" tone="inverse">
         {value}
       </Text>
     </VStack>
@@ -223,9 +239,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
+  },
   divider: {
     height: 1,
     backgroundColor: palette.border.subtle,
     marginVertical: 14,
+  },
+  heroDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.16)",
+    marginVertical: 16,
   },
 });

@@ -14,13 +14,14 @@ import { useAssignTask } from "@modules/task/hooks/useTasks";
 import { TaskType, Priority, TASK_TYPE_LABEL } from "@modules/task/types";
 import { useUsers } from "@modules/team/hooks/useTeam";
 import { useGoats } from "@modules/goat/hooks/useGoats";
-import { palette, radius } from "@shared/designSystem";
+import { palette, radius, shadows } from "@shared/designSystem";
 import {
   Text,
   VStack,
   HStack,
   Button,
   TextField,
+  Card,
   useBottomPadding,
 } from "@shared/ui";
 
@@ -89,16 +90,29 @@ export default function AssignTaskScreen() {
     "Could not assign task.";
 
   return (
-    <View style={{ flex: 1, backgroundColor: palette.surface.primary }}>
+    <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+          <Pressable
+            onPress={() => navigation.goBack()}
+            style={styles.backBtn}
+            hitSlop={8}
+          >
+            <ChevronLeft
+              size={22}
+              color={palette.text.primary}
+              strokeWidth={2}
+            />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            Assign task
-          </Text>
-          <View style={{ width: 26 }} />
+          <VStack gap={2} flex={1}>
+            <Text variant="overline" tone="tertiary">
+              Operations
+            </Text>
+            <Text variant="h3" tone="primary">
+              Assign task
+            </Text>
+          </VStack>
+          <View style={{ width: 44 }} />
         </View>
 
         <KeyboardAvoidingView
@@ -121,115 +135,121 @@ export default function AssignTaskScreen() {
               </View>
             )}
 
-            <TextField
-              label="Title"
-              placeholder="e.g. Morning feed - Pen A"
-              value={title}
-              onChangeText={setTitle}
-            />
+            <Card elevation="raised">
+              <TextField
+                label="Title"
+                placeholder="e.g. Morning feed - Pen A"
+                value={title}
+                onChangeText={setTitle}
+              />
 
-            <Label text="Task type" />
-            <View style={styles.wrapRow}>
-              {TYPES.map((tp) => (
+              <Label text="Task type" />
+              <View style={styles.wrapRow}>
+                {TYPES.map((tp) => (
+                  <Chip
+                    key={tp}
+                    active={type === tp}
+                    label={TASK_TYPE_LABEL[tp]}
+                    onPress={() => setType(tp)}
+                  />
+                ))}
+              </View>
+            </Card>
+
+            <Card style={{ marginTop: 16 }} elevation="raised">
+              <Label text="Assign to" first />
+              {assignees.length === 0 ? (
+                <Text variant="body-sm" tone="tertiary">
+                  No workers yet — add one from Team.
+                </Text>
+              ) : (
+                <VStack gap={8}>
+                  {assignees.map((u) => {
+                    const active = assignedTo === u.id;
+                    return (
+                      <Pressable
+                        key={u.id}
+                        onPress={() => setAssignedTo(u.id)}
+                        style={[styles.row, active && styles.rowActive]}
+                      >
+                        <VStack gap={2} flex={1}>
+                          <Text variant="label-lg" tone="primary">
+                            {u.fullName || u.firstName}
+                          </Text>
+                          <Text variant="caption" tone="tertiary">
+                            {u.role} · {u.email}
+                          </Text>
+                        </VStack>
+                        {active && (
+                          <Check
+                            size={20}
+                            color={palette.ink[800]}
+                            strokeWidth={2.2}
+                          />
+                        )}
+                      </Pressable>
+                    );
+                  })}
+                </VStack>
+              )}
+
+              <Label text="Goat (optional)" />
+              <View style={styles.wrapRow}>
                 <Chip
-                  key={tp}
-                  active={type === tp}
-                  label={TASK_TYPE_LABEL[tp]}
-                  onPress={() => setType(tp)}
+                  active={!goatId}
+                  label="No specific goat"
+                  onPress={() => setGoatId(null)}
                 />
-              ))}
-            </View>
+                {goats.slice(0, 12).map((g) => (
+                  <Chip
+                    key={g.id}
+                    active={goatId === g.id}
+                    label={g.name || g.goatId}
+                    onPress={() => setGoatId(g.id)}
+                  />
+                ))}
+              </View>
+            </Card>
 
-            <Label text="Assign to" />
-            {assignees.length === 0 ? (
-              <Text variant="body-sm" tone="tertiary">
-                No workers yet — add one from Team.
-              </Text>
-            ) : (
-              <VStack gap={8}>
-                {assignees.map((u) => {
-                  const active = assignedTo === u.id;
-                  return (
-                    <Pressable
-                      key={u.id}
-                      onPress={() => setAssignedTo(u.id)}
-                      style={[styles.row, active && styles.rowActive]}
-                    >
-                      <VStack gap={2} flex={1}>
-                        <Text variant="label-lg" tone="primary">
-                          {u.fullName || u.firstName}
-                        </Text>
-                        <Text variant="caption" tone="tertiary">
-                          {u.role} · {u.email}
-                        </Text>
-                      </VStack>
-                      {active && (
-                        <Check
-                          size={20}
-                          color={palette.ink[800]}
-                          strokeWidth={2.2}
-                        />
-                      )}
-                    </Pressable>
-                  );
-                })}
-              </VStack>
-            )}
-
-            <Label text="Goat (optional)" />
-            <View style={styles.wrapRow}>
-              <Chip
-                active={!goatId}
-                label="No specific goat"
-                onPress={() => setGoatId(null)}
-              />
-              {goats.slice(0, 12).map((g) => (
+            <Card style={{ marginTop: 16 }} elevation="raised">
+              <Label text="Due" first />
+              <HStack gap={8}>
                 <Chip
-                  key={g.id}
-                  active={goatId === g.id}
-                  label={g.name || g.goatId}
-                  onPress={() => setGoatId(g.id)}
+                  active={day === "today"}
+                  label="Today"
+                  onPress={() => setDay("today")}
                 />
-              ))}
-            </View>
-
-            <Label text="Due" />
-            <HStack gap={8}>
-              <Chip
-                active={day === "today"}
-                label="Today"
-                onPress={() => setDay("today")}
-              />
-              <Chip
-                active={day === "tomorrow"}
-                label="Tomorrow"
-                onPress={() => setDay("tomorrow")}
-              />
-            </HStack>
-            <HStack gap={8} style={{ marginTop: 8 }}>
-              <Chip
-                active={slot === "morning"}
-                label="Morning (7:00)"
-                onPress={() => setSlot("morning")}
-              />
-              <Chip
-                active={slot === "evening"}
-                label="Evening (17:00)"
-                onPress={() => setSlot("evening")}
-              />
-            </HStack>
-
-            <Label text="Priority" />
-            <HStack gap={8}>
-              {(["low", "normal", "high"] as Priority[]).map((p) => (
                 <Chip
-                  key={p}
-                  active={priority === p}
-                  label={p[0].toUpperCase() + p.slice(1)}
-                  onPress={() => setPriority(p)}
+                  active={day === "tomorrow"}
+                  label="Tomorrow"
+                  onPress={() => setDay("tomorrow")}
                 />
-              ))}
-            </HStack>
+              </HStack>
+              <HStack gap={8} style={{ marginTop: 8 }}>
+                <Chip
+                  active={slot === "morning"}
+                  label="Morning (7:00)"
+                  onPress={() => setSlot("morning")}
+                />
+                <Chip
+                  active={slot === "evening"}
+                  label="Evening (17:00)"
+                  onPress={() => setSlot("evening")}
+                />
+              </HStack>
+
+              <Label text="Priority" />
+              <HStack gap={8}>
+                {(["low", "normal", "high"] as Priority[]).map((p) => (
+                  <Chip
+                    key={p}
+                    active={priority === p}
+                    label={p[0].toUpperCase() + p.slice(1)}
+                    onPress={() => setPriority(p)}
+                  />
+                ))}
+              </HStack>
+            </Card>
 
             <Button
               label="Assign task"
@@ -246,12 +266,12 @@ export default function AssignTaskScreen() {
   );
 }
 
-function Label({ text }: { text: string }) {
+function Label({ text, first }: { text: string; first?: boolean }) {
   return (
     <Text
       variant="label"
       tone="secondary"
-      style={{ marginTop: 20, marginBottom: 8 }}
+      style={{ marginTop: first ? 0 : 20, marginBottom: 8 }}
     >
       {text}
     </Text>
@@ -288,9 +308,20 @@ const styles = StyleSheet.create({
   topbar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 12,
     paddingHorizontal: 20,
     paddingVertical: 12,
+  },
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
   },
   error: {
     marginBottom: 16,
@@ -307,7 +338,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
     borderWidth: 1,
     borderColor: palette.border.default,
-    backgroundColor: palette.surface.primary,
+    backgroundColor: palette.surface.secondary,
   },
   chipActive: {
     backgroundColor: palette.ink[900],
@@ -320,7 +351,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.border.default,
-    backgroundColor: palette.surface.primary,
+    backgroundColor: palette.surface.secondary,
   },
   rowActive: {
     borderColor: palette.ink[800],

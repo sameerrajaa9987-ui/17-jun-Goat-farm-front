@@ -15,8 +15,15 @@ import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@shared/store/useAuthStore";
 import { useLogout } from "@modules/auth/hooks/useAuth";
 import { changeLanguage } from "@modules/localization/i18n";
-import { palette, radius } from "@shared/designSystem";
-import { Text, VStack, HStack, Card, StatusChip } from "@shared/ui";
+import { palette, radius, glass } from "@shared/designSystem";
+import {
+  Text,
+  VStack,
+  HStack,
+  Card,
+  StatusChip,
+  GradientHero,
+} from "@shared/ui";
 
 export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
@@ -36,28 +43,39 @@ export default function ProfileScreen() {
           contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
           showsVerticalScrollIndicator={false}
         >
-          <Text variant="h1" tone="primary">
-            Profile
-          </Text>
+          <VStack gap={3} style={{ marginBottom: 16 }}>
+            <Text variant="overline" tone="tertiary">
+              Account
+            </Text>
+            <Text variant="h1" tone="primary">
+              Profile
+            </Text>
+            <Text variant="body-sm" tone="tertiary">
+              Manage your account and preferences
+            </Text>
+          </VStack>
 
-          {/* Identity card */}
-          <Card style={{ marginTop: 16 }}>
-            <HStack gap={14} align="center">
-              <View style={styles.avatar}>
+          {/* Identity hero */}
+          <GradientHero variant="forest">
+            <HStack gap={16} align="center">
+              <View style={[styles.avatar, glass.light]}>
                 <Text variant="display-sm" tone="inverse">
                   {user.firstName.charAt(0).toUpperCase()}
                 </Text>
               </View>
-              <VStack gap={4} flex={1}>
-                <Text variant="h3" tone="primary">
+              <VStack gap={6} flex={1}>
+                <Text variant="h2" tone="inverse">
                   {user.fullName || user.firstName}
                 </Text>
-                <StatusChip label={t(`roles.${user.role}`)} tone="success" />
+                <View style={{ alignSelf: "flex-start" }}>
+                  <StatusChip label={t(`roles.${user.role}`)} tone="success" />
+                </View>
               </VStack>
             </HStack>
+          </GradientHero>
 
-            <View style={styles.divider} />
-
+          {/* Contact details */}
+          <Card style={{ marginTop: 16 }} elevation="raised">
             <VStack gap={12}>
               <Row
                 icon={<Mail size={16} color={palette.text.tertiary} />}
@@ -80,7 +98,7 @@ export default function ProfileScreen() {
 
           {/* Owner/Manager shortcuts */}
           {isStaff && (
-            <Card style={{ marginTop: 16, padding: 0 }} padded={false}>
+            <Card style={{ marginTop: 16 }} elevation="raised" padded={false}>
               <MenuItem
                 icon={<ScrollText size={18} color={palette.ink[700]} />}
                 label="Activity log"
@@ -90,7 +108,7 @@ export default function ProfileScreen() {
           )}
 
           {/* Settings */}
-          <Card style={{ marginTop: 16, padding: 0 }} padded={false}>
+          <Card style={{ marginTop: 16 }} elevation="raised" padded={false}>
             <MenuItem
               icon={<Languages size={18} color={palette.ink[700]} />}
               label={`Language: ${i18n.language === "hi" ? "हिन्दी" : "English"}`}
@@ -151,14 +169,8 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: radius.full,
-    backgroundColor: palette.ink[900],
     alignItems: "center",
     justifyContent: "center",
-  },
-  divider: {
-    height: 1,
-    backgroundColor: palette.border.subtle,
-    marginVertical: 16,
   },
   menuItem: {
     flexDirection: "row",

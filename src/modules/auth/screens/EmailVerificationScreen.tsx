@@ -8,7 +8,14 @@ import {
   useLogout,
 } from "@modules/auth/hooks/useAuth";
 import { palette, radius } from "@shared/designSystem";
-import { Text, VStack, Button, TextField, useBottomPadding } from "@shared/ui";
+import {
+  Text,
+  VStack,
+  Button,
+  TextField,
+  Card,
+  useBottomPadding,
+} from "@shared/ui";
 
 type Props = {
   navigation?: { navigate: (s: string) => void };
@@ -34,7 +41,7 @@ export default function EmailVerificationScreen({ route }: Props) {
     "Invalid code. Please try again.";
 
   return (
-    <View style={{ flex: 1, backgroundColor: palette.surface.primary }}>
+    <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView
         style={{ flex: 1 }}
         edges={["top", "left", "right", "bottom"]}
@@ -42,18 +49,18 @@ export default function EmailVerificationScreen({ route }: Props) {
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
-            paddingHorizontal: 24,
-            paddingTop: 40,
+            paddingHorizontal: 20,
+            paddingTop: 32,
             paddingBottom: bottomPadding,
           }}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={{ alignItems: "flex-start" }}>
+          <View style={{ alignItems: "flex-start", paddingHorizontal: 4 }}>
             <View
               style={{
-                width: 56,
-                height: 56,
-                borderRadius: radius.lg,
+                width: 72,
+                height: 72,
+                borderRadius: radius.full,
                 backgroundColor: palette.success.bg,
                 alignItems: "center",
                 justifyContent: "center",
@@ -61,17 +68,20 @@ export default function EmailVerificationScreen({ route }: Props) {
             >
               <ShieldCheck
                 color={palette.success.text}
-                size={28}
-                strokeWidth={1.8}
+                size={34}
+                strokeWidth={1.6}
               />
             </View>
           </View>
 
-          <VStack gap={10} style={{ marginTop: 20 }}>
-            <Text variant="display-sm" tone="primary">
+          <VStack gap={4} style={{ marginTop: 20, paddingHorizontal: 4 }}>
+            <Text variant="overline" tone="tertiary">
+              Verification
+            </Text>
+            <Text variant="h1" tone="primary">
               Verify your email
             </Text>
-            <Text variant="body-lg" tone="secondary">
+            <Text variant="body-sm" tone="tertiary">
               We sent a 6-digit code{email ? ` to ${email}` : ""}. Enter it
               below to continue.
             </Text>
@@ -94,7 +104,7 @@ export default function EmailVerificationScreen({ route }: Props) {
             </View>
           )}
 
-          <VStack gap={16} style={{ marginTop: 28 }}>
+          <Card elevation="raised" style={{ marginTop: 24 }}>
             <TextField
               label="Verification code"
               placeholder="6-digit code"
@@ -102,9 +112,9 @@ export default function EmailVerificationScreen({ route }: Props) {
               value={token}
               onChangeText={setToken}
             />
-          </VStack>
+          </Card>
 
-          <View style={{ marginTop: 28 }}>
+          <View style={{ marginTop: 24 }}>
             <Button
               label="Verify"
               onPress={submit}

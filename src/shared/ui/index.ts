@@ -3,5 +3,7 @@ export { Button } from "./Button";
 export { Stack, VStack, HStack } from "./Stack";
 export { TextField } from "./TextField";
 export { Card } from "./Card";
+export { GradientHero } from "./GradientHero";
+export { StatTile } from "./StatTile";
 export { StatusChip } from "./StatusChip";
 export { useBottomPadding, useTabBottomPadding } from "./useBottomPadding";

@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  Pressable,
-  RefreshControl,
-} from "react-native";
+import { View, FlatList, StyleSheet, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { ReceiptIndianRupee, ChevronRight } from "lucide-react-native";
@@ -15,8 +9,15 @@ import {
   useBillingStats,
 } from "@modules/billing/hooks/useBilling";
 import { Invoice, INVOICE_TONE } from "@modules/billing/types";
-import { palette, radius, shadows } from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip } from "@shared/ui";
+import { palette, radius } from "@shared/designSystem";
+import {
+  Text,
+  VStack,
+  HStack,
+  StatusChip,
+  Card,
+  GradientHero,
+} from "@shared/ui";
 
 export default function MyBillsScreen() {
   const navigation = useNavigation<any>();
@@ -29,31 +30,42 @@ export default function MyBillsScreen() {
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.header}>
           <VStack gap={2}>
+            <Text variant="overline" tone="tertiary">
+              Ad Pali
+            </Text>
             <Text variant="h1" tone="primary">
               My bills
             </Text>
             <Text variant="body-sm" tone="tertiary">
-              Ad Pali monthly invoices
+              Monthly invoices
             </Text>
           </VStack>
         </View>
 
-        <View style={{ paddingHorizontal: 20 }}>
-          <HStack gap={12}>
-            <Stat
-              label="Outstanding"
-              value={
-                stats ? `₹${stats.outstanding.toLocaleString("en-IN")}` : "—"
-              }
-              warn={!!stats?.outstanding}
-            />
-            <Stat
-              label="Paid total"
-              value={
-                stats ? `₹${stats.collected.toLocaleString("en-IN")}` : "—"
-              }
-            />
-          </HStack>
+        <View style={{ paddingHorizontal: 20, paddingBottom: 4 }}>
+          <GradientHero variant={stats?.outstanding ? "clay" : "hero"}>
+            <Text
+              variant="overline"
+              style={{ color: "rgba(255,255,255,0.66)" }}
+            >
+              Outstanding
+            </Text>
+            <Text variant="display-md" tone="inverse" style={{ marginTop: 4 }}>
+              {stats ? `₹${stats.outstanding.toLocaleString("en-IN")}` : "—"}
+            </Text>
+            <View style={styles.heroDivider} />
+            <HStack justify="space-between" align="center">
+              <Text
+                variant="body-sm"
+                style={{ color: "rgba(255,255,255,0.74)" }}
+              >
+                Paid total
+              </Text>
+              <Text variant="label-lg" tone="inverse">
+                {stats ? `₹${stats.collected.toLocaleString("en-IN")}` : "—"}
+              </Text>
+            </HStack>
+          </GradientHero>
         </View>
 
         <FlatList
@@ -68,12 +80,14 @@ export default function MyBillsScreen() {
             />
           }
           ListEmptyComponent={
-            <VStack align="center" gap={8} style={{ marginTop: 50 }}>
-              <ReceiptIndianRupee
-                size={40}
-                color={palette.text.disabled}
-                strokeWidth={1.5}
-              />
+            <VStack align="center" gap={10} style={{ marginTop: 60 }}>
+              <View style={styles.emptyIcon}>
+                <ReceiptIndianRupee
+                  size={32}
+                  color={palette.ink[300]}
+                  strokeWidth={1.5}
+                />
+              </View>
               <Text variant="body" tone="tertiary">
                 {isLoading ? "Loading..." : "No bills yet."}
               </Text>
@@ -102,10 +116,7 @@ function InvoiceRow({
   onPress: () => void;
 }) {
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && { opacity: 0.92 }]}
-    >
+    <Card onPress={onPress} elevation="raised">
       <HStack gap={12} align="center">
         <VStack gap={5} flex={1}>
           <HStack gap={8} align="center">
@@ -128,7 +139,7 @@ function InvoiceRow({
         </Text>
         <ChevronRight size={18} color={palette.text.tertiary} />
       </HStack>
-    </Pressable>
+    </Card>
   );
 }
 
@@ -140,52 +151,19 @@ function fmt(d: string) {
   }
 }
 
-function Stat({
-  label,
-  value,
-  warn,
-}: {
-  label: string;
-  value: string;
-  warn?: boolean;
-}) {
-  return (
-    <View
-      style={[
-        styles.stat,
-        warn && {
-          borderColor: palette.danger.border,
-          backgroundColor: palette.danger.bg,
-        },
-      ]}
-    >
-      <Text variant="h2" tone="primary">
-        {value}
-      </Text>
-      <Text variant="caption" tone="tertiary">
-        {label}
-      </Text>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
-  stat: {
-    flex: 1,
-    backgroundColor: palette.surface.primary,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: palette.border.default,
-    padding: 16,
-    ...shadows.xs,
+  heroDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.16)",
+    marginVertical: 16,
   },
-  card: {
-    backgroundColor: palette.surface.primary,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: palette.border.default,
-    padding: 16,
-    ...shadows.xs,
+  emptyIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.full,
+    backgroundColor: palette.ink[50],
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

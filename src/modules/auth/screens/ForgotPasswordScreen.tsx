@@ -4,7 +4,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Mail } from "lucide-react-native";
 import { useForgotPassword } from "@modules/auth/hooks/useAuth";
 import { palette } from "@shared/designSystem";
-import { Text, VStack, Button, TextField, useBottomPadding } from "@shared/ui";
+import {
+  Text,
+  VStack,
+  Button,
+  TextField,
+  Card,
+  useBottomPadding,
+} from "@shared/ui";
 
 type Props = {
   navigation: { navigate: (s: string, p?: object) => void; goBack: () => void };
@@ -27,27 +34,30 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: palette.surface.primary }}>
+    <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
-            paddingHorizontal: 24,
-            paddingTop: 40,
+            paddingHorizontal: 20,
+            paddingTop: 32,
             paddingBottom: bottomPadding,
           }}
           keyboardShouldPersistTaps="handled"
         >
-          <VStack gap={10}>
-            <Text variant="display-sm" tone="primary">
+          <VStack gap={4} style={{ paddingHorizontal: 4 }}>
+            <Text variant="overline" tone="tertiary">
+              Account recovery
+            </Text>
+            <Text variant="h1" tone="primary">
               Forgot password
             </Text>
-            <Text variant="body-lg" tone="secondary">
+            <Text variant="body-sm" tone="tertiary">
               Enter your email and we&apos;ll send a 6-digit reset code.
             </Text>
           </VStack>
 
-          <VStack gap={16} style={{ marginTop: 28 }}>
+          <Card elevation="raised" style={{ marginTop: 24 }}>
             <TextField
               label="Email"
               leading={
@@ -63,9 +73,9 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
               value={email}
               onChangeText={setEmail}
             />
-          </VStack>
+          </Card>
 
-          <View style={{ marginTop: 28 }}>
+          <View style={{ marginTop: 24 }}>
             <Button
               label="Send reset code"
               onPress={submit}

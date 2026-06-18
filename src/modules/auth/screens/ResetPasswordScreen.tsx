@@ -4,7 +4,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyRound, Lock } from "lucide-react-native";
 import { useResetPassword } from "@modules/auth/hooks/useAuth";
 import { palette, radius } from "@shared/designSystem";
-import { Text, VStack, Button, TextField, useBottomPadding } from "@shared/ui";
+import {
+  Text,
+  VStack,
+  Button,
+  TextField,
+  Card,
+  useBottomPadding,
+} from "@shared/ui";
 
 type Props = {
   navigation: { navigate: (s: string) => void };
@@ -32,22 +39,25 @@ export default function ResetPasswordScreen({ navigation }: Props) {
     "Could not reset password.";
 
   return (
-    <View style={{ flex: 1, backgroundColor: palette.surface.primary }}>
+    <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
-            paddingHorizontal: 24,
-            paddingTop: 40,
+            paddingHorizontal: 20,
+            paddingTop: 32,
             paddingBottom: bottomPadding,
           }}
           keyboardShouldPersistTaps="handled"
         >
-          <VStack gap={10}>
-            <Text variant="display-sm" tone="primary">
+          <VStack gap={4} style={{ paddingHorizontal: 4 }}>
+            <Text variant="overline" tone="tertiary">
+              Account recovery
+            </Text>
+            <Text variant="h1" tone="primary">
               Reset password
             </Text>
-            <Text variant="body-lg" tone="secondary">
+            <Text variant="body-sm" tone="tertiary">
               Enter the code from your email and a new password.
             </Text>
           </VStack>
@@ -70,10 +80,12 @@ export default function ResetPasswordScreen({ navigation }: Props) {
           )}
 
           {done ? (
-            <View style={{ marginTop: 28 }}>
-              <Text variant="body-lg" tone="primary">
-                Password updated. You can now sign in.
-              </Text>
+            <View style={{ marginTop: 24 }}>
+              <Card elevation="raised">
+                <Text variant="body-lg" tone="primary">
+                  Password updated. You can now sign in.
+                </Text>
+              </Card>
               <Button
                 label="Back to sign in"
                 size="lg"
@@ -83,37 +95,39 @@ export default function ResetPasswordScreen({ navigation }: Props) {
             </View>
           ) : (
             <>
-              <VStack gap={16} style={{ marginTop: 28 }}>
-                <TextField
-                  label="Reset code"
-                  leading={
-                    <KeyRound
-                      size={18}
-                      color={palette.text.tertiary}
-                      strokeWidth={1.6}
-                    />
-                  }
-                  placeholder="6-digit code"
-                  keyboardType="number-pad"
-                  value={token}
-                  onChangeText={setToken}
-                />
-                <TextField
-                  label="New password"
-                  leading={
-                    <Lock
-                      size={18}
-                      color={palette.text.tertiary}
-                      strokeWidth={1.6}
-                    />
-                  }
-                  placeholder="At least 6 characters"
-                  secureTextEntry
-                  value={password}
-                  onChangeText={setPassword}
-                />
-              </VStack>
-              <View style={{ marginTop: 28 }}>
+              <Card elevation="raised" style={{ marginTop: 24 }}>
+                <VStack gap={16}>
+                  <TextField
+                    label="Reset code"
+                    leading={
+                      <KeyRound
+                        size={18}
+                        color={palette.text.tertiary}
+                        strokeWidth={1.6}
+                      />
+                    }
+                    placeholder="6-digit code"
+                    keyboardType="number-pad"
+                    value={token}
+                    onChangeText={setToken}
+                  />
+                  <TextField
+                    label="New password"
+                    leading={
+                      <Lock
+                        size={18}
+                        color={palette.text.tertiary}
+                        strokeWidth={1.6}
+                      />
+                    }
+                    placeholder="At least 6 characters"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                  />
+                </VStack>
+              </Card>
+              <View style={{ marginTop: 24 }}>
                 <Button
                   label="Reset password"
                   onPress={submit}

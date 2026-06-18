@@ -255,6 +255,59 @@ export const motion = {
   },
 } as const;
 
+/**
+ * Gradients — 2026 "atmospheric" backgrounds. Each is an ordered color stop
+ * array consumed by expo-linear-gradient (`colors={gradients.hero}`).
+ * Pair with the default {x:0,y:0}→{x:1,y:1} direction for a soft diagonal.
+ */
+export const gradients = {
+  // Deep forest hero — the signature surface for headers / feature cards.
+  hero: ["#10311A", "#0A1E10", "#06160B"] as const,
+  // Forest with a hint of life, slightly lighter for raised dark cards.
+  forest: ["#1C4726", "#10311A"] as const,
+  // Clay accent — for the primary metric / call-to-action surfaces.
+  clay: ["#CF7650", "#C2683B", "#A2522D"] as const,
+  // Warm sand — barely-there sheen for light bento tiles.
+  sand: ["#FFFFFF", "#FAF7F0"] as const,
+  // Subtle moss tint for "open/active" module tiles.
+  moss: ["#F3F8F1", "#EBF3EC"] as const,
+} as const;
+
+/**
+ * Glass — translucent overlay surfaces (2026 glassmorphism). Use on top of
+ * imagery or gradients; pair with `expo-blur` if a real blur is wanted, else
+ * the rgba fill alone reads as a frosted panel over busy backgrounds.
+ */
+export const glass = {
+  light: {
+    backgroundColor: "rgba(255,255,255,0.14)",
+    borderColor: "rgba(255,255,255,0.22)",
+    borderWidth: 1,
+  },
+  lighter: {
+    backgroundColor: "rgba(255,255,255,0.10)",
+    borderColor: "rgba(255,255,255,0.16)",
+    borderWidth: 1,
+  },
+  dark: {
+    backgroundColor: "rgba(10,30,16,0.32)",
+    borderColor: "rgba(255,255,255,0.10)",
+    borderWidth: 1,
+  },
+} as const;
+
+/**
+ * Elevation — Apple-HIG-style z-axis layers for 2026 spatial depth. Compose
+ * over a card the same way `shadows.*` is spread; "raised" and "overlay" carry
+ * progressively stronger, softer shadows so hierarchy reads by depth not color.
+ */
+export const elevation = {
+  base: shadows.xs, // content sitting on the page
+  raised: shadows.md, // interactive cards / bento tiles
+  floating: shadows.lg, // popovers, the floating action surfaces
+  overlay: shadows.xl, // modals, sheets, the very top layer
+} as const;
+
 export const layout = {
   screenPadding: 20,
   cardPadding: 20,

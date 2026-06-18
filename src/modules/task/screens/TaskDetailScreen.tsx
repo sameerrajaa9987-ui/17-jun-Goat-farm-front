@@ -31,7 +31,7 @@ import { STATUS_LABEL, STATUS_TONE } from "@modules/task/taskMeta";
 import { uploadImage } from "@modules/goat/api/goatApi";
 import { mediaUrl } from "@modules/goat/screens/GoatListScreen";
 import { useAuthStore } from "@shared/store/useAuthStore";
-import { palette, radius } from "@shared/designSystem";
+import { palette, radius, shadows } from "@shared/designSystem";
 import {
   Text,
   VStack,
@@ -40,6 +40,7 @@ import {
   StatusChip,
   Button,
   TextField,
+  GradientHero,
 } from "@shared/ui";
 
 export default function TaskDetailScreen() {
@@ -108,21 +109,33 @@ export default function TaskDetailScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+          <Pressable
+            onPress={() => navigation.goBack()}
+            style={styles.backBtn}
+            hitSlop={8}
+          >
+            <ChevronLeft
+              size={22}
+              color={palette.text.primary}
+              strokeWidth={2}
+            />
           </Pressable>
-          <Text variant="h3" tone="primary">
+          <Text variant="overline" tone="tertiary">
             Task
           </Text>
-          <View style={{ width: 26 }} />
+          <View style={{ width: 44 }} />
         </View>
 
         <ScrollView
-          contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+          contentContainerStyle={{
+            padding: 20,
+            paddingTop: 4,
+            paddingBottom: 40,
+          }}
           showsVerticalScrollIndicator={false}
         >
-          <Card>
-            <VStack gap={8}>
+          <GradientHero variant="forest">
+            <VStack gap={10}>
               <HStack justify="space-between" align="center">
                 <StatusChip
                   label={STATUS_LABEL[task.status]}
@@ -132,10 +145,13 @@ export default function TaskDetailScreen() {
                   <StatusChip label="High priority" tone="danger" />
                 ) : null}
               </HStack>
-              <Text variant="h2" tone="primary">
+              <Text variant="h2" tone="inverse">
                 {task.title}
               </Text>
-              <Text variant="body-sm" tone="tertiary">
+              <Text
+                variant="body-sm"
+                style={{ color: "rgba(255,255,255,0.74)" }}
+              >
                 {TASK_TYPE_LABEL[task.type]} · Due {due}
               </Text>
               {task.goat ? (
@@ -144,18 +160,21 @@ export default function TaskDetailScreen() {
                     navigation.navigate("GoatProfile", { id: task.goat!.id })
                   }
                 >
-                  <Text variant="label" tone="accent">
+                  <Text variant="label" style={{ color: palette.amber[200] }}>
                     Goat: {task.goat.name || task.goat.goatId}
                   </Text>
                 </Pressable>
               ) : null}
               {task.assignedTo ? (
-                <Text variant="body-sm" tone="secondary">
+                <Text
+                  variant="body-sm"
+                  style={{ color: "rgba(255,255,255,0.74)" }}
+                >
                   Assigned to {task.assignedTo.name}
                 </Text>
               ) : null}
             </VStack>
-          </Card>
+          </GradientHero>
 
           {task.status === "rejected" && task.rejectionReason ? (
             <Card
@@ -179,7 +198,7 @@ export default function TaskDetailScreen() {
 
           {/* Existing proof */}
           {task.proof.length > 0 && (
-            <Card style={{ marginTop: 16 }}>
+            <Card style={{ marginTop: 16 }} elevation="raised">
               <Text variant="h4" tone="primary" style={{ marginBottom: 10 }}>
                 Proof submitted
               </Text>
@@ -206,7 +225,7 @@ export default function TaskDetailScreen() {
 
           {/* Worker actions */}
           {!isManager && isOwn && task.status !== "approved" && (
-            <Card style={{ marginTop: 16 }}>
+            <Card style={{ marginTop: 16 }} elevation="raised">
               {task.status === "pending" && (
                 <Button
                   label="Start task"
@@ -271,7 +290,7 @@ export default function TaskDetailScreen() {
 
           {/* Manager approval */}
           {isManager && task.status === "submitted" && (
-            <Card style={{ marginTop: 16 }}>
+            <Card style={{ marginTop: 16 }} elevation="raised">
               <Text variant="h4" tone="primary" style={{ marginBottom: 12 }}>
                 Review
               </Text>
@@ -400,6 +419,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 12,
+  },
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadows.xs,
   },
   proofGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   proofImg: {

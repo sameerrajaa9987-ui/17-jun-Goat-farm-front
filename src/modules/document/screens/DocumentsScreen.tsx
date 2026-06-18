@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   ChevronLeft,
   Plus,
@@ -32,7 +33,13 @@ import {
 import { uploadImage } from "@modules/goat/api/goatApi";
 import { mediaUrl } from "@modules/goat/screens/GoatListScreen";
 import { useAuthStore } from "@shared/store/useAuthStore";
-import { palette, radius, shadows } from "@shared/designSystem";
+import {
+  palette,
+  radius,
+  shadows,
+  gradients,
+  elevation,
+} from "@shared/designSystem";
 import {
   Text,
   VStack,
@@ -40,6 +47,7 @@ import {
   StatusChip,
   Button,
   TextField,
+  Card,
 } from "@shared/ui";
 
 const TYPES: DocumentType[] = [
@@ -73,13 +81,22 @@ export default function DocumentsScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.topbar}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-            <ChevronLeft size={26} color={palette.text.primary} />
+          <Pressable
+            onPress={() => navigation.goBack()}
+            hitSlop={10}
+            style={styles.backBtn}
+          >
+            <ChevronLeft size={24} color={palette.text.primary} />
           </Pressable>
-          <Text variant="h3" tone="primary">
-            {title || "Documents"}
-          </Text>
-          <View style={{ width: 26 }} />
+          <VStack gap={2} flex={1} style={{ marginLeft: 12 }}>
+            <Text variant="overline" tone="tertiary">
+              Records
+            </Text>
+            <Text variant="h1" tone="primary">
+              {title || "Documents"}
+            </Text>
+          </VStack>
+          <View style={{ width: 44 }} />
         </View>
 
         <FlatList
@@ -94,12 +111,14 @@ export default function DocumentsScreen() {
             />
           }
           ListEmptyComponent={
-            <VStack align="center" gap={8} style={{ marginTop: 50 }}>
-              <FileText
-                size={40}
-                color={palette.text.disabled}
-                strokeWidth={1.5}
-              />
+            <VStack align="center" gap={10} style={{ marginTop: 60 }}>
+              <View style={styles.emptyIcon}>
+                <FileText
+                  size={32}
+                  color={palette.ink[300]}
+                  strokeWidth={1.5}
+                />
+              </View>
               <Text variant="body" tone="tertiary">
                 {isLoading ? "Loading..." : "No documents yet."}
               </Text>
@@ -110,8 +129,15 @@ export default function DocumentsScreen() {
         />
 
         {canManage && (
-          <Pressable style={styles.fab} onPress={() => setAdding(true)}>
-            <Plus size={24} color={palette.text.inverse} strokeWidth={2.2} />
+          <Pressable style={styles.fabWrap} onPress={() => setAdding(true)}>
+            <LinearGradient
+              colors={gradients.clay}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.fab}
+            >
+              <Plus size={24} color={palette.text.inverse} strokeWidth={2.4} />
+            </LinearGradient>
           </Pressable>
         )}
       </SafeAreaView>
@@ -128,8 +154,10 @@ export default function DocumentsScreen() {
 
 function DocRow({ doc }: { doc: FarmDocument }) {
   return (
-    <Pressable
+    <Card
       onPress={() => Linking.openURL(mediaUrl(doc.url))}
+      elevation="raised"
+      padded={false}
       style={styles.card}
     >
       <HStack gap={12} align="center">
@@ -151,7 +179,7 @@ function DocRow({ doc }: { doc: FarmDocument }) {
         </VStack>
         <ExternalLink size={18} color={palette.text.tertiary} />
       </HStack>
-    </Pressable>
+    </Card>
   );
 }
 
@@ -291,17 +319,29 @@ const styles = StyleSheet.create({
   topbar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingTop: 8,
+    paddingBottom: 12,
   },
-  card: {
+  backBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
     backgroundColor: palette.surface.primary,
-    borderRadius: radius.xl,
     borderWidth: 1,
     borderColor: palette.border.default,
-    padding: 14,
+    alignItems: "center",
+    justifyContent: "center",
     ...shadows.xs,
+  },
+  card: { padding: 14 },
+  emptyIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.full,
+    backgroundColor: palette.ink[50],
+    alignItems: "center",
+    justifyContent: "center",
   },
   icon: {
     width: 42,
@@ -311,17 +351,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  fab: {
+  fabWrap: {
     position: "absolute",
     right: 20,
     bottom: 28,
-    width: 56,
-    height: 56,
     borderRadius: radius.full,
-    backgroundColor: palette.ink[900],
+    ...elevation.floating,
+  },
+  fab: {
+    width: 58,
+    height: 58,
+    borderRadius: radius.full,
     alignItems: "center",
     justifyContent: "center",
-    ...shadows.lg,
   },
   sheetBackdrop: {
     flex: 1,

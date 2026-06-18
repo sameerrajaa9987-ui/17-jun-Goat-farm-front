@@ -5,14 +5,16 @@ import {
   StyleSheet,
   Pressable,
   RefreshControl,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
-import { UserPlus, Power } from "lucide-react-native";
+import { UserPlus, Power, Users, ChevronRight } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { useUsers, useSetUserActive } from "@modules/team/hooks/useTeam";
 import { TeamUser } from "@modules/team/types";
-import { palette, radius } from "@shared/designSystem";
+import { palette, radius, gradients, elevation } from "@shared/designSystem";
 import { Text, VStack, HStack, Card, StatusChip } from "@shared/ui";
 
 const ROLE_FILTERS = ["all", "manager", "worker", "vet", "client"] as const;
@@ -31,7 +33,10 @@ export default function TeamScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.header}>
-          <VStack gap={2} flex={1}>
+          <VStack gap={3} flex={1}>
+            <Text variant="overline" tone="tertiary">
+              People
+            </Text>
             <Text variant="h1" tone="primary">
               Team
             </Text>
@@ -39,19 +44,14 @@ export default function TeamScreen() {
               {data?.meta?.total ?? 0} accounts
             </Text>
           </VStack>
-          <Pressable
-            style={styles.addBtn}
-            onPress={() => navigation.navigate("AddUser")}
-          >
-            <UserPlus size={18} color={palette.text.inverse} strokeWidth={2} />
-            <Text variant="label" tone="inverse">
-              Add
-            </Text>
-          </Pressable>
         </View>
 
         {/* Role filter chips */}
-        <View style={styles.filters}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filters}
+        >
           {ROLE_FILTERS.map((r) => {
             const active = filter === r;
             return (
@@ -73,15 +73,15 @@ export default function TeamScreen() {
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
 
         <FlatList
           data={users}
           keyExtractor={(u) => u.id}
           contentContainerStyle={{
             padding: 20,
-            paddingTop: 8,
-            paddingBottom: 40,
+            paddingTop: 12,
+            paddingBottom: 110,
           }}
           refreshControl={
             <RefreshControl
@@ -91,14 +91,14 @@ export default function TeamScreen() {
             />
           }
           ListEmptyComponent={
-            <Text
-              variant="body"
-              tone="tertiary"
-              align="center"
-              style={{ marginTop: 40 }}
-            >
-              {isLoading ? t("common.loading") : "No team members yet."}
-            </Text>
+            <VStack align="center" gap={10} style={{ marginTop: 60 }}>
+              <View style={styles.emptyIcon}>
+                <Users size={34} color={palette.ink[300]} strokeWidth={1.5} />
+              </View>
+              <Text variant="body" tone="tertiary">
+                {isLoading ? t("common.loading") : "No team members yet."}
+              </Text>
+            </VStack>
           }
           renderItem={({ item }) => (
             <UserRow
@@ -111,6 +111,24 @@ export default function TeamScreen() {
           )}
           ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
         />
+
+        <Pressable
+          style={styles.fabWrap}
+          onPress={() => navigation.navigate("AddUser")}
+        >
+          <LinearGradient
+            colors={gradients.clay}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.fab}
+          >
+            <UserPlus
+              size={24}
+              color={palette.text.inverse}
+              strokeWidth={2.2}
+            />
+          </LinearGradient>
+        </Pressable>
       </SafeAreaView>
     </View>
   );
@@ -127,7 +145,7 @@ function UserRow({
 }) {
   const { t } = useTranslation();
   return (
-    <Card>
+    <Card elevation="raised">
       <HStack gap={12} align="center">
         <View style={styles.avatar}>
           <Text variant="label-lg" tone="inverse">
@@ -149,7 +167,7 @@ function UserRow({
             />
           </HStack>
         </VStack>
-        {user.role !== "owner" && (
+        {user.role !== "owner" ? (
           <Pressable
             onPress={onToggle}
             disabled={busy}
@@ -162,6 +180,12 @@ function UserRow({
               strokeWidth={1.8}
             />
           </Pressable>
+        ) : (
+          <ChevronRight
+            size={18}
+            color={palette.text.tertiary}
+            strokeWidth={2}
+          />
         )}
       </HStack>
     </Card>
@@ -176,25 +200,15 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 12,
   },
-  addBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    backgroundColor: palette.ink[900],
-    paddingHorizontal: 14,
-    paddingVertical: 9,
-    borderRadius: radius.full,
-  },
   filters: {
-    flexDirection: "row",
-    flexWrap: "wrap",
     gap: 8,
     paddingHorizontal: 20,
-    paddingBottom: 4,
+    paddingTop: 6,
+    paddingBottom: 2,
   },
   chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: radius.full,
     borderWidth: 1,
     borderColor: palette.border.default,
@@ -203,6 +217,14 @@ const styles = StyleSheet.create({
   chipActive: {
     backgroundColor: palette.ink[900],
     borderColor: palette.ink[900],
+  },
+  emptyIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.full,
+    backgroundColor: palette.ink[50],
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatar: {
     width: 44,
@@ -220,5 +242,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: palette.border.default,
+  },
+  fabWrap: {
+    position: "absolute",
+    right: 20,
+    bottom: 28,
+    borderRadius: radius.full,
+    ...elevation.floating,
+  },
+  fab: {
+    width: 58,
+    height: 58,
+    borderRadius: radius.full,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
