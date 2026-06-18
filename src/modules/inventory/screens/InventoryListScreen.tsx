@@ -271,6 +271,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 15,
+    fontFamily: "Inter_400Regular",
     color: palette.text.primary,
     paddingVertical: 0,
   },

@@ -57,6 +57,16 @@ const variantMap = {
   overline: typography.overline,
 } as const;
 
+// Map a font weight to the matching bundled Inter family. Using the specific
+// weighted file (instead of fontWeight) gives correct, consistent rendering on
+// every device regardless of the system font.
+const INTER_BY_WEIGHT: Record<string, string> = {
+  "400": "Inter_400Regular",
+  "500": "Inter_500Medium",
+  "600": "Inter_600SemiBold",
+  "700": "Inter_700Bold",
+};
+
 const toneMap: Record<Tone, string> = {
   primary: palette.text.primary,
   secondary: palette.text.secondary,
@@ -77,13 +87,16 @@ export function Text({
   children,
 }: Props) {
   const base = variantMap[variant];
+  const effectiveWeight = weight ?? base.fontWeight;
+  const fontFamily = INTER_BY_WEIGHT[effectiveWeight] ?? "Inter_400Regular";
   return (
     <RNText
       numberOfLines={numberOfLines}
       style={[
         base,
-        { color: toneMap[tone] },
-        weight ? { fontWeight: weight } : undefined,
+        // The weighted Inter file carries the weight, so clear fontWeight to
+        // avoid synthetic (faux) bolding on top of it.
+        { fontFamily, fontWeight: undefined, color: toneMap[tone] },
         align ? { textAlign: align } : undefined,
         style,
       ]}

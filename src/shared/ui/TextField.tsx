@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 15,
+    fontFamily: "Inter_400Regular",
     color: palette.text.primary,
     paddingVertical: 14,
   },
