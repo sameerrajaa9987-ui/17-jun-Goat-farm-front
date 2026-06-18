@@ -35,7 +35,7 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Raise Gradle memory (fix KSP "OutOfMemoryError: Metaspace")
+      - name: Raise Gradle memory (fix KSP Metaspace OOM)
         # Written to the global Gradle home so it survives `expo prebuild`
         # regenerating android/gradle.properties during `eas build --local`.
         run: |
