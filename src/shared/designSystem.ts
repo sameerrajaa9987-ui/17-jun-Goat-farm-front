@@ -180,13 +180,13 @@ export const typography = {
     },
     medium: {
       fontSize: 13,
-      lineHeight: 16,
+      lineHeight: 18,
       fontWeight: "600" as const,
       letterSpacing: 0,
     },
     small: {
       fontSize: 11,
-      lineHeight: 14,
+      lineHeight: 16,
       fontWeight: "600" as const,
       letterSpacing: 0.2,
     },
@@ -199,7 +199,7 @@ export const typography = {
   },
   overline: {
     fontSize: 11,
-    lineHeight: 14,
+    lineHeight: 16,
     fontWeight: "700" as const,
     letterSpacing: 1.2,
     textTransform: "uppercase" as const,
