@@ -109,6 +109,7 @@ export default function GoatListScreen() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
+          style={styles.filterBar}
           contentContainerStyle={styles.filters}
         >
           {FILTERS.map((f) => {
@@ -292,8 +293,10 @@ const styles = StyleSheet.create({
     color: palette.text.primary,
     paddingVertical: 0,
   },
+  filterBar: { flexGrow: 0 },
   filters: {
     gap: 8,
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 14,
     paddingBottom: 2,

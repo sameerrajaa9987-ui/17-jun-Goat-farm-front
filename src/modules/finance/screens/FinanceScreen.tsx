@@ -180,7 +180,8 @@ export default function FinanceScreen() {
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ gap: 8 }}
+                style={{ flexGrow: 0 }}
+                contentContainerStyle={{ gap: 8, alignItems: "center" }}
               >
                 {FILTERS.map((f) => {
                   const active = filter === f.key;
@@ -390,8 +391,8 @@ function AddTxModal({
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={{ marginTop: 14 }}
-            contentContainerStyle={{ gap: 8 }}
+            style={{ marginTop: 14, flexGrow: 0 }}
+            contentContainerStyle={{ gap: 8, alignItems: "center" }}
           >
             {categories.map((c) => (
               <Pressable

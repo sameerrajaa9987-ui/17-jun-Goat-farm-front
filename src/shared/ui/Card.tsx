@@ -7,6 +7,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { palette, radius, elevation, motion } from "../designSystem";
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 type Elevation = keyof typeof elevation;
 
 interface Props {
@@ -41,16 +43,14 @@ export function Card({
 
   if (onPress) {
     return (
-      <Animated.View style={animStyle}>
-        <Pressable
-          onPress={onPress}
-          onPressIn={() => scale.set(withSpring(0.97, motion.spring.crisp))}
-          onPressOut={() => scale.set(withSpring(1, motion.spring.gentle))}
-          style={[base, style]}
-        >
-          {children}
-        </Pressable>
-      </Animated.View>
+      <AnimatedPressable
+        onPress={onPress}
+        onPressIn={() => scale.set(withSpring(0.97, motion.spring.crisp))}
+        onPressOut={() => scale.set(withSpring(1, motion.spring.gentle))}
+        style={[base, style, animStyle]}
+      >
+        {children}
+      </AnimatedPressable>
     );
   }
   return <Animated.View style={[base, style]}>{children}</Animated.View>;

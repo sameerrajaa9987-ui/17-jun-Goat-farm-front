@@ -50,6 +50,7 @@ export default function TeamScreen() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
+          style={styles.filterBar}
           contentContainerStyle={styles.filters}
         >
           {ROLE_FILTERS.map((r) => {
@@ -200,8 +201,10 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 12,
   },
+  filterBar: { flexGrow: 0 },
   filters: {
     gap: 8,
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 6,
     paddingBottom: 2,

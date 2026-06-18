@@ -83,6 +83,7 @@ export default function TasksScreen() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
+          style={styles.filterBar}
           contentContainerStyle={styles.filters}
         >
           {filters.map((f) => {
@@ -234,8 +235,10 @@ function TaskCard({
 
 const styles = StyleSheet.create({
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
+  filterBar: { flexGrow: 0 },
   filters: {
     gap: 8,
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 2,
     paddingBottom: 2,
