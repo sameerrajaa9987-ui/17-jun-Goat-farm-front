@@ -35,6 +35,13 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      - name: Raise Gradle memory (fix KSP "OutOfMemoryError: Metaspace")
+        # Written to the global Gradle home so it survives `expo prebuild`
+        # regenerating android/gradle.properties during `eas build --local`.
+        run: |
+          mkdir -p ~/.gradle
+          echo 'org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8' >> ~/.gradle/gradle.properties
+
       - name: Cache Gradle (reuse compiled native libs across runs)
         uses: actions/cache@v4
         with:
