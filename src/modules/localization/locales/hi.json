@@ -1,0 +1,48 @@
+{
+  "common": {
+    "appName": "बकरी फार्म मैनेजर",
+    "submit": "जमा करें",
+    "cancel": "रद्द करें",
+    "save": "सहेजें",
+    "continue": "जारी रखें",
+    "loading": "लोड हो रहा है...",
+    "retry": "पुनः प्रयास करें",
+    "logout": "लॉग आउट"
+  },
+  "auth": {
+    "welcomeBack": "वापसी पर स्वागत है",
+    "signInSubtitle": "अपने फार्म को प्रबंधित करने के लिए साइन इन करें।",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "phone": "फ़ोन",
+    "firstName": "पहला नाम",
+    "lastName": "उपनाम",
+    "signIn": "साइन इन करें",
+    "createAccount": "खाता बनाएँ",
+    "newHere": "बकरी फार्म मैनेजर पर नए हैं?",
+    "forgotPassword": "पासवर्ड भूल गए?",
+    "register": "अपना खाता बनाएँ",
+    "registerSubtitle": "अपना फार्म खाता सेट करें।",
+    "haveAccount": "पहले से खाता है?",
+    "resetPassword": "पासवर्ड रीसेट करें",
+    "verifyEmail": "अपना ईमेल सत्यापित करें",
+    "verificationCode": "सत्यापन कोड",
+    "invalidCredentials": "अमान्य क्रेडेंशियल। कृपया पुनः प्रयास करें।"
+  },
+  "roles": {
+    "owner": "मालिक",
+    "manager": "प्रबंधक",
+    "worker": "कर्मचारी",
+    "client": "एड पाली ग्राहक",
+    "vet": "पशु चिकित्सक"
+  },
+  "dashboard": {
+    "greeting": "नमस्ते, {{name}}",
+    "ownerSubtitle": "आपके फार्म का पूर्ण नियंत्रण।",
+    "managerSubtitle": "दैनिक संचालन चलाएँ।",
+    "workerSubtitle": "आज के आपके कार्य।",
+    "clientSubtitle": "आपकी बकरियाँ और बिल।",
+    "vetSubtitle": "स्वास्थ्य और उपचार।",
+    "comingSoon": "अगले चरण में आ रहा है"
+  }
+}

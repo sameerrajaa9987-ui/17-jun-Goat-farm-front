@@ -1,0 +1,94 @@
+/** Text — all typography routes through here for a consistent type system. */
+import React from "react";
+import { Text as RNText, TextStyle, StyleProp } from "react-native";
+import { typography, palette } from "../designSystem";
+
+type Variant =
+  | "display-lg"
+  | "display-md"
+  | "display-sm"
+  | "h1"
+  | "h2"
+  | "h3"
+  | "h4"
+  | "body-lg"
+  | "body"
+  | "body-sm"
+  | "label-lg"
+  | "label"
+  | "label-sm"
+  | "caption"
+  | "overline";
+
+type Tone =
+  | "primary"
+  | "secondary"
+  | "tertiary"
+  | "disabled"
+  | "inverse"
+  | "accent"
+  | "danger";
+
+interface Props {
+  variant?: Variant;
+  tone?: Tone;
+  weight?: "400" | "500" | "600" | "700";
+  align?: "left" | "center" | "right";
+  numberOfLines?: number;
+  style?: StyleProp<TextStyle>;
+  children: React.ReactNode;
+}
+
+const variantMap = {
+  "display-lg": typography.display.large,
+  "display-md": typography.display.medium,
+  "display-sm": typography.display.small,
+  h1: typography.heading.h1,
+  h2: typography.heading.h2,
+  h3: typography.heading.h3,
+  h4: typography.heading.h4,
+  "body-lg": typography.body.large,
+  body: typography.body.default,
+  "body-sm": typography.body.small,
+  "label-lg": typography.label.large,
+  label: typography.label.medium,
+  "label-sm": typography.label.small,
+  caption: typography.caption,
+  overline: typography.overline,
+} as const;
+
+const toneMap: Record<Tone, string> = {
+  primary: palette.text.primary,
+  secondary: palette.text.secondary,
+  tertiary: palette.text.tertiary,
+  disabled: palette.text.disabled,
+  inverse: palette.text.inverse,
+  accent: palette.text.accent,
+  danger: palette.danger.text,
+};
+
+export function Text({
+  variant = "body",
+  tone = "primary",
+  weight,
+  align,
+  numberOfLines,
+  style,
+  children,
+}: Props) {
+  const base = variantMap[variant];
+  return (
+    <RNText
+      numberOfLines={numberOfLines}
+      style={[
+        base,
+        { color: toneMap[tone] },
+        weight ? { fontWeight: weight } : undefined,
+        align ? { textAlign: align } : undefined,
+        style,
+      ]}
+    >
+      {children}
+    </RNText>
+  );
+}

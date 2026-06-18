@@ -1,0 +1,48 @@
+{
+  "common": {
+    "appName": "Goat Farm Manager",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "continue": "Continue",
+    "loading": "Loading...",
+    "retry": "Retry",
+    "logout": "Log out"
+  },
+  "auth": {
+    "welcomeBack": "Welcome back",
+    "signInSubtitle": "Sign in to manage your farm.",
+    "email": "Email",
+    "password": "Password",
+    "phone": "Phone",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "signIn": "Sign in",
+    "createAccount": "Create an account",
+    "newHere": "New to Goat Farm Manager?",
+    "forgotPassword": "Forgot password?",
+    "register": "Create your account",
+    "registerSubtitle": "Set up your farm account.",
+    "haveAccount": "Already have an account?",
+    "resetPassword": "Reset password",
+    "verifyEmail": "Verify your email",
+    "verificationCode": "Verification code",
+    "invalidCredentials": "Invalid credentials. Please try again."
+  },
+  "roles": {
+    "owner": "Owner",
+    "manager": "Manager",
+    "worker": "Worker",
+    "client": "Ad Pali Client",
+    "vet": "Veterinarian"
+  },
+  "dashboard": {
+    "greeting": "Hello, {{name}}",
+    "ownerSubtitle": "Full control of your farm.",
+    "managerSubtitle": "Run daily operations.",
+    "workerSubtitle": "Your tasks for today.",
+    "clientSubtitle": "Your goats and bills.",
+    "vetSubtitle": "Health and treatments.",
+    "comingSoon": "Coming in the next phase"
+  }
+}
