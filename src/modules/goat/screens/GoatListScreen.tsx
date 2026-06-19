@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     marginHorizontal: 20,
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     height: 48,
     borderRadius: radius.lg,
     borderWidth: 1,
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     color: palette.text.primary,
     paddingVertical: 0,
   },
-  card: { padding: 14 },
+  card: { padding: 16 },
   photo: {
     width: 58,
     height: 58,

@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: palette.border.subtle,
-    marginVertical: 14,
+    marginVertical: 16,
   },
   heroDivider: {
     height: 1,

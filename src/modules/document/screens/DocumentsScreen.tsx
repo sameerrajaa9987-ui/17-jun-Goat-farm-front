@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     ...shadows.xs,
   },
-  card: { padding: 14 },
+  card: { padding: 16 },
   emptyIcon: {
     width: 72,
     height: 72,
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
   },
   wrapRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   chip: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: radius.full,
     borderWidth: 1,
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     justifyContent: "center",
-    paddingVertical: 14,
+    paddingVertical: 16,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderStyle: "dashed",

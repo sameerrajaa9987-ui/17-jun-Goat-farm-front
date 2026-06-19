@@ -66,7 +66,7 @@ export default function ResetPasswordScreen({ navigation }: Props) {
             <View
               style={{
                 marginTop: 20,
-                padding: 14,
+                padding: 16,
                 borderRadius: radius.md,
                 backgroundColor: palette.danger.bg,
                 borderWidth: 1,

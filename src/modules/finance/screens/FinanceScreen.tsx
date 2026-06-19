@@ -139,7 +139,7 @@ export default function FinanceScreen() {
                 >
                   ₹{(pnl?.net ?? 0).toLocaleString("en-IN")}
                 </Text>
-                <HStack gap={20} style={{ marginTop: 18 }}>
+                <HStack gap={20} style={{ marginTop: 16 }}>
                   <HStack gap={6} align="center">
                     <TrendingUp size={16} color="#FFFFFF" strokeWidth={2} />
                     <Text
@@ -392,7 +392,7 @@ function AddTxModal({
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={{ marginTop: 14, flexGrow: 0 }}
+            style={{ marginTop: 16, flexGrow: 0 }}
             contentContainerStyle={{ gap: 8, alignItems: "center" }}
           >
             {categories.map((c) => (
@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    padding: 14,
+    padding: 16,
   },
   txIcon: {
     width: 38,
@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
   },
   catChip: {
     height: layout.chipHeight,
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     borderRadius: radius.full,
     borderWidth: 1,
     borderColor: palette.border.default,

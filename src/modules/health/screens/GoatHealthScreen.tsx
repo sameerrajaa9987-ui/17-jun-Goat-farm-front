@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   doneBtn: {
     backgroundColor: palette.ink[900],
     paddingHorizontal: 12,
-    paddingVertical: 7,
+    paddingVertical: 8,
     borderRadius: radius.full,
   },
   fabWrap: {

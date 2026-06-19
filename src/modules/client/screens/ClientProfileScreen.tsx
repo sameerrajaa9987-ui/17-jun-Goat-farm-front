@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: palette.border.subtle,
-    marginVertical: 14,
+    marginVertical: 16,
   },
   assignBtn: {
     flexDirection: "row",
@@ -491,7 +491,7 @@ const styles = StyleSheet.create({
   pick: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 14,
+    padding: 16,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.border.default,
@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
   },
   wrapRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   pkgChip: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: radius.full,
     borderWidth: 1,

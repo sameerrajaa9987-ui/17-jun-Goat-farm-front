@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     borderWidth: 1,
     borderColor: palette.border.default,
-    padding: 14,
+    padding: 16,
   },
   icon: {
     width: 38,

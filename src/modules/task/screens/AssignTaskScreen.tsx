@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
   },
   error: {
     marginBottom: 16,
-    padding: 14,
+    padding: 16,
     borderRadius: radius.md,
     backgroundColor: palette.danger.bg,
     borderWidth: 1,
@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
   },
   wrapRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   chip: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: radius.full,
     borderWidth: 1,
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 14,
+    padding: 16,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.border.default,

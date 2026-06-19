@@ -278,7 +278,7 @@ export default function DashboardScreen() {
                   <Text
                     variant="label-lg"
                     tone="primary"
-                    style={{ marginTop: 14 }}
+                    style={{ marginTop: 16 }}
                   >
                     {f.label}
                   </Text>
@@ -342,8 +342,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headline: { marginTop: 28 },
-  sectionLabel: { marginTop: 30, marginBottom: 14, marginLeft: 4 },
+  headline: { marginTop: 32 },
+  sectionLabel: { marginTop: 32, marginBottom: 16, marginLeft: 4 },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
   tile: { width: "47.5%" },
   iconWrap: {

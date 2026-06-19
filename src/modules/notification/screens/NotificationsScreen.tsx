@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  card: { padding: 14 },
+  card: { padding: 16 },
   unread: { borderColor: palette.ink[300], backgroundColor: palette.ink[50] },
   icon: {
     width: 38,

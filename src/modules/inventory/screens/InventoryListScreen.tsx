@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     gap: 8,
     marginHorizontal: 20,
     marginTop: 16,
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     height: 48,
     borderRadius: radius.lg,
     borderWidth: 1,

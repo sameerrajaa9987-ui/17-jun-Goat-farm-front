@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
   attChip: {
     flexGrow: 1,
     alignItems: "center",
-    paddingVertical: 11,
+    paddingVertical: 12,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.border.default,
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
   },
   payBtn: {
     backgroundColor: palette.ink[900],
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: radius.full,
   },

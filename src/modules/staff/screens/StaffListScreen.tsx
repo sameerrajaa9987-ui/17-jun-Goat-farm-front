@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     ...shadows.xs,
   },
-  card: { padding: 14 },
+  card: { padding: 16 },
   emptyIcon: {
     width: 72,
     height: 72,

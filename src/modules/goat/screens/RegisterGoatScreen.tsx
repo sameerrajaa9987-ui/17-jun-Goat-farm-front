@@ -254,7 +254,7 @@ export default function RegisterGoatScreen() {
               </HStack>
 
               {ownership === "client" && (
-                <VStack gap={8} style={{ marginTop: 14 }}>
+                <VStack gap={8} style={{ marginTop: 16 }}>
                   <Text variant="label" tone="secondary">
                     Select client
                   </Text>
@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
   },
   error: {
     marginBottom: 16,
-    padding: 14,
+    padding: 16,
     borderRadius: radius.md,
     backgroundColor: palette.danger.bg,
     borderWidth: 1,
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
   clientRow: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 14,
+    padding: 16,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.border.default,

@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     alignItems: "center",
-    paddingVertical: 11,
+    paddingVertical: 12,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.border.default,
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
   alertStat: {
     flex: 1,
     alignItems: "center",
-    paddingVertical: 18,
+    paddingVertical: 16,
     borderRadius: radius.xl,
     borderWidth: 1,
     ...elevation.raised,

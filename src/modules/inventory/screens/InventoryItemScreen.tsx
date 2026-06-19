@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
   moveRow: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 14,
+    padding: 16,
   },
   sheetBackdrop: {
     flex: 1,

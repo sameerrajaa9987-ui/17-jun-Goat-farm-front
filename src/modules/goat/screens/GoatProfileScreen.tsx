@@ -647,7 +647,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
     backgroundColor: palette.ink[900],
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     paddingVertical: 9,
     borderRadius: radius.full,
   },
@@ -655,7 +655,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 11,
+    paddingVertical: 12,
   },
   detailBorder: {
     borderBottomWidth: 1,

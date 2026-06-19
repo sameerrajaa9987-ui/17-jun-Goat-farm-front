@@ -68,7 +68,7 @@ export default function LoginScreen({ navigation }: Props) {
                   strokeWidth={1.8}
                 />
               </View>
-              <VStack gap={6} style={{ marginTop: 22 }}>
+              <VStack gap={6} style={{ marginTop: 24 }}>
                 <Text
                   variant="overline"
                   style={{ color: "rgba(255,255,255,0.66)" }}
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   },
   error: {
     marginTop: 20,
-    padding: 14,
+    padding: 16,
     borderRadius: radius.md,
     backgroundColor: palette.danger.bg,
     borderWidth: 1,

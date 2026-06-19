@@ -84,6 +84,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: "Inter_400Regular",
     color: palette.text.primary,
-    paddingVertical: 14,
+    paddingVertical: 16,
   },
 });

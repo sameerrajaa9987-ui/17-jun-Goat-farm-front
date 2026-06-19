@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    padding: 14,
+    padding: 16,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: palette.border.default,

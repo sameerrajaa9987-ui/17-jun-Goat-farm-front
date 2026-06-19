@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     ...shadows.xs,
   },
-  card: { padding: 14 },
+  card: { padding: 16 },
   avatar: {
     width: 46,
     height: 46,
