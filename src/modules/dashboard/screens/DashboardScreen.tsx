@@ -23,7 +23,15 @@ import { useGoatStats } from "@modules/goat/hooks/useGoats";
 import { useTaskStats } from "@modules/task/hooks/useTasks";
 import { useUnreadCount } from "@modules/notification/hooks/useNotifications";
 import { palette, radius, shadows } from "@shared/designSystem";
-import { Text, VStack, HStack, Card, StatusChip, StatTile } from "@shared/ui";
+import {
+  Text,
+  VStack,
+  HStack,
+  Card,
+  StatusChip,
+  StatTile,
+  DonutChart,
+} from "@shared/ui";
 
 type Feature = {
   key: string;
@@ -244,6 +252,57 @@ export default function DashboardScreen() {
             )}
           </HStack>
 
+          {/* Herd overview — proportional SVG donut */}
+          {stats && stats.total > 0 ? (
+            <Card style={{ marginTop: 16 }} elevation="raised">
+              <Text variant="overline" tone="tertiary">
+                Herd overview
+              </Text>
+              <HStack gap={20} align="center" style={{ marginTop: 16 }}>
+                <DonutChart
+                  size={120}
+                  strokeWidth={16}
+                  centerValue={String(stats.total)}
+                  centerLabel="goats"
+                  data={[
+                    {
+                      value: healthy,
+                      color: palette.ink[500],
+                      label: "Healthy",
+                    },
+                    {
+                      value: stats.sick,
+                      color: palette.amber[500],
+                      label: "Under care",
+                    },
+                    {
+                      value: stats.sold,
+                      color: palette.ink[200],
+                      label: "Sold",
+                    },
+                  ]}
+                />
+                <VStack gap={12} flex={1}>
+                  <LegendRow
+                    color={palette.ink[500]}
+                    label="Healthy"
+                    value={healthy}
+                  />
+                  <LegendRow
+                    color={palette.amber[500]}
+                    label="Under care"
+                    value={stats.sick}
+                  />
+                  <LegendRow
+                    color={palette.ink[200]}
+                    label="Sold"
+                    value={stats.sold}
+                  />
+                </VStack>
+              </HStack>
+            </Card>
+          ) : null}
+
           {/* Modules — bento grid */}
           <Text variant="overline" tone="tertiary" style={styles.sectionLabel}>
             Your modules
@@ -310,7 +369,32 @@ export default function DashboardScreen() {
   );
 }
 
+function LegendRow({
+  color,
+  label,
+  value,
+}: {
+  color: string;
+  label: string;
+  value: number;
+}) {
+  return (
+    <HStack justify="space-between" align="center">
+      <HStack gap={8} align="center">
+        <View style={[styles.dot, { backgroundColor: color }]} />
+        <Text variant="body-sm" tone="secondary">
+          {label}
+        </Text>
+      </HStack>
+      <Text variant="label" tone="primary">
+        {value}
+      </Text>
+    </HStack>
+  );
+}
+
 const styles = StyleSheet.create({
+  dot: { width: 10, height: 10, borderRadius: 5 },
   bell: {
     width: 44,
     height: 44,

@@ -5,6 +5,7 @@ export { TextField } from "./TextField";
 export { Card } from "./Card";
 export { GradientHero } from "./GradientHero";
 export { StatTile } from "./StatTile";
+export { DonutChart } from "./DonutChart";
 export { StatusChip } from "./StatusChip";
 export { ChipsRow } from "./ChipsRow";
 export { useBottomPadding, useTabBottomPadding } from "./useBottomPadding";
