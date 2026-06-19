@@ -126,7 +126,6 @@ export default function ReportsScreen() {
               label="Outstanding"
               value={`₹${(financial.outstanding / 1000).toFixed(1)}k`}
               icon={Wallet}
-              tone={financial.outstanding ? "clay" : "light"}
             />
           </HStack>
 

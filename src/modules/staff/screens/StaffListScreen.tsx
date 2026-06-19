@@ -64,7 +64,7 @@ export default function StaffListScreen() {
             <StatTile
               label="Present today"
               value={String(stats?.presentToday ?? "—")}
-              tone="forest"
+              tone="light"
             />
             <StatTile
               label="Paid (mo)"
@@ -73,7 +73,7 @@ export default function StaffListScreen() {
                   ? `₹${(stats.salaryPaidThisMonth / 1000).toFixed(0)}k`
                   : "—"
               }
-              tone="clay"
+              tone="light"
             />
           </HStack>
         </View>

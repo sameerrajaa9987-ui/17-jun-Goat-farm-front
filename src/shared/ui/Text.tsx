@@ -35,6 +35,7 @@ interface Props {
   weight?: "400" | "500" | "600" | "700";
   align?: "left" | "center" | "right";
   numberOfLines?: number;
+  adjustsFontSizeToFit?: boolean;
   style?: StyleProp<TextStyle>;
   children: React.ReactNode;
 }
@@ -83,6 +84,7 @@ export function Text({
   weight,
   align,
   numberOfLines,
+  adjustsFontSizeToFit,
   style,
   children,
 }: Props) {
@@ -92,6 +94,7 @@ export function Text({
   return (
     <RNText
       numberOfLines={numberOfLines}
+      adjustsFontSizeToFit={adjustsFontSizeToFit}
       style={[
         base,
         // The weighted Inter file carries the weight, so clear fontWeight to

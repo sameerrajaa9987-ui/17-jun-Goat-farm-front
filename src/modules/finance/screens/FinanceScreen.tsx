@@ -167,13 +167,13 @@ export default function FinanceScreen() {
                   label="Income"
                   value={`₹${(pnl?.income ?? 0).toLocaleString("en-IN")}`}
                   icon={TrendingUp}
-                  tone="forest"
+                  tone="light"
                 />
                 <StatTile
                   label="Expense"
                   value={`₹${(pnl?.expense ?? 0).toLocaleString("en-IN")}`}
                   icon={TrendingDown}
-                  tone="clay"
+                  tone="light"
                 />
               </HStack>
 

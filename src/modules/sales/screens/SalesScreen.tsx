@@ -62,12 +62,12 @@ export default function SalesScreen() {
             <StatTile
               label="Revenue"
               value={stats ? `₹${(stats.revenue / 1000).toFixed(1)}k` : "—"}
-              tone="forest"
+              tone="light"
             />
             <StatTile
               label="Profit"
               value={stats ? `₹${(stats.profit / 1000).toFixed(1)}k` : "—"}
-              tone="clay"
+              tone="light"
             />
           </HStack>
         </View>

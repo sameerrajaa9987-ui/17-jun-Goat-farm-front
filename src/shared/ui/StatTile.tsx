@@ -62,7 +62,12 @@ export function StatTile({
         </View>
       ) : null}
       <View style={{ marginTop: Icon ? 14 : 0 }}>
-        <Text variant="display-sm" style={{ color: valueColor }}>
+        <Text
+          variant="display-sm"
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          style={{ color: valueColor }}
+        >
           {value}
         </Text>
         <Text variant="caption" style={{ color: labelColor, marginTop: 2 }}>

@@ -105,7 +105,7 @@ export default function InventoryListScreen() {
             <StatTile
               label="Value"
               value={stats ? `₹${(stats.stockValue / 1000).toFixed(1)}k` : "—"}
-              tone="forest"
+              tone="light"
             />
           </HStack>
         </View>

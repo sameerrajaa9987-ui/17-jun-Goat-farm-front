@@ -22,16 +22,8 @@ import { useAuthStore, Role } from "@shared/store/useAuthStore";
 import { useGoatStats } from "@modules/goat/hooks/useGoats";
 import { useTaskStats } from "@modules/task/hooks/useTasks";
 import { useUnreadCount } from "@modules/notification/hooks/useNotifications";
-import { palette, radius, glass } from "@shared/designSystem";
-import {
-  Text,
-  VStack,
-  HStack,
-  Card,
-  StatusChip,
-  GradientHero,
-  StatTile,
-} from "@shared/ui";
+import { palette, radius, shadows } from "@shared/designSystem";
+import { Text, VStack, HStack, Card, StatusChip, StatTile } from "@shared/ui";
 
 type Feature = {
   key: string;
@@ -163,77 +155,65 @@ export default function DashboardScreen() {
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <ScrollView
-          contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+          contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
           showsVerticalScrollIndicator={false}
         >
-          {/* Atmospheric hero */}
-          <GradientHero>
-            <HStack justify="space-between" align="flex-start">
-              <VStack gap={3} flex={1}>
-                <Text
-                  variant="label-sm"
-                  style={{ color: "rgba(255,255,255,0.66)" }}
-                >
-                  {t("dashboard.greeting", {
-                    name: user.firstName,
-                  }).toUpperCase()}
-                </Text>
-                <Text variant="h1" tone="inverse">
-                  {t(`roles.${user.role}`)}
-                </Text>
-                <Text
-                  variant="body-sm"
-                  style={{ color: "rgba(255,255,255,0.74)" }}
-                >
-                  {t(ROLE_SUBTITLE[user.role])}
-                </Text>
-              </VStack>
-              <HStack gap={10} align="center">
-                <Pressable
-                  onPress={() => navigation.navigate("Notifications")}
-                  hitSlop={8}
-                  style={[styles.bell, glass.light]}
-                >
-                  <Bell size={20} color="#FFFFFF" strokeWidth={1.8} />
-                  {unread && unread > 0 ? (
-                    <View style={styles.badge}>
-                      <Text variant="label-sm" tone="inverse">
-                        {unread > 9 ? "9+" : unread}
-                      </Text>
-                    </View>
-                  ) : null}
-                </Pressable>
-                <View style={[styles.avatar, glass.light]}>
-                  <Text variant="h2" tone="inverse">
-                    {user.firstName.charAt(0).toUpperCase()}
-                  </Text>
-                </View>
-              </HStack>
-            </HStack>
-
-            {/* Headline metric */}
-            <View style={styles.heroMetric}>
-              <Text variant="display-lg" tone="inverse">
-                {stats ? String(stats.total) : "—"}
+          {/* Header */}
+          <HStack justify="space-between" align="flex-start">
+            <VStack gap={4} flex={1}>
+              <Text variant="overline" tone="tertiary">
+                {t("dashboard.greeting", {
+                  name: user.firstName,
+                }).toUpperCase()}
               </Text>
-              <Text
-                variant="body-sm"
-                style={{ color: "rgba(255,255,255,0.74)", marginBottom: 6 }}
+              <Text variant="h1" tone="primary">
+                {t(`roles.${user.role}`)}
+              </Text>
+              <Text variant="body-sm" tone="tertiary">
+                {t(ROLE_SUBTITLE[user.role])}
+              </Text>
+            </VStack>
+            <HStack gap={10} align="center">
+              <Pressable
+                onPress={() => navigation.navigate("Notifications")}
+                hitSlop={8}
+                style={styles.bell}
               >
-                {isClient ? "goats in your care" : "goats on the farm"}
-              </Text>
-            </View>
-          </GradientHero>
+                <Bell size={20} color={palette.ink[800]} strokeWidth={1.8} />
+                {unread && unread > 0 ? (
+                  <View style={styles.badge}>
+                    <Text variant="label-sm" tone="inverse">
+                      {unread > 9 ? "9+" : unread}
+                    </Text>
+                  </View>
+                ) : null}
+              </Pressable>
+              <View style={styles.avatar}>
+                <Text variant="h2" tone="inverse">
+                  {user.firstName.charAt(0).toUpperCase()}
+                </Text>
+              </View>
+            </HStack>
+          </HStack>
 
-          {/* Bento stat row */}
-          <HStack gap={12} style={{ marginTop: 12 }}>
+          {/* Headline metric — calm, type-led */}
+          <View style={styles.headline}>
+            <Text variant="display-lg" tone="primary">
+              {stats ? String(stats.total) : "—"}
+            </Text>
+            <Text variant="body-sm" tone="tertiary">
+              {isClient ? "goats in your care" : "goats on the farm"}
+            </Text>
+          </View>
+
+          {/* Stat tiles — neutral surfaces */}
+          <HStack gap={12} style={{ marginTop: 20 }}>
             {isClient ? (
               <>
                 <StatTile
                   label="Healthy"
                   value={stats ? String(healthy) : "—"}
                   icon={HeartPulse}
-                  tone="forest"
                 />
                 <StatTile
                   label="On care"
@@ -247,7 +227,6 @@ export default function DashboardScreen() {
                   label="Tasks today"
                   value={taskStats ? String(taskStats.pendingToday) : "—"}
                   icon={CalendarCheck}
-                  tone="clay"
                   onPress={() => navigation.navigate("Tasks")}
                 />
                 <StatTile
@@ -336,13 +315,18 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
     alignItems: "center",
     justifyContent: "center",
+    ...shadows.xs,
   },
   avatar: {
     width: 48,
     height: 48,
     borderRadius: radius.full,
+    backgroundColor: palette.ink[900],
     alignItems: "center",
     justifyContent: "center",
   },
@@ -358,8 +342,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  heroMetric: { marginTop: 22 },
-  sectionLabel: { marginTop: 26, marginBottom: 12, marginLeft: 4 },
+  headline: { marginTop: 28 },
+  sectionLabel: { marginTop: 30, marginBottom: 14, marginLeft: 4 },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
   tile: { width: "47.5%" },
   iconWrap: {
