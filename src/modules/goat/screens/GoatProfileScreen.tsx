@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   ChevronLeft,
@@ -115,25 +116,60 @@ export default function GoatProfileScreen() {
           contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
           showsVerticalScrollIndicator={false}
         >
-          {/* Hero */}
-          <GradientHero variant="forest">
-            <HStack gap={16} align="center">
-              {goat.photo ? (
-                <Image
-                  source={{ uri: mediaUrl(goat.photo) }}
-                  style={styles.hero}
-                />
-              ) : (
-                <View style={[styles.hero, styles.heroPlaceholder]}>
+          {/* Hero — full-width cover passport */}
+          {goat.photo ? (
+            <View style={styles.cover}>
+              <Image
+                source={{ uri: mediaUrl(goat.photo) }}
+                style={StyleSheet.absoluteFill}
+                resizeMode="cover"
+              />
+              <LinearGradient
+                colors={[
+                  "rgba(6,22,11,0)",
+                  "rgba(6,22,11,0.35)",
+                  "rgba(6,22,11,0.9)",
+                ]}
+                style={StyleSheet.absoluteFill}
+              />
+              <View style={styles.coverContent}>
+                <Text variant="h1" tone="inverse">
+                  {goat.name || goat.goatId}
+                </Text>
+                <Text
+                  variant="body-sm"
+                  style={{ color: "rgba(255,255,255,0.82)", marginTop: 2 }}
+                >
+                  {goat.goatId}
+                  {goat.earTagNo ? `  ·  Tag ${goat.earTagNo}` : ""}
+                </Text>
+                <HStack gap={6} wrap style={{ marginTop: 10 }}>
+                  <StatusChip
+                    label={
+                      goat.ownership.type === "client"
+                        ? "Ad Pali"
+                        : "Farm-owned"
+                    }
+                    tone={goat.ownership.type === "client" ? "info" : "neutral"}
+                  />
+                  <StatusChip
+                    label={goat.healthStatus.replace("_", " ")}
+                    tone={HEALTH_TONE[goat.healthStatus]}
+                  />
+                </HStack>
+              </View>
+            </View>
+          ) : (
+            <GradientHero variant="forest">
+              <VStack gap={10}>
+                <View style={styles.coverPlaceholder}>
                   <PawPrint
                     size={34}
                     color={palette.ink[200]}
                     strokeWidth={1.6}
                   />
                 </View>
-              )}
-              <VStack gap={6} flex={1}>
-                <Text variant="h2" tone="inverse">
+                <Text variant="h1" tone="inverse">
                   {goat.name || goat.goatId}
                 </Text>
                 <Text
@@ -158,8 +194,8 @@ export default function GoatProfileScreen() {
                   />
                 </HStack>
               </VStack>
-            </HStack>
-          </GradientHero>
+            </GradientHero>
+          )}
 
           {/* Weight */}
           <Card style={{ marginTop: 16 }}>
@@ -579,13 +615,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     ...shadows.xs,
   },
-  hero: {
-    width: 84,
-    height: 84,
+  cover: {
+    height: 260,
+    marginTop: -20,
+    marginHorizontal: -20,
+    borderBottomLeftRadius: radius["2xl"],
+    borderBottomRightRadius: radius["2xl"],
+    overflow: "hidden",
+    backgroundColor: palette.ink[900],
+    justifyContent: "flex-end",
+  },
+  coverContent: { padding: 20 },
+  coverPlaceholder: {
+    width: 64,
+    height: 64,
     borderRadius: radius.lg,
     backgroundColor: "rgba(255,255,255,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  heroPlaceholder: { alignItems: "center", justifyContent: "center" },
   healthIcon: {
     width: 44,
     height: 44,
