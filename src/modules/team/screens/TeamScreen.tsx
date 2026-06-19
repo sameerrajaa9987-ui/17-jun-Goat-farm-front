@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Pressable,
   RefreshControl,
-  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -15,7 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useUsers, useSetUserActive } from "@modules/team/hooks/useTeam";
 import { TeamUser } from "@modules/team/types";
 import { palette, radius, gradients, elevation } from "@shared/designSystem";
-import { Text, VStack, HStack, Card, StatusChip } from "@shared/ui";
+import { Text, VStack, HStack, Card, StatusChip, ChipsRow } from "@shared/ui";
 
 const ROLE_FILTERS = ["all", "manager", "worker", "vet", "client"] as const;
 
@@ -47,34 +46,14 @@ export default function TeamScreen() {
         </View>
 
         {/* Role filter chips */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.filterBar}
-          contentContainerStyle={styles.filters}
-        >
-          {ROLE_FILTERS.map((r) => {
-            const active = filter === r;
-            return (
-              <Pressable
-                key={r}
-                onPress={() => setFilter(r)}
-                style={[styles.chip, active && styles.chipActive]}
-              >
-                <Text
-                  variant="label"
-                  style={{
-                    color: active
-                      ? palette.text.inverse
-                      : palette.text.secondary,
-                  }}
-                >
-                  {r === "all" ? "All" : t(`roles.${r}`)}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
+        <ChipsRow
+          chips={ROLE_FILTERS.map((r) => ({
+            key: r,
+            label: r === "all" ? "All" : t(`roles.${r}`),
+          }))}
+          active={filter}
+          onChange={(k) => setFilter(k as (typeof ROLE_FILTERS)[number])}
+        />
 
         <FlatList
           data={users}
@@ -200,26 +179,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 12,
-  },
-  filterBar: { flexGrow: 0 },
-  filters: {
-    gap: 8,
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingTop: 6,
-    paddingBottom: 2,
-  },
-  chip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: radius.full,
-    borderWidth: 1,
-    borderColor: palette.border.default,
-    backgroundColor: palette.surface.primary,
-  },
-  chipActive: {
-    backgroundColor: palette.ink[900],
-    borderColor: palette.ink[900],
   },
   emptyIcon: {
     width: 72,

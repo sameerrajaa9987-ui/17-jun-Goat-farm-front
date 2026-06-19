@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Pressable,
   RefreshControl,
-  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -17,7 +16,7 @@ import { Task, TaskStatus, TASK_TYPE_LABEL } from "@modules/task/types";
 import { STATUS_LABEL, STATUS_TONE } from "@modules/task/taskMeta";
 import { useAuthStore } from "@shared/store/useAuthStore";
 import { palette, radius, gradients, elevation } from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip, Card } from "@shared/ui";
+import { Text, VStack, HStack, StatusChip, Card, ChipsRow } from "@shared/ui";
 
 type FilterKey = "active" | TaskStatus;
 
@@ -80,34 +79,11 @@ export default function TasksScreen() {
           </VStack>
         </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.filterBar}
-          contentContainerStyle={styles.filters}
-        >
-          {filters.map((f) => {
-            const active = filter === f.key;
-            return (
-              <Pressable
-                key={f.key}
-                onPress={() => setFilter(f.key)}
-                style={[styles.chip, active && styles.chipActive]}
-              >
-                <Text
-                  variant="label"
-                  style={{
-                    color: active
-                      ? palette.text.inverse
-                      : palette.text.secondary,
-                  }}
-                >
-                  {f.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
+        <ChipsRow
+          chips={[...filters]}
+          active={filter}
+          onChange={(k) => setFilter(k as FilterKey)}
+        />
 
         <FlatList
           data={tasks}
@@ -235,26 +211,6 @@ function TaskCard({
 
 const styles = StyleSheet.create({
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
-  filterBar: { flexGrow: 0 },
-  filters: {
-    gap: 8,
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingTop: 2,
-    paddingBottom: 2,
-  },
-  chip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: radius.full,
-    borderWidth: 1,
-    borderColor: palette.border.default,
-    backgroundColor: palette.surface.primary,
-  },
-  chipActive: {
-    backgroundColor: palette.ink[900],
-    borderColor: palette.ink[900],
-  },
   card: { overflow: "hidden" },
   rail: { width: 4 },
   cardBody: { flex: 1, padding: 16 },

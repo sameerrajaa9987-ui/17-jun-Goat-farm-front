@@ -1,0 +1,83 @@
+/**
+ * ChipsRow — horizontal scrolling filter chips. Each chip is a FIXED-HEIGHT box
+ * that centers its label, inside a fixed-height container, so the text can never
+ * clip vertically regardless of the font's line metrics (the issue tight
+ * lineHeight + a custom font causes). Mirrors the proven pattern used app-wide.
+ */
+import React from "react";
+import { ScrollView, Pressable, StyleSheet, View } from "react-native";
+import { palette, radius, layout } from "../designSystem";
+import { Text } from "./Text";
+
+export interface Chip {
+  key: string;
+  label: string;
+}
+
+interface Props {
+  chips: Chip[];
+  active: string;
+  onChange: (key: string) => void;
+}
+
+export function ChipsRow({ chips, active, onChange }: Props) {
+  return (
+    <View style={styles.container}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.content}
+      >
+        {chips.map((c) => {
+          const isActive = active === c.key;
+          return (
+            <Pressable
+              key={c.key}
+              onPress={() => onChange(c.key)}
+              style={({ pressed }) => [
+                styles.chip,
+                isActive && styles.chipActive,
+                pressed && { opacity: 0.7 },
+              ]}
+            >
+              <Text
+                variant="label"
+                numberOfLines={1}
+                style={{
+                  color: isActive
+                    ? palette.text.inverse
+                    : palette.text.secondary,
+                }}
+              >
+                {c.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { height: layout.chipRowHeight },
+  content: {
+    paddingHorizontal: 20,
+    gap: 8,
+    alignItems: "center",
+  },
+  chip: {
+    height: layout.chipHeight,
+    paddingHorizontal: 16,
+    borderRadius: radius.full,
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  chipActive: {
+    backgroundColor: palette.ink[900],
+    borderColor: palette.ink[900],
+  },
+});

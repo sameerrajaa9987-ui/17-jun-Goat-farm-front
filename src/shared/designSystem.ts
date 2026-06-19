@@ -315,4 +315,8 @@ export const layout = {
   itemGap: 12,
   tabBarHeight: 80,
   tabBarClearance: 110,
+  // Filter/segment chips — fixed-height boxes that center their label so text
+  // never clips regardless of font metrics. Used by ChipsRow and inline chips.
+  chipHeight: 36,
+  chipRowHeight: 44,
 } as const;

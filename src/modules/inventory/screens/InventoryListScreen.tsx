@@ -6,7 +6,6 @@ import {
   Pressable,
   RefreshControl,
   TextInput,
-  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -34,7 +33,15 @@ import {
   gradients,
   elevation,
 } from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip, Card, StatTile } from "@shared/ui";
+import {
+  Text,
+  VStack,
+  HStack,
+  StatusChip,
+  Card,
+  StatTile,
+  ChipsRow,
+} from "@shared/ui";
 
 const FILTERS: { key: "all" | InventoryCategory | "low"; label: string }[] = [
   { key: "all", label: "All" },
@@ -115,34 +122,11 @@ export default function InventoryListScreen() {
           />
         </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.filterBar}
-          contentContainerStyle={styles.filters}
-        >
-          {FILTERS.map((f) => {
-            const active = filter === f.key;
-            return (
-              <Pressable
-                key={f.key}
-                onPress={() => setFilter(f.key)}
-                style={[styles.chip, active && styles.chipActive]}
-              >
-                <Text
-                  variant="label"
-                  style={{
-                    color: active
-                      ? palette.text.inverse
-                      : palette.text.secondary,
-                  }}
-                >
-                  {f.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
+        <ChipsRow
+          chips={[...FILTERS]}
+          active={filter}
+          onChange={(k) => setFilter(k as (typeof FILTERS)[number]["key"])}
+        />
 
         <FlatList
           data={items}
@@ -274,26 +258,6 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     color: palette.text.primary,
     paddingVertical: 0,
-  },
-  filterBar: { flexGrow: 0 },
-  filters: {
-    gap: 8,
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingTop: 14,
-    paddingBottom: 2,
-  },
-  chip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: radius.full,
-    borderWidth: 1,
-    borderColor: palette.border.default,
-    backgroundColor: palette.surface.primary,
-  },
-  chipActive: {
-    backgroundColor: palette.ink[900],
-    borderColor: palette.ink[900],
   },
   card: { padding: 16 },
   emptyIcon: {

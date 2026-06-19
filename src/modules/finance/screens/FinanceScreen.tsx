@@ -40,6 +40,7 @@ import {
   shadows,
   gradients,
   elevation,
+  layout,
 } from "@shared/designSystem";
 import {
   Text,
@@ -463,12 +464,14 @@ const styles = StyleSheet.create({
     ...shadows.xs,
   },
   chip: {
+    height: layout.chipHeight,
     paddingHorizontal: 16,
-    paddingVertical: 7,
     borderRadius: radius.full,
     borderWidth: 1,
     borderColor: palette.border.default,
     backgroundColor: palette.surface.primary,
+    alignItems: "center",
+    justifyContent: "center",
   },
   chipActive: {
     backgroundColor: palette.ink[900],
@@ -523,12 +526,14 @@ const styles = StyleSheet.create({
     backgroundColor: palette.surface.primary,
   },
   catChip: {
+    height: layout.chipHeight,
     paddingHorizontal: 14,
-    paddingVertical: 8,
     borderRadius: radius.full,
     borderWidth: 1,
     borderColor: palette.border.default,
     backgroundColor: palette.surface.primary,
+    alignItems: "center",
+    justifyContent: "center",
   },
   catChipActive: {
     backgroundColor: palette.ink[900],
