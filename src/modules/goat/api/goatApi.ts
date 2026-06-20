@@ -52,6 +52,23 @@ export const goatApi = {
     );
     return res.data.data;
   },
+  updateWeight: async (
+    id: string,
+    weightId: string,
+    patch: { weightKg?: number; note?: string },
+  ) => {
+    const res = await apiClient.patch<{ success: boolean; data: Goat }>(
+      `/goats/${id}/weights/${weightId}`,
+      patch,
+    );
+    return res.data.data;
+  },
+  deleteWeight: async (id: string, weightId: string) => {
+    const res = await apiClient.delete<{ success: boolean; data: Goat }>(
+      `/goats/${id}/weights/${weightId}`,
+    );
+    return res.data.data;
+  },
   qr: async (id: string) => {
     const res = await apiClient.get<{ success: boolean; data: QrResult }>(
       `/goats/${id}/qr`,

@@ -72,6 +72,19 @@ export const healthApi = {
     );
     return res.data.data;
   },
+  cancel: async (id: string) => {
+    const res = await apiClient.post<{ success: boolean; data: HealthRecord }>(
+      `/health/records/${id}/cancel`,
+    );
+    return res.data.data;
+  },
+  reopen: async (id: string, dueDate: string) => {
+    const res = await apiClient.post<{ success: boolean; data: HealthRecord }>(
+      `/health/records/${id}/reopen`,
+      { dueDate },
+    );
+    return res.data.data;
+  },
   remove: async (id: string) => {
     const res = await apiClient.delete(`/health/records/${id}`);
     return res.data;

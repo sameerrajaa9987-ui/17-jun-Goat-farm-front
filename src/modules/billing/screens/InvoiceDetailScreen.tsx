@@ -15,6 +15,8 @@ import {
   useInvoice,
   usePayInvoice,
   useRecordOffline,
+  useCancelInvoice,
+  useReversePayment,
 } from "@modules/billing/hooks/useBilling";
 import { INVOICE_TONE } from "@modules/billing/types";
 import { useAuthStore } from "@shared/store/useAuthStore";
@@ -45,10 +47,15 @@ export default function InvoiceDetailScreen() {
   const role = useAuthStore((s) => s.user?.role);
   const isClient = role === "client";
   const isAdmin = role === "owner" || role === "manager";
+  const canManageBilling = useAuthStore((s) => s.hasPermission)(
+    "manage_billing",
+  );
 
   const { data, isLoading } = useInvoice(id);
   const pay = usePayInvoice();
   const recordOffline = useRecordOffline();
+  const cancelInvoice = useCancelInvoice();
+  const reversePayment = useReversePayment();
 
   if (isLoading || !data) {
     return (
@@ -60,6 +67,51 @@ export default function InvoiceDetailScreen() {
 
   const { invoice, payments } = data;
   const unpaid = invoice.status === "due" || invoice.status === "overdue";
+  const paid = invoice.status === "paid";
+
+  const onCancelInvoice = () => {
+    Alert.alert(
+      "Cancel invoice",
+      "This marks the invoice as cancelled. The client will no longer owe this bill. Continue?",
+      [
+        { text: "Keep invoice", style: "cancel" },
+        {
+          text: "Cancel invoice",
+          style: "destructive",
+          onPress: () =>
+            cancelInvoice.mutate(id, {
+              onError: (e: any) =>
+                Alert.alert(
+                  "Could not cancel",
+                  e?.response?.data?.error?.message || "Try again.",
+                ),
+            }),
+        },
+      ],
+    );
+  };
+
+  const onReversePayment = () => {
+    Alert.alert(
+      "Reverse payment",
+      "This reverses the recorded payment and the matching finance entry, then reopens the bill as due/overdue. Continue?",
+      [
+        { text: "Keep payment", style: "cancel" },
+        {
+          text: "Reverse payment",
+          style: "destructive",
+          onPress: () =>
+            reversePayment.mutate(id, {
+              onError: (e: any) =>
+                Alert.alert(
+                  "Could not reverse",
+                  e?.response?.data?.error?.message || "Try again.",
+                ),
+            }),
+        },
+      ],
+    );
+  };
 
   const onPay = () => {
     pay.mutate(id, {
@@ -203,6 +255,24 @@ export default function InvoiceDetailScreen() {
                 variant="secondary"
                 loading={recordOffline.isPending}
                 onPress={() => recordOffline.mutate({ id, method: "cash" })}
+              />
+              {canManageBilling && (
+                <Button
+                  label="Cancel invoice"
+                  variant="destructive"
+                  loading={cancelInvoice.isPending}
+                  onPress={onCancelInvoice}
+                />
+              )}
+            </VStack>
+          )}
+          {paid && canManageBilling && (
+            <VStack gap={10} style={{ marginTop: 20 }}>
+              <Button
+                label="Reverse payment"
+                variant="destructive"
+                loading={reversePayment.isPending}
+                onPress={onReversePayment}
               />
             </VStack>
           )}

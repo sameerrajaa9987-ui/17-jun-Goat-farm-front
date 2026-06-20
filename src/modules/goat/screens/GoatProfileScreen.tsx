@@ -7,6 +7,7 @@ import {
   Image,
   Modal,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -20,9 +21,18 @@ import {
   HeartPulse,
   ChevronRight,
   Tag,
+  Pencil,
+  Trash2,
 } from "lucide-react-native";
 import { format } from "date-fns";
-import { useGoat, useGoatQr, useAddWeight } from "@modules/goat/hooks/useGoats";
+import {
+  useGoat,
+  useGoatQr,
+  useAddWeight,
+  useUpdateWeight,
+  useDeleteWeight,
+} from "@modules/goat/hooks/useGoats";
+import { WeightEntry } from "@modules/goat/types";
 import { mediaUrl } from "@modules/goat/screens/GoatListScreen";
 import { WeightSparkline } from "@modules/goat/components/WeightSparkline";
 import { useGoatProfitability } from "@modules/finance/hooks/useFinance";
@@ -67,6 +77,7 @@ export default function GoatProfileScreen() {
   const hasPermission = useAuthStore((s) => s.hasPermission);
   const canWeigh =
     hasPermission("manage_goats") || hasPermission("complete_tasks");
+  const canManageGoats = hasPermission("manage_goats");
   const canFinance = hasPermission("manage_finance");
   const canSell = hasPermission("manage_sales");
 
@@ -74,7 +85,26 @@ export default function GoatProfileScreen() {
   const { data: profit } = useGoatProfitability(id, canFinance);
   const [showQr, setShowQr] = useState(false);
   const [showWeigh, setShowWeigh] = useState(false);
+  const [editWeight, setEditWeight] = useState<WeightEntry | null>(null);
   const { data: qr, isLoading: qrLoading } = useGoatQr(id, showQr);
+  const deleteWeight = useDeleteWeight(id);
+
+  const confirmDeleteWeight = (entry: WeightEntry) =>
+    Alert.alert(
+      "Delete weigh-in",
+      `Remove the ${entry.weightKg} kg entry from ${format(
+        new Date(entry.recordedAt),
+        "dd MMM yyyy",
+      )}?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => deleteWeight.mutate(entry.id),
+        },
+      ],
+    );
 
   if (isLoading || !goat) {
     return (
@@ -233,6 +263,49 @@ export default function GoatProfileScreen() {
               {goat.weightHistory.length} weigh-in
               {goat.weightHistory.length === 1 ? "" : "s"} recorded
             </Text>
+            {canManageGoats && goat.weightHistory.length > 0 && (
+              <VStack gap={0} style={{ marginTop: 8 }}>
+                {goat.weightHistory
+                  .slice()
+                  .reverse()
+                  .map((entry, idx) => (
+                    <View
+                      key={entry.id}
+                      style={[
+                        styles.weightRow,
+                        idx > 0 && styles.weightRowBorder,
+                      ]}
+                    >
+                      <VStack gap={2} flex={1}>
+                        <Text variant="label" tone="primary">
+                          {entry.weightKg} kg
+                        </Text>
+                        <Text variant="caption" tone="tertiary">
+                          {format(new Date(entry.recordedAt), "dd MMM yyyy")}
+                          {entry.note ? ` · ${entry.note}` : ""}
+                        </Text>
+                      </VStack>
+                      <HStack gap={4} align="center">
+                        <Pressable
+                          onPress={() => setEditWeight(entry)}
+                          hitSlop={8}
+                          style={styles.weightAction}
+                        >
+                          <Pencil size={16} color={palette.ink[700]} />
+                        </Pressable>
+                        <Pressable
+                          onPress={() => confirmDeleteWeight(entry)}
+                          disabled={deleteWeight.isPending}
+                          hitSlop={8}
+                          style={styles.weightAction}
+                        >
+                          <Trash2 size={16} color={palette.danger.text} />
+                        </Pressable>
+                      </HStack>
+                    </View>
+                  ))}
+              </VStack>
+            )}
           </Card>
 
           {/* Health & vaccinations */}
@@ -461,7 +534,78 @@ export default function GoatProfileScreen() {
         visible={showWeigh}
         onClose={() => setShowWeigh(false)}
       />
+
+      {/* Edit weight modal */}
+      {editWeight ? (
+        <EditWeightModal
+          key={editWeight.id}
+          id={id}
+          entry={editWeight}
+          onClose={() => setEditWeight(null)}
+        />
+      ) : null}
     </View>
+  );
+}
+
+function EditWeightModal({
+  id,
+  entry,
+  onClose,
+}: {
+  id: string;
+  entry: WeightEntry;
+  onClose: () => void;
+}) {
+  const [weight, setWeight] = useState(() => String(entry.weightKg));
+  const [note, setNote] = useState(() => entry.note ?? "");
+  const mut = useUpdateWeight(id);
+
+  const submit = () => {
+    const w = parseFloat(weight);
+    if (!w || w <= 0) return;
+    mut.mutate(
+      { weightId: entry.id, patch: { weightKg: w, note: note.trim() } },
+      { onSuccess: () => onClose() },
+    );
+  };
+
+  return (
+    <Modal visible transparent animationType="slide" onRequestClose={onClose}>
+      <View style={styles.sheetBackdrop}>
+        <View style={styles.sheet}>
+          <HStack justify="space-between" align="center">
+            <Text variant="h3" tone="primary">
+              Edit weigh-in
+            </Text>
+            <Pressable onPress={onClose} hitSlop={10}>
+              <X size={22} color={palette.text.tertiary} />
+            </Pressable>
+          </HStack>
+          <VStack gap={14} style={{ marginTop: 16 }}>
+            <TextField
+              label="Weight (kg)"
+              placeholder="e.g. 24.5"
+              keyboardType="decimal-pad"
+              value={weight}
+              onChangeText={setWeight}
+            />
+            <TextField
+              label="Note (optional)"
+              placeholder="e.g. weekly check"
+              value={note}
+              onChangeText={setNote}
+            />
+            <Button
+              label="Save changes"
+              size="lg"
+              loading={mut.isPending}
+              onPress={submit}
+            />
+          </VStack>
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -650,6 +794,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 9,
     borderRadius: radius.full,
+  },
+  weightRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+  },
+  weightRowBorder: {
+    borderTopWidth: 1,
+    borderTopColor: palette.border.subtle,
+  },
+  weightAction: {
+    width: 32,
+    height: 32,
+    borderRadius: radius.sm,
+    alignItems: "center",
+    justifyContent: "center",
   },
   detailRow: {
     flexDirection: "row",

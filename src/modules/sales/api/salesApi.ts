@@ -30,4 +30,10 @@ export const salesApi = {
     );
     return res.data.data;
   },
+  void: async (id: string) => {
+    const res = await apiClient.post<{ success: boolean; data: Sale }>(
+      `/sales/${id}/void`,
+    );
+    return res.data.data;
+  },
 };

@@ -65,6 +65,23 @@ export const useCompleteScheduled = () => {
   });
 };
 
+export const useCancelRecord = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => healthApi.cancel(id),
+    onSuccess: () => invalidate(qc),
+  });
+};
+
+export const useReopenRecord = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, dueDate }: { id: string; dueDate: string }) =>
+      healthApi.reopen(id, dueDate),
+    onSuccess: () => invalidate(qc),
+  });
+};
+
 export const useRunReminders = () => {
   const qc = useQueryClient();
   return useMutation({

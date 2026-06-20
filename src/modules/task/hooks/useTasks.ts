@@ -86,3 +86,11 @@ export const useRejectTask = () => {
     onSuccess: () => invalidate(qc),
   });
 };
+
+export const useReopenTask = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => taskApi.reopen(id),
+    onSuccess: () => invalidate(qc),
+  });
+};

@@ -26,3 +26,20 @@ export const useSellGoat = () => {
     },
   });
 };
+
+export const useVoidSale = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => salesApi.void(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["sales"] });
+      qc.invalidateQueries({ queryKey: ["goats"] });
+      qc.invalidateQueries({ queryKey: ["goat"] });
+      qc.invalidateQueries({ queryKey: ["goat-stats"] });
+      qc.invalidateQueries({ queryKey: ["finance"] });
+      qc.invalidateQueries({ queryKey: ["pnl"] });
+      qc.invalidateQueries({ queryKey: ["clients"] });
+      qc.invalidateQueries({ queryKey: ["client"] });
+    },
+  });
+};

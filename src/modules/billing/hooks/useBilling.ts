@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { billingApi } from "@modules/billing/api/billingApi";
-import { InvoiceStatus } from "@modules/billing/types";
+import { InvoiceStatus, InvoiceLineItem } from "@modules/billing/types";
 
 const invalidateBilling = (qc: ReturnType<typeof useQueryClient>) => {
   qc.invalidateQueries({ queryKey: ["invoices"] });
@@ -105,6 +105,36 @@ export const useRecordOffline = () => {
   return useMutation({
     mutationFn: ({ id, method }: { id: string; method?: string }) =>
       billingApi.recordOffline(id, { method }),
+    onSuccess: () => invalidateBilling(qc),
+  });
+};
+
+export const useCancelInvoice = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => billingApi.cancelInvoice(id),
+    onSuccess: () => invalidateBilling(qc),
+  });
+};
+
+export const useReversePayment = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => billingApi.reversePayment(id),
+    onSuccess: () => invalidateBilling(qc),
+  });
+};
+
+export const useUpdateInvoice = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      patch,
+    }: {
+      id: string;
+      patch: { lineItems?: InvoiceLineItem[]; total?: number };
+    }) => billingApi.updateInvoice(id, patch),
     onSuccess: () => invalidateBilling(qc),
   });
 };

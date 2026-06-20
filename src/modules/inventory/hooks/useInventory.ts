@@ -60,3 +60,12 @@ export const useMoveStock = (id: string) => {
     onSuccess: () => invalidate(qc, id),
   });
 };
+
+export const useReverseMovement = (id: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (movementId: string) =>
+      inventoryApi.reverseMovement(movementId),
+    onSuccess: () => invalidate(qc, id),
+  });
+};

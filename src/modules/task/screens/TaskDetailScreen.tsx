@@ -6,6 +6,7 @@ import {
   Pressable,
   Image,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -17,6 +18,7 @@ import {
   X,
   Play,
   CircleCheck,
+  RotateCcw,
 } from "lucide-react-native";
 import { format } from "date-fns";
 import {
@@ -25,6 +27,7 @@ import {
   useCompleteTask,
   useApproveTask,
   useRejectTask,
+  useReopenTask,
 } from "@modules/task/hooks/useTasks";
 import { TASK_TYPE_LABEL } from "@modules/task/types";
 import { STATUS_LABEL, STATUS_TONE } from "@modules/task/taskMeta";
@@ -48,13 +51,16 @@ export default function TaskDetailScreen() {
   const route = useRoute<any>();
   const id = route.params?.id as string;
   const user = useAuthStore((s) => s.user);
+  const hasPermission = useAuthStore((s) => s.hasPermission);
   const isManager = user?.role === "owner" || user?.role === "manager";
+  const canReopen = hasPermission("approve_tasks");
 
   const { data: task, isLoading } = useTask(id);
   const startMut = useStartTask();
   const completeMut = useCompleteTask();
   const approveMut = useApproveTask();
   const rejectMut = useRejectTask();
+  const reopenMut = useReopenTask();
 
   const [proof, setProof] = useState<{ url: string; type: "image" }[]>([]);
   const [note, setNote] = useState("");
@@ -93,6 +99,21 @@ export default function TaskDetailScreen() {
 
   const submitComplete = () => {
     completeMut.mutate({ id, proof, workerNote: note.trim() || undefined });
+  };
+
+  const confirmReopen = () => {
+    Alert.alert(
+      "Reopen task",
+      "This moves the task back to submitted for re-review. Continue?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Reopen",
+          style: "destructive",
+          onPress: () => reopenMut.mutate(id),
+        },
+      ],
+    );
   };
 
   const canComplete = ["pending", "in_progress", "rejected"].includes(
@@ -397,6 +418,16 @@ export default function TaskDetailScreen() {
                 >
                   Published to the client&apos;s portal.
                 </Text>
+              ) : null}
+              {canReopen ? (
+                <Button
+                  label="Reopen"
+                  variant="secondary"
+                  icon={<RotateCcw size={18} color={palette.text.primary} />}
+                  loading={reopenMut.isPending}
+                  onPress={confirmReopen}
+                  style={{ marginTop: 14 }}
+                />
               ) : null}
             </Card>
           )}

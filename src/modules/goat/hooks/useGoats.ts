@@ -61,5 +61,35 @@ export const useAddWeight = (id: string) => {
   });
 };
 
+export const useUpdateWeight = (id: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      weightId,
+      patch,
+    }: {
+      weightId: string;
+      patch: { weightKg?: number; note?: string };
+    }) => goatApi.updateWeight(id, weightId, patch),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["goat", id] });
+      qc.invalidateQueries({ queryKey: ["goats"] });
+      qc.invalidateQueries({ queryKey: ["goat-stats"] });
+    },
+  });
+};
+
+export const useDeleteWeight = (id: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (weightId: string) => goatApi.deleteWeight(id, weightId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["goat", id] });
+      qc.invalidateQueries({ queryKey: ["goats"] });
+      qc.invalidateQueries({ queryKey: ["goat-stats"] });
+    },
+  });
+};
+
 export const useScanGoat = () =>
   useMutation({ mutationFn: (qrToken: string) => goatApi.scan(qrToken) });

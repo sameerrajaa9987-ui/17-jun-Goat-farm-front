@@ -6,6 +6,7 @@ import {
   Pressable,
   Modal,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -15,18 +16,21 @@ import {
   ArrowUpFromLine,
   Pencil,
   X,
+  Undo2,
 } from "lucide-react-native";
 import { format } from "date-fns";
 import {
   useInventoryItem,
   useInventoryMovements,
   useMoveStock,
+  useReverseMovement,
 } from "@modules/inventory/hooks/useInventory";
 import {
   MovementType,
   CATEGORY_LABEL,
   StockMovement,
 } from "@modules/inventory/types";
+import { useAuthStore } from "@shared/store/useAuthStore";
 import { palette, radius, shadows } from "@shared/designSystem";
 import {
   Text,
@@ -45,6 +49,24 @@ export default function InventoryItemScreen() {
   const { data: item, isLoading } = useInventoryItem(id);
   const { data: movements } = useInventoryMovements(id);
   const [mode, setMode] = useState<MovementType | null>(null);
+  const hasPermission = useAuthStore((s) => s.hasPermission);
+  const canReverse = hasPermission("manage_inventory");
+  const reverseMut = useReverseMovement(id);
+
+  const confirmReverse = (movement: StockMovement) => {
+    Alert.alert(
+      "Reverse movement",
+      "This posts a compensating stock movement to undo this entry. Continue?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Reverse",
+          style: "destructive",
+          onPress: () => reverseMut.mutate(movement.id),
+        },
+      ],
+    );
+  };
 
   if (isLoading || !item) {
     return (
@@ -166,7 +188,14 @@ export default function InventoryItemScreen() {
           </Text>
           <VStack gap={10}>
             {(movements ?? []).map((m) => (
-              <MovementRow key={m.id} m={m} unit={item.unit} />
+              <MovementRow
+                key={m.id}
+                m={m}
+                unit={item.unit}
+                canReverse={canReverse}
+                reversing={reverseMut.isPending}
+                onReverse={() => confirmReverse(m)}
+              />
             ))}
             {(movements ?? []).length === 0 && (
               <Text variant="body-sm" tone="tertiary">
@@ -276,8 +305,22 @@ function MoveModal({
   );
 }
 
-function MovementRow({ m, unit }: { m: StockMovement; unit: string }) {
+function MovementRow({
+  m,
+  unit,
+  canReverse,
+  reversing,
+  onReverse,
+}: {
+  m: StockMovement;
+  unit: string;
+  canReverse: boolean;
+  reversing: boolean;
+  onReverse: () => void;
+}) {
   const positive = m.quantity > 0;
+  const isReversalRelated = /revers/i.test(m.reason ?? "");
+  const showReverse = canReverse && !isReversalRelated;
   let when = m.createdAt;
   try {
     when = format(new Date(m.createdAt), "dd MMM, HH:mm");
@@ -306,6 +349,19 @@ function MovementRow({ m, unit }: { m: StockMovement; unit: string }) {
         {positive ? "+" : ""}
         {m.quantity}
       </Text>
+      {showReverse ? (
+        <Pressable
+          onPress={onReverse}
+          disabled={reversing}
+          hitSlop={8}
+          style={styles.reverseBtn}
+        >
+          <Undo2 size={16} color={palette.text.accent} strokeWidth={1.8} />
+          <Text variant="caption" tone="accent">
+            Reverse
+          </Text>
+        </Pressable>
+      ) : null}
     </Card>
   );
 }
@@ -358,6 +414,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
+  },
+  reverseBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginLeft: 12,
   },
   sheetBackdrop: {
     flex: 1,

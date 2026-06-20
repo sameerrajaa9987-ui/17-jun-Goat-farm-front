@@ -59,6 +59,13 @@ export const inventoryApi = {
     }>(`/inventory/items/${id}/movements`);
     return res.data.data;
   },
+  reverseMovement: async (movementId: string) => {
+    const res = await apiClient.post<{
+      success: boolean;
+      data: { item: InventoryItem; movement: StockMovement };
+    }>(`/inventory/movements/${movementId}/reverse`);
+    return res.data.data;
+  },
   alerts: async () => {
     const res = await apiClient.get<{
       success: boolean;

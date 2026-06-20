@@ -59,6 +59,13 @@ export const staffApi = {
     );
     return res.data.data;
   },
+  voidSalary: async (id: string, month: string) => {
+    const res = await apiClient.post<{ success: boolean; data: SalaryRecord }>(
+      `/staff/${id}/salary/void`,
+      { month },
+    );
+    return res.data.data;
+  },
   stats: async () => {
     const res = await apiClient.get<{ success: boolean; data: StaffStats }>(
       "/staff/stats",

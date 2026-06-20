@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Pressable,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -13,7 +14,10 @@ import { ChevronLeft, Plus, HeartPulse } from "lucide-react-native";
 import {
   useHealthTimeline,
   useCompleteScheduled,
+  useCancelRecord,
+  useReopenRecord,
 } from "@modules/health/hooks/useHealth";
+import { HealthRecord } from "@modules/health/types";
 import { useGoat } from "@modules/goat/hooks/useGoats";
 import { HealthRecordRow } from "@modules/health/components/HealthRecordRow";
 import { HEALTH_STATUS_TONE } from "@modules/health/healthMeta";
@@ -42,6 +46,36 @@ export default function GoatHealthScreen() {
     isRefetching,
   } = useHealthTimeline(goatId);
   const complete = useCompleteScheduled();
+  const cancel = useCancelRecord();
+  const reopen = useReopenRecord();
+
+  const confirmCancel = (record: HealthRecord) =>
+    Alert.alert("Cancel record", `Cancel "${record.title}"?`, [
+      { text: "Keep", style: "cancel" },
+      {
+        text: "Cancel record",
+        style: "destructive",
+        onPress: () => cancel.mutate(record.id),
+      },
+    ]);
+
+  const confirmReopen = (record: HealthRecord) =>
+    Alert.alert(
+      "Reopen record",
+      `Reschedule "${record.title}" for ~30 days from now?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Reopen",
+          onPress: () => {
+            const dueDate = new Date(
+              Date.now() + 30 * 24 * 60 * 60 * 1000,
+            ).toISOString();
+            reopen.mutate({ id: record.id, dueDate });
+          },
+        },
+      ],
+    );
 
   return (
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
@@ -121,25 +155,51 @@ export default function GoatHealthScreen() {
               </Text>
             </VStack>
           }
-          renderItem={({ item }) => (
-            <HealthRecordRow
-              record={item}
-              trailing={
-                canManage &&
-                (item.status === "scheduled" || item.status === "overdue") ? (
-                  <Pressable
-                    onPress={() => complete.mutate({ id: item.id, body: {} })}
-                    disabled={complete.isPending}
-                    style={styles.doneBtn}
-                  >
-                    <Text variant="label-sm" tone="inverse">
-                      Done
-                    </Text>
-                  </Pressable>
-                ) : undefined
-              }
-            />
-          )}
+          renderItem={({ item }) => {
+            const isScheduled =
+              item.status === "scheduled" || item.status === "overdue";
+            return (
+              <HealthRecordRow
+                record={item}
+                trailing={
+                  canManage && isScheduled ? (
+                    <HStack gap={8} align="center">
+                      <Pressable
+                        onPress={() =>
+                          complete.mutate({ id: item.id, body: {} })
+                        }
+                        disabled={complete.isPending}
+                        style={styles.doneBtn}
+                      >
+                        <Text variant="label-sm" tone="inverse">
+                          Done
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => confirmCancel(item)}
+                        disabled={cancel.isPending}
+                        style={styles.cancelBtn}
+                      >
+                        <Text variant="label-sm" tone="secondary">
+                          Cancel
+                        </Text>
+                      </Pressable>
+                    </HStack>
+                  ) : canManage && item.status === "completed" ? (
+                    <Pressable
+                      onPress={() => confirmReopen(item)}
+                      disabled={reopen.isPending}
+                      style={styles.cancelBtn}
+                    >
+                      <Text variant="label-sm" tone="secondary">
+                        Reopen
+                      </Text>
+                    </Pressable>
+                  ) : undefined
+                }
+              />
+            );
+          }}
         />
 
         {canManage && (
@@ -190,6 +250,14 @@ const styles = StyleSheet.create({
   },
   doneBtn: {
     backgroundColor: palette.ink[900],
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: radius.full,
+  },
+  cancelBtn: {
+    backgroundColor: palette.surface.primary,
+    borderWidth: 1,
+    borderColor: palette.border.default,
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: radius.full,

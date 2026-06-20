@@ -2,6 +2,7 @@ import { apiClient } from "@api/apiClient";
 import {
   Package,
   Invoice,
+  InvoiceLineItem,
   Payment,
   BillingStats,
   PayOrder,
@@ -97,6 +98,28 @@ export const billingApi = {
     const res = await apiClient.post<{ success: boolean; data: Invoice }>(
       `/billing/invoices/${id}/record-payment`,
       body,
+    );
+    return res.data.data;
+  },
+  cancelInvoice: async (id: string) => {
+    const res = await apiClient.post<{ success: boolean; data: Invoice }>(
+      `/billing/invoices/${id}/cancel`,
+    );
+    return res.data.data;
+  },
+  reversePayment: async (id: string) => {
+    const res = await apiClient.post<{ success: boolean; data: Invoice }>(
+      `/billing/invoices/${id}/reverse-payment`,
+    );
+    return res.data.data;
+  },
+  updateInvoice: async (
+    id: string,
+    patch: { lineItems?: InvoiceLineItem[]; total?: number },
+  ) => {
+    const res = await apiClient.patch<{ success: boolean; data: Invoice }>(
+      `/billing/invoices/${id}`,
+      patch,
     );
     return res.data.data;
   },

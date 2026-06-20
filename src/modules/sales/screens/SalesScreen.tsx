@@ -5,14 +5,20 @@ import {
   StyleSheet,
   Pressable,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { ChevronLeft, Plus, Tag } from "lucide-react-native";
 import { format } from "date-fns";
-import { useSales, useSalesStats } from "@modules/sales/hooks/useSales";
+import {
+  useSales,
+  useSalesStats,
+  useVoidSale,
+} from "@modules/sales/hooks/useSales";
 import { Sale } from "@modules/sales/types";
+import { useAuthStore } from "@shared/store/useAuthStore";
 import {
   palette,
   radius,
@@ -20,13 +26,45 @@ import {
   gradients,
   elevation,
 } from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip, Card, StatTile } from "@shared/ui";
+import {
+  Text,
+  VStack,
+  HStack,
+  StatusChip,
+  Card,
+  StatTile,
+  Button,
+} from "@shared/ui";
 
 export default function SalesScreen() {
   const navigation = useNavigation<any>();
+  const canVoid = useAuthStore((s) => s.hasPermission)("manage_sales");
   const { data, isLoading, refetch, isRefetching } = useSales();
   const { data: stats } = useSalesStats();
+  const voidSale = useVoidSale();
   const sales = data?.data ?? [];
+
+  const onVoid = (sale: Sale) => {
+    Alert.alert(
+      "Void sale",
+      `Void the sale of ${sale.goatName || sale.goatCode}? This reverses the recorded income and returns the goat to active.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Void sale",
+          style: "destructive",
+          onPress: () =>
+            voidSale.mutate(sale.id, {
+              onError: (e: any) =>
+                Alert.alert(
+                  "Could not void",
+                  e?.response?.data?.error?.message || "Try again.",
+                ),
+            }),
+        },
+      ],
+    );
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
@@ -94,7 +132,14 @@ export default function SalesScreen() {
             </VStack>
           }
           ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-          renderItem={({ item }) => <SaleRow sale={item} />}
+          renderItem={({ item }) => (
+            <SaleRow
+              sale={item}
+              canVoid={canVoid}
+              onVoid={() => onVoid(item)}
+              voiding={voidSale.isPending}
+            />
+          )}
         />
 
         <Pressable
@@ -115,7 +160,17 @@ export default function SalesScreen() {
   );
 }
 
-function SaleRow({ sale }: { sale: Sale }) {
+function SaleRow({
+  sale,
+  canVoid,
+  onVoid,
+  voiding,
+}: {
+  sale: Sale;
+  canVoid: boolean;
+  onVoid: () => void;
+  voiding: boolean;
+}) {
   let when = sale.saleDate;
   try {
     when = format(new Date(sale.saleDate), "dd MMM yyyy");
@@ -150,6 +205,17 @@ function SaleRow({ sale }: { sale: Sale }) {
           ₹{sale.salePrice.toLocaleString("en-IN")}
         </Text>
       </HStack>
+      {canVoid ? (
+        <Button
+          label="Void sale"
+          variant="destructive"
+          size="sm"
+          fullWidth={false}
+          onPress={onVoid}
+          loading={voiding}
+          style={styles.voidBtn}
+        />
+      ) : null}
     </Card>
   );
 }
@@ -175,6 +241,7 @@ const styles = StyleSheet.create({
     ...shadows.xs,
   },
   card: { padding: 16 },
+  voidBtn: { marginTop: 12, alignSelf: "flex-start" },
   emptyIcon: {
     width: 72,
     height: 72,

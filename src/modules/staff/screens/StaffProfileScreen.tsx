@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Pressable,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -19,8 +20,10 @@ import {
   useStaffProfile,
   useMarkAttendance,
   useRecordSalary,
+  useVoidSalary,
 } from "@modules/staff/hooks/useStaff";
 import { AttendanceStatus, ATTENDANCE_LABEL } from "@modules/staff/types";
+import { useAuthStore } from "@shared/store/useAuthStore";
 import { palette, radius, shadows } from "@shared/designSystem";
 import {
   Text,
@@ -58,9 +61,33 @@ export default function StaffProfileScreen() {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const id = route.params?.id as string;
+  const canManage = useAuthStore((s) => s.hasPermission)("manage_staff");
   const { data, isLoading } = useStaffProfile(id);
   const mark = useMarkAttendance(id);
   const paySalary = useRecordSalary(id);
+  const voidSalary = useVoidSalary(id);
+
+  const onVoidSalary = (month: string) => {
+    Alert.alert(
+      "Void salary",
+      `Undo the salary payment for ${month}? This reverses the recorded expense and sets the record back to pending.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Void",
+          style: "destructive",
+          onPress: () =>
+            voidSalary.mutate(month, {
+              onError: (e: any) =>
+                Alert.alert(
+                  "Could not void",
+                  e?.response?.data?.error?.message || "Try again.",
+                ),
+            }),
+        },
+      ],
+    );
+  };
 
   if (isLoading || !data) {
     return (
@@ -220,7 +247,20 @@ export default function StaffProfileScreen() {
                 Salary
               </Text>
               {paidThisMonth ? (
-                <StatusChip label={`${thisMonth} paid`} tone="success" />
+                <HStack gap={8} align="center">
+                  <StatusChip label={`${thisMonth} paid`} tone="success" />
+                  {canManage ? (
+                    <Pressable
+                      onPress={() => onVoidSalary(paidThisMonth.month)}
+                      disabled={voidSalary.isPending}
+                      style={styles.voidBtn}
+                    >
+                      <Text variant="label" tone="inverse">
+                        Void
+                      </Text>
+                    </Pressable>
+                  ) : null}
+                </HStack>
               ) : (
                 <Pressable
                   onPress={() =>
@@ -257,6 +297,17 @@ export default function StaffProfileScreen() {
                         label={s.status}
                         tone={s.status === "paid" ? "success" : "warning"}
                       />
+                      {canManage && s.status === "paid" ? (
+                        <Pressable
+                          onPress={() => onVoidSalary(s.month)}
+                          disabled={voidSalary.isPending}
+                          hitSlop={6}
+                        >
+                          <Text variant="label" tone="danger">
+                            Undo
+                          </Text>
+                        </Pressable>
+                      ) : null}
                     </HStack>
                   </HStack>
                 ))}
@@ -332,6 +383,12 @@ const styles = StyleSheet.create({
   payBtn: {
     backgroundColor: palette.ink[900],
     paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: radius.full,
+  },
+  voidBtn: {
+    backgroundColor: palette.danger.text,
+    paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: radius.full,
   },

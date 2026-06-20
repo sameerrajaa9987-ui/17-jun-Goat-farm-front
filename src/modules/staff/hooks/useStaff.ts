@@ -57,3 +57,11 @@ export const useRecordSalary = (id: string) => {
     onSuccess: () => invalidate(qc, id),
   });
 };
+
+export const useVoidSalary = (id: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (month: string) => staffApi.voidSalary(id, month),
+    onSuccess: () => invalidate(qc, id),
+  });
+};

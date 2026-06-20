@@ -57,6 +57,12 @@ export const taskApi = {
     );
     return res.data.data;
   },
+  reopen: async (id: string) => {
+    const res = await apiClient.post<{ success: boolean; data: Task }>(
+      `/tasks/${id}/reopen`,
+    );
+    return res.data.data;
+  },
   remove: async (id: string) => {
     const res = await apiClient.delete(`/tasks/${id}`);
     return res.data;
