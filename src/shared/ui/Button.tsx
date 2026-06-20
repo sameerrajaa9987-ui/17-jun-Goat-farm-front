@@ -126,10 +126,12 @@ function getVariantColors(v: Variant) {
         borderWidth: 0,
       };
     case "accent":
+      // amber[600] (deeper clay) so white labels meet WCAG AA (≈5.5:1);
+      // amber[500] was 3.93:1 — fine for icons but short for button text.
       return {
-        bg: palette.amber[500],
+        bg: palette.amber[600],
         text: palette.text.inverse,
-        border: palette.amber[500],
+        border: palette.amber[600],
         borderWidth: 0,
       };
     case "secondary":

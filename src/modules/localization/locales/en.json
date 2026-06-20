@@ -1,6 +1,17 @@
 {
+  "onboarding": {
+    "slide1Title": "Welcome to GoatKeep",
+    "slide1Body": "Your whole goat farm — goats, daily work, health, and money — in one simple app.",
+    "slide2Title": "Track every goat",
+    "slide2Body": "QR tags, health records, weights, and vaccination reminders for your whole herd.",
+    "slide3Title": "For owners and clients",
+    "slide3Body": "Run the farm, or simply follow your own goats and pay your bills — everyone sees just what they need.",
+    "next": "Next",
+    "skip": "Skip",
+    "getStarted": "Get started"
+  },
   "common": {
-    "appName": "Goat Farm Manager",
+    "appName": "GoatKeep",
     "submit": "Submit",
     "cancel": "Cancel",
     "save": "Save",
@@ -19,7 +30,7 @@
     "lastName": "Last name",
     "signIn": "Sign in",
     "createAccount": "Create an account",
-    "newHere": "New to Goat Farm Manager?",
+    "newHere": "New to GoatKeep?",
     "forgotPassword": "Forgot password?",
     "register": "Create your account",
     "registerSubtitle": "Set up your farm account.",

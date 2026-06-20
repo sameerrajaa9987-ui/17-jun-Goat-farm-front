@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Goat Farm Manager",
+    "name": "GoatKeep",
     "slug": "goat-farm",
     "version": "1.0.0",
     "runtimeVersion": {
@@ -59,13 +59,13 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow Goat Farm Manager to scan goat QR tags."
+          "cameraPermission": "Allow GoatKeep to scan goat QR tags."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow Goat Farm Manager to upload goat and task photos."
+          "photosPermission": "Allow GoatKeep to upload goat and task photos."
         }
       ],
       [
