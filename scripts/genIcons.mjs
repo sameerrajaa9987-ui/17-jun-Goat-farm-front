@@ -1,36 +1,46 @@
 /**
- * Generates the GoatKeep app icons from a single vector mark using sharp.
- * Clean, bold, high-contrast (2026 icon guidance): one shape, no text.
- *   icon.png          1024  full square (forest gradient + goat)
- *   adaptive-icon.png 1024  goat on transparent (Android foreground; bg color in app.json)
- *   splash-icon.png   1024  goat on transparent
- *   favicon.png         48  small square
- * Run: node scripts/genIcons.mjs
+ * GoatKeep app icons — aggressive "fighter" goat: big swept ram horns, angry
+ * brow, narrowed eyes, and a snarl with teeth. Bold, high-contrast, no text.
+ * Run: node scripts/genIcons.mjs   (needs: npm i sharp)
  */
 import sharp from "sharp";
 
 const CREAM = "#F4EEE1";
 const CLAY = "#CF7650";
-const EYE = "#10311A";
+const DARK = "#0A1E10";
 
-// The goat mark, centered on a 1024 canvas (horns/ears/beard so it reads as a goat).
+// Front-facing fighter goat head, centered on a 1024 canvas.
 const GOAT = `
   <g>
-    <!-- horns (clay, behind) -->
-    <path d="M470 372 C432 322,386 276,372 206 C360 214,350 226,344 242 C360 304,412 352,452 392 Z" fill="${CLAY}"/>
-    <path d="M554 372 C592 322,638 276,652 206 C664 214,674 226,680 242 C664 304,612 352,572 392 Z" fill="${CLAY}"/>
-    <!-- ears (cream, behind face) -->
-    <ellipse cx="326" cy="486" rx="78" ry="40" transform="rotate(-28 326 486)" fill="${CREAM}"/>
-    <ellipse cx="698" cy="486" rx="78" ry="40" transform="rotate(28 698 486)" fill="${CREAM}"/>
-    <!-- face (cream) -->
-    <path d="M512 348 C614 348,678 392,678 470 C678 556,660 642,600 700 C576 724,546 740,512 740 C478 740,448 724,424 700 C364 642,346 556,346 470 C346 392,410 348,512 348 Z" fill="${CREAM}"/>
-    <!-- beard (cream) -->
-    <path d="M484 730 C484 778,496 812,512 824 C528 812,540 778,540 730 C524 736,500 736,484 730 Z" fill="${CREAM}"/>
-    <!-- eyes -->
-    <ellipse cx="456" cy="520" rx="22" ry="28" fill="${EYE}"/>
-    <ellipse cx="568" cy="520" rx="22" ry="28" fill="${EYE}"/>
-    <!-- nose (clay accent) -->
-    <ellipse cx="512" cy="636" rx="30" ry="22" fill="${CLAY}"/>
+    <!-- big swept-back ram horns (clay), bold strokes -->
+    <path d="M468 372 C396 300 312 274 236 292 C182 304 164 356 186 408"
+      fill="none" stroke="${CLAY}" stroke-width="56" stroke-linecap="round"/>
+    <path d="M556 372 C628 300 712 274 788 292 C842 304 860 356 838 408"
+      fill="none" stroke="${CLAY}" stroke-width="56" stroke-linecap="round"/>
+    <!-- ears (cream) -->
+    <path d="M356 478 C316 452 280 458 264 482 C282 514 330 524 378 506 Z" fill="${CREAM}"/>
+    <path d="M668 478 C708 452 744 458 760 482 C742 514 694 524 646 506 Z" fill="${CREAM}"/>
+    <!-- angular face / strong jaw (cream) -->
+    <path d="M512 372 C606 372 666 416 666 490 C666 582 626 672 560 728
+      C540 744 526 756 512 764 C498 756 484 744 464 728 C398 672 358 582 358 490
+      C358 416 418 372 512 372 Z" fill="${CREAM}"/>
+    <!-- fierce brow ridges (angled inward, dark) -->
+    <path d="M424 502 L508 532 L502 480 Z" fill="${DARK}"/>
+    <path d="M600 502 L516 532 L522 480 Z" fill="${DARK}"/>
+    <!-- narrowed angry eyes (dark) -->
+    <path d="M436 528 L504 540 L500 566 L442 556 Z" fill="${DARK}"/>
+    <path d="M588 528 L520 540 L524 566 L582 556 Z" fill="${DARK}"/>
+    <!-- snout + nostrils -->
+    <ellipse cx="512" cy="638" rx="42" ry="28" fill="${CLAY}"/>
+    <ellipse cx="495" cy="638" rx="6" ry="9" fill="${DARK}"/>
+    <ellipse cx="529" cy="638" rx="6" ry="9" fill="${DARK}"/>
+    <!-- snarl mouth (dark) with teeth (cream) -->
+    <path d="M466 690 C490 712 534 712 558 690 C544 728 480 728 466 690 Z" fill="${DARK}"/>
+    <path d="M486 700 L498 700 L492 716 Z" fill="${CREAM}"/>
+    <path d="M526 700 L538 700 L532 716 Z" fill="${CREAM}"/>
+    <!-- pointed beard (cream) -->
+    <path d="M478 742 C478 800 496 852 512 870 C528 852 546 800 546 742
+      C524 754 500 754 478 742 Z" fill="${CREAM}"/>
   </g>
 `;
 

@@ -52,8 +52,8 @@ jobs:
           CI: "1"
           # EXPO_PUBLIC_* are inlined into the JS bundle at export time, so they
           # must match the build profile's env.
-          EXPO_PUBLIC_API_URL: https://one7-jun-goat-farm-back.onrender.com/api/v1
-          EXPO_PUBLIC_SOCKET_URL: https://one7-jun-goat-farm-back.onrender.com
+          EXPO_PUBLIC_API_URL: https://one7-jun-goat-farm-back-frnr.onrender.com/api/v1
+          EXPO_PUBLIC_SOCKET_URL: https://one7-jun-goat-farm-back-frnr.onrender.com
         # --platform android only: Android is the live test target here.
         run: |
           eas update \

@@ -19,8 +19,8 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://one7-jun-goat-farm-back.onrender.com/api/v1",
-        "EXPO_PUBLIC_SOCKET_URL": "https://one7-jun-goat-farm-back.onrender.com"
+        "EXPO_PUBLIC_API_URL": "https://one7-jun-goat-farm-back-frnr.onrender.com/api/v1",
+        "EXPO_PUBLIC_SOCKET_URL": "https://one7-jun-goat-farm-back-frnr.onrender.com"
       }
     },
     "production": {
@@ -30,8 +30,8 @@
         "buildType": "app-bundle"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://one7-jun-goat-farm-back.onrender.com/api/v1",
-        "EXPO_PUBLIC_SOCKET_URL": "https://one7-jun-goat-farm-back.onrender.com"
+        "EXPO_PUBLIC_API_URL": "https://one7-jun-goat-farm-back-frnr.onrender.com/api/v1",
+        "EXPO_PUBLIC_SOCKET_URL": "https://one7-jun-goat-farm-back-frnr.onrender.com"
       }
     }
   },
