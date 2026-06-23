@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   View,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -8,10 +9,10 @@ import {
   StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Eye, EyeOff, Mail, Lock, Sprout } from "lucide-react-native";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { useLogin } from "@modules/auth/hooks/useAuth";
-import { palette, radius, glass } from "@shared/designSystem";
+import { palette, radius } from "@shared/designSystem";
 import {
   Text,
   VStack,
@@ -61,11 +62,11 @@ export default function LoginScreen({ navigation }: Props) {
             showsVerticalScrollIndicator={false}
           >
             <GradientHero variant="hero">
-              <View style={[styles.logoBadge, glass.light]}>
-                <Sprout
-                  color={palette.amber[300]}
-                  size={28}
-                  strokeWidth={1.8}
+              <View style={styles.logoBadge}>
+                <Image
+                  source={require("../../../../assets/brand/logo.png")}
+                  style={styles.logoImg}
+                  resizeMode="contain"
                 />
               </View>
               <VStack gap={6} style={{ marginTop: 24 }}>
@@ -190,12 +191,15 @@ export default function LoginScreen({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   logoBadge: {
-    width: 56,
-    height: 56,
+    width: 68,
+    height: 68,
     borderRadius: radius.lg,
+    backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
   },
+  logoImg: { width: 58, height: 58 },
   error: {
     marginTop: 20,
     padding: 16,

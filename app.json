@@ -13,7 +13,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0A1E10"
+      "backgroundColor": "#FFFFFF"
     },
     "ios": {
       "supportsTablet": true,
@@ -35,7 +35,7 @@
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#0A1E10"
+        "backgroundColor": "#FFFFFF"
       },
       "package": "com.goatfarm.app"
     },
@@ -72,7 +72,7 @@
         "expo-splash-screen",
         {
           "image": "./assets/splash-icon.png",
-          "backgroundColor": "#0A1E10",
+          "backgroundColor": "#FFFFFF",
           "resizeMode": "contain"
         }
       ]

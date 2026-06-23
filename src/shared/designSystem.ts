@@ -8,18 +8,18 @@
  */
 
 export const palette = {
-  // Primary ink — deep forest, modern alternative to pure black
+  // Primary ink — graphite / charcoal (bold, rugged; distinct brand identity)
   ink: {
-    900: "#0A1E10",
-    800: "#10311A",
-    700: "#1C4726",
-    600: "#255A31",
-    500: "#2F6B3C",
-    400: "#4C8C54",
-    300: "#73A879",
-    200: "#A3C7A7",
-    100: "#CFE2D1",
-    50: "#EBF3EC",
+    900: "#1A1A1C",
+    800: "#242427",
+    700: "#313135",
+    600: "#45454A",
+    500: "#5E5E64",
+    400: "#7E7E85",
+    300: "#A2A2A8",
+    200: "#C8C8CC",
+    100: "#E5E5E8",
+    50: "#F2F2F3",
   },
 
   // Accent — clay / terracotta (warm earthen, not orange-bright)
@@ -57,14 +57,14 @@ export const palette = {
     tertiary: "#F4EEE1",
     raised: "#FFFFFF",
     sunken: "#F4EEE1",
-    dark: "#0A1E10",
-    darkRaised: "#10311A",
+    dark: "#1A1A1C",
+    darkRaised: "#242427",
   },
 
   text: {
-    primary: "#1A2620",
-    secondary: "#3D453C",
-    tertiary: "#5C6B61",
+    primary: "#1A1A1C",
+    secondary: "#45454A",
+    tertiary: "#5E5E64",
     disabled: "#A09A88",
     inverse: "#FFFFFF",
     accent: "#A2522D",
@@ -75,7 +75,7 @@ export const palette = {
     default: "#EBE1CC",
     strong: "#DDCFB0",
     focus: "#C2683B",
-    dark: "#1C3324",
+    dark: "#313135",
   },
 
   // Semantic — herd health and billing states
@@ -209,35 +209,35 @@ export const typography = {
 export const shadows = {
   none: {},
   xs: {
-    shadowColor: "#0A1E10",
+    shadowColor: "#1A1A1C",
     shadowOpacity: 0.04,
     shadowRadius: 2,
     shadowOffset: { width: 0, height: 1 },
     elevation: 1,
   },
   sm: {
-    shadowColor: "#0A1E10",
+    shadowColor: "#1A1A1C",
     shadowOpacity: 0.05,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
   md: {
-    shadowColor: "#0A1E10",
+    shadowColor: "#1A1A1C",
     shadowOpacity: 0.06,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
     elevation: 3,
   },
   lg: {
-    shadowColor: "#0A1E10",
+    shadowColor: "#1A1A1C",
     shadowOpacity: 0.08,
     shadowRadius: 20,
     shadowOffset: { width: 0, height: 8 },
     elevation: 6,
   },
   xl: {
-    shadowColor: "#0A1E10",
+    shadowColor: "#1A1A1C",
     shadowOpacity: 0.12,
     shadowRadius: 32,
     shadowOffset: { width: 0, height: 12 },
@@ -261,16 +261,16 @@ export const motion = {
  * Pair with the default {x:0,y:0}→{x:1,y:1} direction for a soft diagonal.
  */
 export const gradients = {
-  // Deep forest hero — the signature surface for headers / feature cards.
-  hero: ["#10311A", "#0A1E10", "#06160B"] as const,
-  // Forest with a hint of life, slightly lighter for raised dark cards.
-  forest: ["#1C4726", "#10311A"] as const,
+  // Graphite hero — the signature dark surface for headers / feature cards.
+  hero: ["#313135", "#1A1A1C", "#121214"] as const,
+  // Graphite, slightly lighter for raised dark cards.
+  forest: ["#34343A", "#1F1F22"] as const,
   // Clay accent — for the primary metric / call-to-action surfaces.
   clay: ["#CF7650", "#C2683B", "#A2522D"] as const,
   // Warm sand — barely-there sheen for light bento tiles.
   sand: ["#FFFFFF", "#FAF7F0"] as const,
-  // Subtle moss tint for "open/active" module tiles.
-  moss: ["#F3F8F1", "#EBF3EC"] as const,
+  // Subtle warm-neutral tint for "open/active" module tiles.
+  moss: ["#F4F2EE", "#ECE9E3"] as const,
 } as const;
 
 /**
