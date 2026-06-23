@@ -140,6 +140,7 @@ const LIVE_TAB: Record<string, string> = {
   health: "Health",
   inventory: "Inventory",
   staff: "Staff",
+  billing: "ClientList", // Ad Pali hub (clients → invoices, packages)
   finance: "Finance",
   reports: "Reports",
 };
