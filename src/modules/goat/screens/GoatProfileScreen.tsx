@@ -23,6 +23,7 @@ import {
   Tag,
   Pencil,
   Trash2,
+  Download,
 } from "lucide-react-native";
 import { format } from "date-fns";
 import {
@@ -33,6 +34,7 @@ import {
   useDeleteWeight,
 } from "@modules/goat/hooks/useGoats";
 import { WeightEntry } from "@modules/goat/types";
+import { exportGoatPassport } from "@modules/goat/passport";
 import { mediaUrl } from "@modules/goat/screens/GoatListScreen";
 import { WeightSparkline } from "@modules/goat/components/WeightSparkline";
 import { useGoatProfitability } from "@modules/finance/hooks/useFinance";
@@ -86,7 +88,9 @@ export default function GoatProfileScreen() {
   const [showQr, setShowQr] = useState(false);
   const [showWeigh, setShowWeigh] = useState(false);
   const [editWeight, setEditWeight] = useState<WeightEntry | null>(null);
-  const { data: qr, isLoading: qrLoading } = useGoatQr(id, showQr);
+  const [exporting, setExporting] = useState(false);
+  // Generate the QR on load so it can be embedded in the passport PDF.
+  const { data: qr, isLoading: qrLoading } = useGoatQr(id, true);
   const deleteWeight = useDeleteWeight(id);
 
   const confirmDeleteWeight = (entry: WeightEntry) =>
@@ -114,6 +118,21 @@ export default function GoatProfileScreen() {
     );
   }
 
+  const onExport = async () => {
+    setExporting(true);
+    try {
+      await exportGoatPassport({
+        goat,
+        photoUrl: goat.photo ? mediaUrl(goat.photo) : undefined,
+        qrDataUrl: qr?.dataUrl,
+      });
+    } catch {
+      Alert.alert("Couldn't create passport", "Please try again.");
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: palette.surface.secondary }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
@@ -133,6 +152,18 @@ export default function GoatProfileScreen() {
               Digital Passport
             </Text>
           </VStack>
+          <Pressable
+            onPress={onExport}
+            disabled={exporting}
+            hitSlop={10}
+            style={[styles.backBtn, { marginRight: 8 }]}
+          >
+            {exporting ? (
+              <ActivityIndicator size="small" color={palette.ink[800]} />
+            ) : (
+              <Download size={22} color={palette.ink[800]} />
+            )}
+          </Pressable>
           <Pressable
             onPress={() => setShowQr(true)}
             hitSlop={10}

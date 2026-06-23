@@ -9,7 +9,13 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { ChevronLeft, CheckCircle2, IndianRupee } from "lucide-react-native";
+import {
+  ChevronLeft,
+  CheckCircle2,
+  IndianRupee,
+  MessageCircle,
+} from "lucide-react-native";
+import { openWhatsApp } from "@shared/whatsapp";
 import { format } from "date-fns";
 import {
   useInvoice,
@@ -250,6 +256,17 @@ export default function InvoiceDetailScreen() {
           )}
           {unpaid && isAdmin && (
             <VStack gap={10} style={{ marginTop: 20 }}>
+              <Button
+                label="Remind on WhatsApp"
+                variant="accent"
+                icon={<MessageCircle size={18} color={palette.text.inverse} />}
+                onPress={() =>
+                  openWhatsApp(
+                    invoice.client?.phone,
+                    `Hi ${invoice.client?.name || "there"}, your GoatKeep Ad Pali bill ${invoice.invoiceNo} for ${invoice.period} is ₹${invoice.total.toLocaleString("en-IN")}, due ${fmtDate(invoice.dueDate)}. Kindly clear it at your convenience. Thank you!`,
+                  )
+                }
+              />
               <Button
                 label="Record cash payment"
                 variant="secondary"
