@@ -210,42 +210,44 @@ export const typography = {
   },
 } as const;
 
+// Hard offset "block" shadows (no blur) so every direct shadow usage matches
+// the neo-brutalist language. iOS renders the offset; Android leans on outlines.
 export const shadows = {
   none: {},
   xs: {
     shadowColor: "#1A1A1C",
-    shadowOpacity: 0.04,
-    shadowRadius: 2,
-    shadowOffset: { width: 0, height: 1 },
-    elevation: 1,
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    shadowOffset: { width: 2, height: 2 },
+    elevation: 0,
   },
   sm: {
     shadowColor: "#1A1A1C",
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    shadowOffset: { width: 3, height: 3 },
+    elevation: 0,
   },
   md: {
     shadowColor: "#1A1A1C",
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 3,
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    shadowOffset: { width: 4, height: 4 },
+    elevation: 0,
   },
   lg: {
     shadowColor: "#1A1A1C",
-    shadowOpacity: 0.08,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 6,
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    shadowOffset: { width: 6, height: 6 },
+    elevation: 0,
   },
   xl: {
     shadowColor: "#1A1A1C",
-    shadowOpacity: 0.12,
-    shadowRadius: 32,
-    shadowOffset: { width: 0, height: 12 },
-    elevation: 10,
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    shadowOffset: { width: 8, height: 8 },
+    elevation: 0,
   },
 } as const;
 

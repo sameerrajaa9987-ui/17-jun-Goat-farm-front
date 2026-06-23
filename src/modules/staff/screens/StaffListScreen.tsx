@@ -7,19 +7,20 @@ import {
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { ChevronLeft, Plus, Users, ChevronRight } from "lucide-react-native";
 import { useStaffList, useStaffStats } from "@modules/staff/hooks/useStaff";
 import { Staff } from "@modules/staff/types";
+import { palette, radius, shadows } from "@shared/designSystem";
 import {
-  palette,
-  radius,
-  shadows,
-  gradients,
-  elevation,
-} from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip, Card, StatTile } from "@shared/ui";
+  Text,
+  VStack,
+  HStack,
+  StatusChip,
+  Card,
+  StatTile,
+  Fab,
+} from "@shared/ui";
 
 export default function StaffListScreen() {
   const navigation = useNavigation<any>();
@@ -110,19 +111,12 @@ export default function StaffListScreen() {
           )}
         />
 
-        <Pressable
-          style={styles.fabWrap}
+        <Fab
           onPress={() => navigation.navigate("AddStaff")}
-        >
-          <LinearGradient
-            colors={gradients.clay}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.fab}
-          >
+          icon={
             <Plus size={24} color={palette.text.inverse} strokeWidth={2.4} />
-          </LinearGradient>
-        </Pressable>
+          }
+        />
       </SafeAreaView>
     </View>
   );
@@ -199,20 +193,6 @@ const styles = StyleSheet.create({
     height: 46,
     borderRadius: radius.full,
     backgroundColor: palette.ink[700],
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  fabWrap: {
-    position: "absolute",
-    right: 20,
-    bottom: 28,
-    borderRadius: radius.full,
-    ...elevation.floating,
-  },
-  fab: {
-    width: 58,
-    height: 58,
-    borderRadius: radius.full,
     alignItems: "center",
     justifyContent: "center",
   },

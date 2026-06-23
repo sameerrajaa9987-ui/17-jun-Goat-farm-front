@@ -12,7 +12,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
-import { LinearGradient } from "expo-linear-gradient";
 import {
   ChevronLeft,
   Plus,
@@ -33,13 +32,7 @@ import {
 import { uploadImage } from "@modules/goat/api/goatApi";
 import { mediaUrl } from "@modules/goat/screens/GoatListScreen";
 import { useAuthStore } from "@shared/store/useAuthStore";
-import {
-  palette,
-  radius,
-  shadows,
-  gradients,
-  elevation,
-} from "@shared/designSystem";
+import { palette, radius, shadows } from "@shared/designSystem";
 import {
   Text,
   VStack,
@@ -48,6 +41,7 @@ import {
   Button,
   TextField,
   Card,
+  Fab,
 } from "@shared/ui";
 
 const TYPES: DocumentType[] = [
@@ -129,16 +123,12 @@ export default function DocumentsScreen() {
         />
 
         {canManage && (
-          <Pressable style={styles.fabWrap} onPress={() => setAdding(true)}>
-            <LinearGradient
-              colors={gradients.clay}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.fab}
-            >
+          <Fab
+            onPress={() => setAdding(true)}
+            icon={
               <Plus size={24} color={palette.text.inverse} strokeWidth={2.4} />
-            </LinearGradient>
-          </Pressable>
+            }
+          />
         )}
       </SafeAreaView>
 
@@ -348,20 +338,6 @@ const styles = StyleSheet.create({
     height: 42,
     borderRadius: radius.md,
     backgroundColor: palette.ink[50],
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  fabWrap: {
-    position: "absolute",
-    right: 20,
-    bottom: 28,
-    borderRadius: radius.full,
-    ...elevation.floating,
-  },
-  fab: {
-    width: 58,
-    height: 58,
-    borderRadius: radius.full,
     alignItems: "center",
     justifyContent: "center",
   },

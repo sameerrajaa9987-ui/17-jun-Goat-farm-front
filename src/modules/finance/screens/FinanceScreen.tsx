@@ -11,7 +11,6 @@ import {
   ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import {
   ChevronLeft,
@@ -34,14 +33,7 @@ import {
   INCOME_CATEGORIES,
   CATEGORY_LABEL,
 } from "@modules/finance/types";
-import {
-  palette,
-  radius,
-  shadows,
-  gradients,
-  elevation,
-  layout,
-} from "@shared/designSystem";
+import { palette, radius, shadows, layout } from "@shared/designSystem";
 import {
   Text,
   VStack,
@@ -51,6 +43,7 @@ import {
   Card,
   GradientHero,
   StatTile,
+  Fab,
 } from "@shared/ui";
 
 const FILTERS: { key: "all" | TxType; label: string }[] = [
@@ -222,16 +215,12 @@ export default function FinanceScreen() {
           renderItem={({ item }) => <TxRow tx={item} />}
         />
 
-        <Pressable style={styles.fabWrap} onPress={() => setAdding(true)}>
-          <LinearGradient
-            colors={gradients.clay}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.fab}
-          >
+        <Fab
+          onPress={() => setAdding(true)}
+          icon={
             <Plus size={24} color={palette.text.inverse} strokeWidth={2.4} />
-          </LinearGradient>
-        </Pressable>
+          }
+        />
       </SafeAreaView>
 
       <AddTxModal visible={adding} onClose={() => setAdding(false)} />
@@ -487,20 +476,6 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: radius.md,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  fabWrap: {
-    position: "absolute",
-    right: 20,
-    bottom: 28,
-    borderRadius: radius.full,
-    ...elevation.floating,
-  },
-  fab: {
-    width: 58,
-    height: 58,
-    borderRadius: radius.full,
     alignItems: "center",
     justifyContent: "center",
   },

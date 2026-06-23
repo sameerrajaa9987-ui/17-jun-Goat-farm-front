@@ -7,14 +7,21 @@ import {
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { UserPlus, Power, Users, ChevronRight } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { useUsers, useSetUserActive } from "@modules/team/hooks/useTeam";
 import { TeamUser } from "@modules/team/types";
-import { palette, radius, gradients, elevation } from "@shared/designSystem";
-import { Text, VStack, HStack, Card, StatusChip, ChipsRow } from "@shared/ui";
+import { palette, radius } from "@shared/designSystem";
+import {
+  Text,
+  VStack,
+  HStack,
+  Card,
+  StatusChip,
+  ChipsRow,
+  Fab,
+} from "@shared/ui";
 
 const ROLE_FILTERS = ["all", "manager", "worker", "vet", "client"] as const;
 
@@ -92,23 +99,16 @@ export default function TeamScreen() {
           ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
         />
 
-        <Pressable
-          style={styles.fabWrap}
+        <Fab
           onPress={() => navigation.navigate("AddUser")}
-        >
-          <LinearGradient
-            colors={gradients.clay}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.fab}
-          >
+          icon={
             <UserPlus
               size={24}
               color={palette.text.inverse}
               strokeWidth={2.2}
             />
-          </LinearGradient>
-        </Pressable>
+          }
+        />
       </SafeAreaView>
     </View>
   );
@@ -204,19 +204,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: palette.border.default,
-  },
-  fabWrap: {
-    position: "absolute",
-    right: 20,
-    bottom: 28,
-    borderRadius: radius.full,
-    ...elevation.floating,
-  },
-  fab: {
-    width: 58,
-    height: 58,
-    borderRadius: radius.full,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });

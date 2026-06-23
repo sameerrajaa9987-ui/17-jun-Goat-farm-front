@@ -8,4 +8,5 @@ export { StatTile } from "./StatTile";
 export { DonutChart } from "./DonutChart";
 export { StatusChip } from "./StatusChip";
 export { ChipsRow } from "./ChipsRow";
+export { Fab } from "./Fab";
 export { useBottomPadding, useTabBottomPadding } from "./useBottomPadding";

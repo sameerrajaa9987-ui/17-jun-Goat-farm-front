@@ -1,13 +1,6 @@
 import React, { useState } from "react";
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  Pressable,
-  RefreshControl,
-} from "react-native";
+import { View, FlatList, StyleSheet, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { Plus, ClipboardList, ChevronRight } from "lucide-react-native";
 import { format } from "date-fns";
@@ -15,8 +8,16 @@ import { useTasks } from "@modules/task/hooks/useTasks";
 import { Task, TaskStatus, TASK_TYPE_LABEL } from "@modules/task/types";
 import { STATUS_LABEL, STATUS_TONE } from "@modules/task/taskMeta";
 import { useAuthStore } from "@shared/store/useAuthStore";
-import { palette, radius, gradients, elevation } from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip, Card, ChipsRow } from "@shared/ui";
+import { palette, radius } from "@shared/designSystem";
+import {
+  Text,
+  VStack,
+  HStack,
+  StatusChip,
+  Card,
+  ChipsRow,
+  Fab,
+} from "@shared/ui";
 
 type FilterKey = "active" | TaskStatus;
 
@@ -125,19 +126,12 @@ export default function TasksScreen() {
         />
 
         {isManager && (
-          <Pressable
-            style={styles.fabWrap}
+          <Fab
             onPress={() => navigation.navigate("AssignTask")}
-          >
-            <LinearGradient
-              colors={gradients.clay}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.fab}
-            >
+            icon={
               <Plus size={24} color={palette.text.inverse} strokeWidth={2.4} />
-            </LinearGradient>
-          </Pressable>
+            }
+          />
         )}
       </SafeAreaView>
     </View>
@@ -219,20 +213,6 @@ const styles = StyleSheet.create({
     height: 72,
     borderRadius: radius.full,
     backgroundColor: palette.ink[50],
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  fabWrap: {
-    position: "absolute",
-    right: 20,
-    bottom: 28,
-    borderRadius: radius.full,
-    ...elevation.floating,
-  },
-  fab: {
-    width: 58,
-    height: 58,
-    borderRadius: radius.full,
     alignItems: "center",
     justifyContent: "center",
   },

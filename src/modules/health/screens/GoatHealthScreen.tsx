@@ -8,7 +8,6 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { ChevronLeft, Plus, HeartPulse } from "lucide-react-native";
 import {
@@ -22,14 +21,15 @@ import { useGoat } from "@modules/goat/hooks/useGoats";
 import { HealthRecordRow } from "@modules/health/components/HealthRecordRow";
 import { HEALTH_STATUS_TONE } from "@modules/health/healthMeta";
 import { useAuthStore } from "@shared/store/useAuthStore";
+import { palette, radius, shadows } from "@shared/designSystem";
 import {
-  palette,
-  radius,
-  shadows,
-  gradients,
-  elevation,
-} from "@shared/designSystem";
-import { Text, VStack, HStack, StatusChip, GradientHero } from "@shared/ui";
+  Text,
+  VStack,
+  HStack,
+  StatusChip,
+  GradientHero,
+  Fab,
+} from "@shared/ui";
 
 export default function GoatHealthScreen() {
   const navigation = useNavigation<any>();
@@ -203,19 +203,12 @@ export default function GoatHealthScreen() {
         />
 
         {canManage && (
-          <Pressable
-            style={styles.fabWrap}
+          <Fab
             onPress={() => navigation.navigate("AddHealthRecord", { goatId })}
-          >
-            <LinearGradient
-              colors={gradients.clay}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.fab}
-            >
+            icon={
               <Plus size={24} color={palette.text.inverse} strokeWidth={2.2} />
-            </LinearGradient>
-          </Pressable>
+            }
+          />
         )}
       </SafeAreaView>
     </View>
@@ -261,19 +254,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: radius.full,
-  },
-  fabWrap: {
-    position: "absolute",
-    right: 20,
-    bottom: 28,
-    borderRadius: radius.full,
-    ...elevation.floating,
-  },
-  fab: {
-    width: 58,
-    height: 58,
-    borderRadius: radius.full,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
