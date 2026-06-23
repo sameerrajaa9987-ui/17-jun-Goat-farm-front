@@ -11,9 +11,8 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { LinearGradient } from "expo-linear-gradient";
 import type { LucideIcon } from "lucide-react-native";
-import { palette, radius, elevation, motion, gradients } from "../designSystem";
+import { palette, radius, elevation, motion, outline } from "../designSystem";
 import { Text } from "./Text";
 
 type Tone = "light" | "clay" | "forest";
@@ -88,21 +87,19 @@ export function StatTile({
     </>
   );
 
-  const body =
-    tone === "light" ? (
-      <View style={[styles.tile, styles.lightTile, elevation.raised, style]}>
-        {inner}
-      </View>
-    ) : (
-      <LinearGradient
-        colors={tone === "clay" ? gradients.clay : gradients.forest}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.tile, elevation.raised, style]}
-      >
-        {inner}
-      </LinearGradient>
-    );
+  const fill =
+    tone === "clay"
+      ? palette.amber[600]
+      : tone === "forest"
+        ? palette.ink[800]
+        : palette.surface.primary;
+  const body = (
+    <View
+      style={[styles.tile, { backgroundColor: fill }, elevation.raised, style]}
+    >
+      {inner}
+    </View>
+  );
 
   if (!onPress) return body;
 
@@ -122,16 +119,12 @@ export function StatTile({
 const styles = StyleSheet.create({
   tile: {
     flex: 1,
-    borderRadius: radius.xl,
+    borderRadius: radius.lg,
+    borderWidth: outline.width,
+    borderColor: outline.color,
     padding: 16,
     minHeight: 96,
     justifyContent: "space-between",
-    overflow: "hidden",
-  },
-  lightTile: {
-    backgroundColor: palette.surface.primary,
-    borderWidth: 1,
-    borderColor: palette.border.default,
   },
   iconWrap: {
     width: 36,

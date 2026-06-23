@@ -1,6 +1,7 @@
 /**
- * Premium Button — refined, minimal, pressure-aware.
- * Variants: primary (forest), secondary (outline), ghost, accent (clay).
+ * Button — bold / neo-brutalist: heavy outline, flat fill, squarer corners,
+ * hard block shadow, and a "press into the shadow" motion.
+ * Variants: primary (graphite), accent (clay), secondary (outline), ghost, destructive.
  */
 import React from "react";
 import {
@@ -13,11 +14,12 @@ import {
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { palette, radius, motion, shadows } from "../designSystem";
+import { palette, radius, elevation, outline } from "../designSystem";
 import { Text } from "./Text";
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 type Variant = "primary" | "secondary" | "ghost" | "accent" | "destructive";
 type Size = "sm" | "md" | "lg";
@@ -36,8 +38,8 @@ interface Props {
 }
 
 const SIZES = {
-  sm: { height: 36, px: 14, fontSize: 13 as const },
-  md: { height: 48, px: 18, fontSize: 15 as const },
+  sm: { height: 38, px: 16, fontSize: 13 as const },
+  md: { height: 50, px: 18, fontSize: 15 as const },
   lg: { height: 56, px: 22, fontSize: 16 as const },
 };
 
@@ -53,66 +55,58 @@ export function Button({
   fullWidth = true,
   style,
 }: Props) {
-  const scale = useSharedValue(1);
-  const pressed = useSharedValue(0);
+  const press = useSharedValue(0);
   const isDisabled = disabled || loading;
+  const c = getVariantColors(variant);
+  const s = SIZES[size];
+  const flat = variant === "ghost";
 
+  // Press: nudge toward the shadow so the block looks "pressed in".
   const animStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.get() }],
-    opacity: 1 - pressed.get() * 0.1,
+    transform: [
+      { translateX: press.get() * 3 },
+      { translateY: press.get() * 3 },
+    ],
   }));
 
-  const s = SIZES[size];
-  const colors = getVariantColors(variant);
-
   return (
-    <Animated.View
-      style={[
-        animStyle,
-        fullWidth ? { alignSelf: "stretch" } : undefined,
-        style,
-      ]}
-    >
-      <Pressable
+    <View style={[fullWidth ? { alignSelf: "stretch" } : undefined, style]}>
+      <AnimatedPressable
         onPress={onPress}
         disabled={isDisabled}
-        onPressIn={() => {
-          scale.set(withSpring(0.97, motion.spring.crisp));
-          pressed.set(withTiming(1, { duration: 80 }));
-        }}
-        onPressOut={() => {
-          scale.set(withSpring(1, motion.spring.gentle));
-          pressed.set(withTiming(0, { duration: 150 }));
-        }}
+        onPressIn={() => press.set(withTiming(1, { duration: 60 }))}
+        onPressOut={() => press.set(withTiming(0, { duration: 130 }))}
         style={[
           styles.base,
           {
             height: s.height,
             paddingHorizontal: s.px,
-            backgroundColor: colors.bg,
-            borderColor: colors.border,
-            borderWidth: colors.borderWidth,
+            backgroundColor: c.bg,
+            borderColor: c.border,
+            borderWidth: flat ? 0 : outline.width,
           },
-          variant === "primary" && shadows.sm,
+          !flat && elevation.raised,
           isDisabled && { opacity: 0.5 },
+          animStyle,
         ]}
       >
         {loading ? (
-          <ActivityIndicator color={colors.text} size="small" />
+          <ActivityIndicator color={c.text} size="small" />
         ) : (
           <View style={styles.row}>
             {icon && <View style={{ marginRight: 8 }}>{icon}</View>}
             <Text
               variant="label-lg"
-              style={{ color: colors.text, fontSize: s.fontSize }}
+              weight="700"
+              style={{ color: c.text, fontSize: s.fontSize }}
             >
               {label}
             </Text>
             {rightIcon && <View style={{ marginLeft: 8 }}>{rightIcon}</View>}
           </View>
         )}
-      </Pressable>
-    </Animated.View>
+      </AnimatedPressable>
+    </View>
   );
 }
 
@@ -122,48 +116,40 @@ function getVariantColors(v: Variant) {
       return {
         bg: palette.ink[900],
         text: palette.text.inverse,
-        border: palette.ink[900],
-        borderWidth: 0,
+        border: outline.color,
       };
     case "accent":
-      // amber[600] (deeper clay) so white labels meet WCAG AA (≈5.5:1);
-      // amber[500] was 3.93:1 — fine for icons but short for button text.
       return {
         bg: palette.amber[600],
         text: palette.text.inverse,
-        border: palette.amber[600],
-        borderWidth: 0,
+        border: outline.color,
       };
     case "secondary":
       return {
         bg: palette.surface.primary,
         text: palette.text.primary,
-        border: palette.border.default,
-        borderWidth: 1,
+        border: outline.color,
       };
     case "ghost":
       return {
         bg: "transparent",
         text: palette.text.primary,
         border: "transparent",
-        borderWidth: 0,
       };
     case "destructive":
       return {
         bg: palette.danger.bg,
         text: palette.danger.text,
-        border: palette.danger.border,
-        borderWidth: 1,
+        border: outline.color,
       };
   }
 }
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: radius.full,
+    borderRadius: radius.md,
     alignItems: "center",
     justifyContent: "center",
-    overflow: "hidden",
   },
   row: { flexDirection: "row", alignItems: "center" },
 });

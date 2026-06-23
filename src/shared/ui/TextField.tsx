@@ -1,7 +1,7 @@
 /** Premium TextField — minimal, focus-aware. */
 import React, { useState } from "react";
 import { View, TextInput, TextInputProps, StyleSheet } from "react-native";
-import { palette, radius } from "../designSystem";
+import { palette, radius, outline } from "../designSystem";
 import { Text } from "./Text";
 
 interface Props extends Omit<TextInputProps, "style"> {
@@ -23,10 +23,10 @@ export function TextField({
   const [focused, setFocused] = useState(false);
 
   const borderColor = error
-    ? palette.danger.border
+    ? palette.danger.text
     : focused
-      ? palette.ink[900]
-      : palette.border.default;
+      ? palette.amber[600]
+      : outline.color;
 
   return (
     <View>
@@ -74,10 +74,10 @@ const styles = StyleSheet.create({
   wrap: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: radius.lg,
-    borderWidth: 1,
+    borderRadius: radius.md,
+    borderWidth: outline.width,
     paddingHorizontal: 16,
-    minHeight: 52,
+    minHeight: 54,
   },
   input: {
     flex: 1,

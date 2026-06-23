@@ -6,7 +6,7 @@
  */
 import React from "react";
 import { ScrollView, Pressable, StyleSheet, View } from "react-native";
-import { palette, radius, layout } from "../designSystem";
+import { palette, radius, layout, outline } from "../designSystem";
 import { Text } from "./Text";
 
 export interface Chip {
@@ -69,15 +69,15 @@ const styles = StyleSheet.create({
   chip: {
     height: layout.chipHeight,
     paddingHorizontal: 16,
-    borderRadius: radius.full,
+    borderRadius: radius.sm,
     backgroundColor: palette.surface.primary,
-    borderWidth: 1,
-    borderColor: palette.border.default,
+    borderWidth: outline.width,
+    borderColor: outline.color,
     alignItems: "center",
     justifyContent: "center",
   },
   chipActive: {
     backgroundColor: palette.ink[900],
-    borderColor: palette.ink[900],
+    borderColor: outline.color,
   },
 });

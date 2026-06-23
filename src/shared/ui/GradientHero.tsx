@@ -1,58 +1,42 @@
 import React from "react";
 import { View, StyleSheet, ViewStyle, StyleProp } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { radius, gradients, elevation } from "../designSystem";
+import { palette, radius, elevation, outline } from "../designSystem";
 
 type Variant = "hero" | "forest" | "clay";
 
 interface Props {
   children: React.ReactNode;
   variant?: Variant;
-  /** Soft decorative light blobs in the corners (atmospheric depth). */
+  /** Kept for API compatibility; the brutalist hero is a flat block. */
   glow?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
+const FILL: Record<Variant, string> = {
+  hero: palette.ink[900],
+  forest: palette.ink[800],
+  clay: palette.amber[600],
+};
+
 /**
- * GradientHero — the signature 2026 "atmospheric" surface: a deep forest (or
- * clay) gradient panel with optional corner glow, used for dashboard headers
- * and feature cards. Depth comes from the gradient + soft shadow, not borders.
+ * Hero — a flat, bold block with a heavy outline and a hard block shadow
+ * (neo-brutalist). Kept the name/API so existing screens don't change.
  */
-export function GradientHero({
-  children,
-  variant = "hero",
-  glow = true,
-  style,
-}: Props) {
+export function GradientHero({ children, variant = "hero", style }: Props) {
   return (
-    <LinearGradient
-      colors={gradients[variant]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={[styles.wrap, elevation.floating, style]}
-    >
-      {glow ? (
-        <>
-          <View style={[styles.blob, styles.blobTop]} />
-          <View style={[styles.blob, styles.blobBottom]} />
-        </>
-      ) : null}
+    <View style={[styles.wrap, { backgroundColor: FILL[variant] }, style]}>
       <View style={styles.content}>{children}</View>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   wrap: {
-    borderRadius: radius["2xl"],
+    borderRadius: radius.lg,
+    borderWidth: outline.width,
+    borderColor: outline.color,
     overflow: "hidden",
+    ...elevation.floating,
   },
   content: { padding: 20 },
-  blob: {
-    position: "absolute",
-    borderRadius: radius.full,
-    backgroundColor: "rgba(255,255,255,0.06)",
-  },
-  blobTop: { width: 180, height: 180, top: -70, right: -50 },
-  blobBottom: { width: 140, height: 140, bottom: -60, left: -40 },
 });

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { palette, radius } from "../designSystem";
+import { palette, radius, outline } from "../designSystem";
 import { Text } from "./Text";
 
 type Tone = "success" | "warning" | "danger" | "info" | "neutral";
@@ -26,10 +26,8 @@ export function StatusChip({
 }) {
   const c = TONES[tone];
   return (
-    <View
-      style={[styles.chip, { backgroundColor: c.bg, borderColor: c.border }]}
-    >
-      <Text variant="label-sm" style={{ color: c.text }}>
+    <View style={[styles.chip, { backgroundColor: c.bg }]}>
+      <Text variant="label-sm" weight="700" style={{ color: c.text }}>
         {label}
       </Text>
     </View>
@@ -41,7 +39,8 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: radius.full,
-    borderWidth: 1,
+    borderRadius: radius.sm,
+    borderWidth: 1.5,
+    borderColor: outline.color,
   },
 });

@@ -108,16 +108,20 @@ export const spacing = {
   "20": 80,
 } as const;
 
+// Squarer corners for the bold / neo-brutalist language.
 export const radius = {
-  xs: 4,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
-  "2xl": 24,
-  "3xl": 28,
+  xs: 2,
+  sm: 6,
+  md: 8,
+  lg: 10,
+  xl: 12,
+  "2xl": 14,
+  "3xl": 16,
   full: 9999,
 } as const;
+
+// Heavy outline used across buttons, cards, chips and fields.
+export const outline = { width: 2, color: "#1A1A1C" } as const;
 
 export const typography = {
   display: {
@@ -297,15 +301,23 @@ export const glass = {
 } as const;
 
 /**
- * Elevation — Apple-HIG-style z-axis layers for 2026 spatial depth. Compose
- * over a card the same way `shadows.*` is spread; "raised" and "overlay" carry
- * progressively stronger, softer shadows so hierarchy reads by depth not color.
+ * Elevation — hard offset "block" shadows for the neo-brutalist language
+ * (solid, no blur). Paired with the heavy `outline`, this gives the stacked,
+ * tactile look. (iOS renders the hard shadow; Android leans on the outline.)
  */
+const hard = (o: number) => ({
+  shadowColor: "#1A1A1C",
+  shadowOffset: { width: o, height: o },
+  shadowOpacity: 1,
+  shadowRadius: 0,
+  elevation: 0,
+});
+
 export const elevation = {
-  base: shadows.xs, // content sitting on the page
-  raised: shadows.md, // interactive cards / bento tiles
-  floating: shadows.lg, // popovers, the floating action surfaces
-  overlay: shadows.xl, // modals, sheets, the very top layer
+  base: hard(2),
+  raised: hard(4),
+  floating: hard(6),
+  overlay: hard(8),
 } as const;
 
 export const layout = {

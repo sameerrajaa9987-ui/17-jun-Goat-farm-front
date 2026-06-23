@@ -5,7 +5,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { palette, radius, elevation, motion } from "../designSystem";
+import { palette, radius, elevation, outline, motion } from "../designSystem";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -34,9 +34,9 @@ export function Card({
 
   const base: ViewStyle = {
     backgroundColor: palette.surface.primary,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: palette.border.default,
+    borderRadius: radius.lg,
+    borderWidth: outline.width,
+    borderColor: outline.color,
     padding: padded ? 16 : 0,
     ...elevation[level],
   };
